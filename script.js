@@ -1,5 +1,4 @@
-
-// Простое состояние и localStorage
+// === Состояние ===
 const STORAGE_KEY = 'elka_dispatcher_state_v1';
 
 const defaultState = {
@@ -24,12 +23,11 @@ function loadState() {
   }
   return { ...defaultState };
 }
-
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-// ===== Общие хелперы =====
+// Утилиты
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -38,7 +36,6 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
-
 function formatDateTime(d) {
   const pad = n => (n < 10 ? '0' + n : n);
   return (
@@ -47,7 +44,7 @@ function formatDateTime(d) {
   );
 }
 
-// ===== Экран выбора роли (index.html) =====
+// === Экран выбора роли ===
 function initRoleScreen() {
   const select = document.getElementById('role-select');
   const btn = document.getElementById('role-continue');
@@ -62,12 +59,12 @@ function initRoleScreen() {
     if (role === 'dispatcher') {
       window.location.href = 'dispatcher.html';
     } else {
-      alert('Для этой роли интерфейс пока на техобслуживании. Используйте роль «Диспетчер».');
+      alert('Эта роль пока на техобслуживании. Используйте «Диспетчер».');
     }
   });
 }
 
-// ===== Диспетчер (dispatcher.html) =====
+// === Диспетчер ===
 function initDispatcher() {
   const backToRoles = document.getElementById('back-to-roles');
   if (backToRoles) {
@@ -101,7 +98,7 @@ function initDispatcher() {
   const notesField = document.getElementById('notes-field');
   const notesStatus = document.getElementById('notes-status');
 
-  // ==== Вызовы ====
+  // Вызовы
   if (callForm) {
     callForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -171,9 +168,7 @@ function initDispatcher() {
       `;
       callsTableBody.appendChild(tr);
     });
-    if (activeCallsCount) {
-      activeCallsCount.textContent = String(state.calls.length);
-    }
+    if (activeCallsCount) activeCallsCount.textContent = String(state.calls.length);
   }
 
   if (callsTableBody) {
@@ -251,7 +246,7 @@ function initDispatcher() {
     if (selected) resCallSelect.value = selected;
   }
 
-  // ==== Ресурсы ====
+  // Ресурсы
   if (resForm) {
     resForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -302,7 +297,6 @@ function initDispatcher() {
 
     resourcesTableBody.innerHTML = '';
     state.resources.forEach(res => {
-      const callLabel = res.callId ? '#' + res.callId : '—';
       const callOptions = state.calls
         .map(
           call => `
@@ -406,25 +400,21 @@ function initDispatcher() {
       const ids = Array.from(checkboxes).map(cb => Number(cb.dataset.id));
       const selected = state.resources.filter(r => ids.includes(r.id));
       if (!selected.length) return;
-
       const base = selected[0];
       const groupName = prompt('Позывной объединённой группы:', base.name);
       if (!groupName) return;
-
       base.type = 'group';
       base.name = groupName.trim();
       base.members = selected.map(r => r.name);
-      // удаляем остальные
       state.resources = state.resources.filter(r => r.id === base.id || !ids.includes(r.id));
       saveState();
       renderResources();
     });
   }
 
-  // ==== Ориентировки ====
+  // Ориентировки
   function openOrientationModal() {
-    if (!orientationModal) return;
-    orientationModal.classList.remove('hidden');
+    if (orientationModal) orientationModal.classList.remove('hidden');
   }
   function closeOrientationModal() {
     if (!orientationModal) return;
@@ -503,7 +493,7 @@ function initDispatcher() {
     });
   }
 
-  // ==== Заметки ====
+  // Заметки
   if (notesField) {
     notesField.value = state.notes || '';
     notesField.addEventListener('input', () => {
@@ -518,17 +508,17 @@ function initDispatcher() {
     });
   }
 
-  // первичная отрисовка
+  // Первичная отрисовка
   renderCallOptionsForResources();
   renderResources();
   renderCalls();
   renderOrientations();
 }
 
-// ===== Инициализация по странице =====
+// Инициализация в зависимости от страницы
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
-  if (path.endsWith('index.html') || path.endsWith('/') || !path.includes('.html')) {
+  if (path.endsWith('index.html') || path === '/' || !path.includes('.html')) {
     initRoleScreen();
   } else if (path.endsWith('dispatcher.html')) {
     initDispatcher();

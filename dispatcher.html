@@ -6,15 +6,14 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div class="app-root">
+<div class="app-root light-root">
   <header class="topbar">
     <div class="topbar-left">
-      <div class="topbar-logo">▲</div>
-      <span class="topbar-title">Ё л к а</span>
-      <span class="badge-role">(Диспетчер)</span>
+      <div class="topbar-logo topbar-logo-light">▲</div>
+      <span class="topbar-title topbar-title-dark">Ё л к а</span>
+      <span class="badge-role badge-role-light">(Диспетчер)</span>
     </div>
     <div class="topbar-right">
-      <button class="icon-btn" id="theme-toggle" title="Тема">☾</button>
       <button class="icon-btn" id="font-dec" title="Меньше шрифт">A−</button>
       <button class="icon-btn" id="font-inc" title="Больше шрифт">A+</button>
       <span class="counter" id="active-calls-count" title="Активные вызовы">0</span>
@@ -22,220 +21,165 @@
     </div>
   </header>
 
-  <main class="main-layout dispatcher-layout">
-    <!-- Левая колонка: памятка -->
-    <section class="card memo-card">
+  <main class="main-layout main-layout-centered">
+    <!-- Карта -->
+    <section class="card">
       <header class="card-header">
-        <h2>Памятка: политика радиопередач</h2>
+        <div>
+          <h2>Карта</h2>
+        </div>
+        <span class="muted">Учебный макет города «Невский»</span>
       </header>
-      <div class="memo-scroll">
-        <h3>Политика радиопередач</h3>
-        <p>
-          Данная памятка регламентирует работу ЕДДС и дополняет взаимодействие наземных
-          экстренных служб с дежурным диспетчером.
-        </p>
-        <p>
-          ЕДДС контролирует радиоэфир и действия экипажей во время своей смены на
-          экстренных радиостанциях и в системе «Ёлка».
-        </p>
+      <div class="map-container">
+        <iframe src="https://map.vzkn.ru/" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </section>
 
-        <h4>Полномочия дежурного диспетчера</h4>
-        <ul>
-          <li>Принимать и фиксировать экстренные вызовы по линии 112 и радиоэфиру;</li>
-          <li>Направлять и отзывать экипажи, в том числе областные службы;</li>
-          <li>Создавать и завершать ориентировки и рейды;</li>
-          <li>Вводить режим радиомолчания и приоритетных передач;</li>
-          <li>Давать замечания по радиообмену и отключать нарушителей от эфира по согласованию.</li>
-        </ul>
+    <!-- Активные вызовы -->
+    <section class="card">
+      <header class="card-header">
+        <div class="card-header-left">
+          <h2>Активные вызовы</h2>
+        </div>
+        <div class="card-header-right">
+          <button class="btn btn-ghost btn-sm" id="history-btn">⟳ История</button>
+        </div>
+      </header>
 
-        <h4>Фонетический алфавит (пример)</h4>
-        <table class="memo-table">
+      <form id="call-form" class="form-grid">
+        <div class="form-group">
+          <label for="call-street">Улица *</label>
+          <input id="call-street" class="input-text" type="text" placeholder="Введите улицу" required />
+        </div>
+        <div class="form-group">
+          <label for="call-desc">Описание *</label>
+          <input id="call-desc" class="input-text" type="text" placeholder="Введите описание" required />
+        </div>
+        <div class="form-group">
+          <label for="call-priority">Приоритет</label>
+          <select id="call-priority" class="input-select">
+            <option value="Обычный">Обычный</option>
+            <option value="Высокий">Высокий</option>
+            <option value="Экстренный">Экстренный</option>
+          </select>
+        </div>
+        <div class="form-group form-group-buttons">
+          <button type="submit" class="btn btn-primary">Создать вызов</button>
+          <button type="button" class="btn btn-secondary" id="ai-generate-btn">Сгенерировать ИИ</button>
+        </div>
+      </form>
+
+      <div class="table-wrapper">
+        <table class="data-table data-table-light">
           <thead>
           <tr>
-            <th>Буква</th><th>Пример</th>
-            <th>Буква</th><th>Пример</th>
+            <th>ID вызова</th>
+            <th>Улица</th>
+            <th>Описание</th>
+            <th>Приоритет</th>
+            <th>Статус</th>
+            <th>Ресурсы</th>
+            <th>Действия</th>
           </tr>
           </thead>
-          <tbody>
-          <tr><td>А</td><td>Анна / Антон</td><td>Л</td><td>Леонид</td></tr>
-          <tr><td>Б</td><td>Борис</td><td>М</td><td>Михаил / Мария</td></tr>
-          <tr><td>В</td><td>Василий</td><td>Н</td><td>Николай</td></tr>
-          <tr><td>Г</td><td>Галина</td><td>О</td><td>Ольга</td></tr>
-          <tr><td>Д</td><td>Дмитрий</td><td>П</td><td>Павел</td></tr>
-          <tr><td>Е</td><td>Елена</td><td>Р</td><td>Роман</td></tr>
-          <tr><td>Ж</td><td>Женя</td><td>С</td><td>Сергей</td></tr>
-          <tr><td>З</td><td>Зинаида</td><td>Т</td><td>Тамара / Татьяна</td></tr>
-          <tr><td>И</td><td>Иван</td><td>У</td><td>Ульяна</td></tr>
-          <tr><td>Й</td><td>Иван краткий</td><td>Ф</td><td>Фёдор</td></tr>
-          <tr><td>К</td><td>Константин</td><td>Х</td><td>Харитон</td></tr>
-          <tr><td>Ц</td><td>Центр</td><td>Ч</td><td>Человек</td></tr>
-          <tr><td>Ш</td><td>Шура</td><td>Щ</td><td>Щука</td></tr>
-          <tr><td>Ъ</td><td>Твёрдый знак</td><td>Ы</td><td>–</td></tr>
-          <tr><td>Ь</td><td>Мягкий знак</td><td>Э</td><td>Эдуард</td></tr>
-          <tr><td>Ю</td><td>Юрий</td><td>Я</td><td>Яков</td></tr>
-          </tbody>
+          <tbody id="calls-table-body"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- Правая колонка -->
-    <div class="dispatcher-main">
-      <!-- Карта -->
-      <section class="card">
-        <header class="card-header">
-          <h2>Карта</h2>
-        </header>
-        <div class="map-container">
-          <iframe src="https://map.vzkn.ru/" allowfullscreen loading="lazy"></iframe>
+    <!-- Список ресурсов -->
+    <section class="card">
+      <header class="card-header">
+        <div class="card-header-left">
+          <h2>Список ресурсов</h2>
         </div>
-      </section>
-
-      <!-- Активные вызовы -->
-      <section class="card">
-        <header class="card-header">
-          <div class="card-header-left">
-            <h2>Активные вызовы</h2>
-          </div>
-          <div class="card-header-right">
-            <button class="btn btn-ghost btn-sm" id="history-btn">⟳ История</button>
-          </div>
-        </header>
-
-        <form id="call-form" class="form-grid">
-          <div class="form-group">
-            <label for="call-street">Улица *</label>
-            <input id="call-street" class="input-text" type="text" placeholder="Введите улицу" required />
-          </div>
-          <div class="form-group">
-            <label for="call-desc">Описание *</label>
-            <input id="call-desc" class="input-text" type="text" placeholder="Введите описание" required />
-          </div>
-          <div class="form-group">
-            <label for="call-priority">Приоритет</label>
-            <select id="call-priority" class="input-select">
-              <option value="Обычный">Обычный</option>
-              <option value="Высокий">Высокий</option>
-              <option value="Экстренный">Экстренный</option>
-            </select>
-          </div>
-          <div class="form-group form-group-buttons">
-            <button type="submit" class="btn btn-primary">Создать вызов</button>
-            <button type="button" class="btn btn-secondary" id="ai-generate-btn">Сгенерировать ИИ</button>
-          </div>
-        </form>
-
-        <div class="table-wrapper">
-          <table class="data-table">
-            <thead>
-            <tr>
-              <th>ID вызова</th>
-              <th>Улица</th>
-              <th>Описание</th>
-              <th>Приоритет</th>
-              <th>Статус</th>
-              <th>Ресурсы</th>
-              <th>Действия</th>
-            </tr>
-            </thead>
-            <tbody id="calls-table-body"></tbody>
-          </table>
+        <div class="card-header-right">
+          <button id="merge-resources-btn" class="btn btn-secondary btn-sm">Объединить экипажи</button>
         </div>
-      </section>
+      </header>
 
-      <!-- Список ресурсов -->
-      <section class="card">
-        <header class="card-header">
-          <div class="card-header-left">
-            <h2>Список ресурсов</h2>
-          </div>
-          <div class="card-header-right">
-            <button id="merge-resources-btn" class="btn btn-secondary btn-sm">Объединить экипажи</button>
-          </div>
-        </header>
-
-        <form id="resource-form" class="form-grid form-grid-4">
-          <div class="form-group">
-            <label for="res-name">Позывной</label>
-            <input id="res-name" class="input-text" type="text" placeholder="Напр., Патруль 12" />
-          </div>
-          <div class="form-group">
-            <label for="res-app">Канал / приложение</label>
-            <input id="res-app" class="input-text" type="text" placeholder="Рация, Telegram..." />
-          </div>
-          <div class="form-group">
-            <label for="res-status">Статус</label>
-            <select id="res-status" class="input-select">
-              <option value="Свободен">Свободен</option>
-              <option value="В пути">В пути</option>
-              <option value="На месте">На месте</option>
-              <option value="Недоступен">Недоступен</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="res-call">Закреплён за вызовом</label>
-            <select id="res-call" class="input-select">
-              <option value="">— Нет —</option>
-            </select>
-          </div>
-          <div class="form-group form-group-buttons">
-            <button type="submit" class="btn btn-primary">Добавить ресурс</button>
-          </div>
-        </form>
-
-        <div class="table-wrapper">
-          <table class="data-table">
-            <thead>
-            <tr>
-              <th></th>
-              <th>Позывной</th>
-              <th>Канал</th>
-              <th>Тип</th>
-              <th>Статус</th>
-              <th>Вызов</th>
-              <th>Состав группы</th>
-              <th>Действия</th>
-            </tr>
-            </thead>
-            <tbody id="resources-table-body"></tbody>
-          </table>
+      <form id="resource-form" class="form-grid form-grid-4">
+        <div class="form-group">
+          <label for="res-name">Позывной</label>
+          <input id="res-name" class="input-text" type="text" placeholder="Напр., Патруль 12" />
         </div>
-      </section>
-
-      <!-- Ориентировки -->
-      <section class="card">
-        <header class="card-header">
-          <h2>Ориентировки</h2>
-          <button class="btn btn-primary" id="add-orientation-btn">Добавить</button>
-        </header>
-        <div class="table-wrapper">
-          <table class="data-table">
-            <thead>
-            <tr>
-              <th>Тип</th>
-              <th>Заголовок</th>
-              <th>Описание</th>
-              <th>Активна</th>
-              <th>Действия</th>
-            </tr>
-            </thead>
-            <tbody id="orientation-table-body"></tbody>
-          </table>
+        <div class="form-group">
+          <label for="res-app">Канал / приложение</label>
+          <input id="res-app" class="input-text" type="text" placeholder="Рация, Telegram..." />
         </div>
-      </section>
+        <div class="form-group">
+          <label for="res-status">Статус</label>
+          <select id="res-status" class="input-select">
+            <option value="Свободен">Свободен</option>
+            <option value="В пути">В пути</option>
+            <option value="На месте">На месте</option>
+            <option value="Недоступен">Недоступен</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="res-call">Закреплён за вызовом</label>
+          <select id="res-call" class="input-select">
+            <option value="">— Нет —</option>
+          </select>
+        </div>
+        <div class="form-group form-group-buttons">
+          <button type="submit" class="btn btn-primary">Добавить ресурс</button>
+        </div>
+      </form>
 
-      <!-- Заметки -->
-      <section class="card">
-        <header class="card-header">
-          <h2>Заметки <span id="notes-status" class="muted">Загружено</span></h2>
-        </header>
-        <textarea id="notes-field" class="notes-area" placeholder="Служебные пометки по смене..."></textarea>
-      </section>
-    </div>
+      <div class="table-wrapper">
+        <table class="data-table data-table-light">
+          <thead>
+          <tr>
+            <th></th>
+            <th>Позывной</th>
+            <th>Канал</th>
+            <th>Тип</th>
+            <th>Статус</th>
+            <th>Вызов</th>
+            <th>Состав группы</th>
+            <th>Действия</th>
+          </tr>
+          </thead>
+          <tbody id="resources-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Ориентировки -->
+    <section class="card">
+      <header class="card-header">
+        <h2>Ориентировки</h2>
+        <button class="btn btn-primary" id="add-orientation-btn">Добавить</button>
+      </header>
+      <div class="table-wrapper">
+        <table class="data-table data-table-light">
+          <thead>
+          <tr>
+            <th>Тип</th>
+            <th>Заголовок</th>
+            <th>Описание</th>
+            <th>Активна</th>
+            <th>Действия</th>
+          </tr>
+          </thead>
+          <tbody id="orientation-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Заметки -->
+    <section class="card">
+      <header class="card-header">
+        <h2>Заметки <span id="notes-status" class="muted">Загружено</span></h2>
+      </header>
+      <textarea id="notes-field" class="notes-area notes-area-light" placeholder="Введите ваши заметки здесь..."></textarea>
+    </section>
   </main>
 
   <!-- Модальное окно ориентировки -->
   <div id="orientation-modal" class="modal-backdrop hidden">
-    <div class="modal">
+    <div class="modal modal-light">
       <div class="modal-header">
         <h2>Добавить ориентировку</h2>
         <button id="orientation-close" class="icon-btn">&times;</button>

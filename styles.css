@@ -1,4 +1,3 @@
-
 *,
 *::before,
 *::after {
@@ -14,16 +13,20 @@ body {
     "Helvetica Neue", Arial, sans-serif;
 }
 
-/* Фон для экранов выбора роли */
-.role-body {
-  background: radial-gradient(circle at top, #1c2530 0, #05080c 55%, #000 100%);
+/* Общий фон (как в оригинальной светлой Ёлке) */
+.light-root {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #fdfdfd 0, #edf2f5 40%, #dde3e9 100%);
+  color: #222;
 }
 
-/* Общий фон приложения (диспетчер) */
-.app-root {
+/* Экран выбора роли */
+.role-screen-root {
   min-height: 100vh;
-  background: radial-gradient(circle at top left, #20252a 0, #05080c 55%, #000 100%);
-  color: #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #fdfdfd 0, #e9f1f6 45%, #dde3e9 100%);
 }
 
 /* Экраны */
@@ -34,30 +37,24 @@ body {
   display: block;
 }
 
-/* Экран выбора роли */
-.role-root {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* Карточка выбора роли */
 .role-card {
-  min-width: 360px;
+  min-width: 340px;
   max-width: 420px;
   padding: 32px 40px 32px;
-  border-radius: 18px;
-  background: radial-gradient(circle at bottom right, #294458 0, #151b23 55%, #10151b 100%);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16);
 }
 
 .logo-line {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
-.logo-dot {
+.logo-dot-light {
   width: 26px;
   height: 26px;
   border-radius: 999px;
@@ -65,38 +62,40 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #e5f9ed;
+  color: #ecfdf5;
   font-size: 14px;
 }
 
-.logo-text {
+.logo-text-dark {
   font-size: 28px;
   letter-spacing: 0.55em;
   text-indent: 0.55em;
-  color: #f9fafb;
+  color: #111827;
 }
 
 .field-label {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
-  color: #e5e7eb;
+  color: #4b5563;
 }
 
 .select-wrapper {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
+/* Формы */
 .input-select,
 .input-text,
 .input-textarea {
   width: 100%;
   padding: 7px 10px;
-  border-radius: 6px;
-  border: 1px solid #4b5563;
-  background: #111827;
-  color: #e5e7eb;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
   font-size: 14px;
+  outline: none;
+  background: #ffffff;
+  color: #111827;
 }
 
 .input-textarea {
@@ -108,14 +107,13 @@ body {
 .input-text:focus,
 .input-textarea:focus {
   border-color: #60a5fa;
-  outline: none;
 }
 
 /* Кнопки */
 .btn {
   border: none;
-  border-radius: 6px;
-  padding: 7px 14px;
+  border-radius: 4px;
+  padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
   display: inline-flex;
@@ -125,27 +123,27 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #22c55e, #059669);
+  background: #607d8b;
   color: #ffffff;
 }
 .btn-primary:hover {
-  background: linear-gradient(135deg, #16a34a, #047857);
+  background: #546e7a;
 }
 
 .btn-secondary {
-  background: #374151;
-  color: #e5e7eb;
+  background: #eceff1;
+  color: #111827;
 }
 .btn-secondary:hover {
-  background: #4b5563;
+  background: #e0e5e8;
 }
 
 .btn-ghost {
   background: transparent;
-  color: #e5e7eb;
+  color: #37474f;
 }
 .btn-ghost:hover {
-  background: rgba(148, 163, 184, 0.2);
+  background: #eceff1;
 }
 
 .btn-sm {
@@ -153,55 +151,54 @@ body {
   font-size: 12px;
 }
 
-/* Топбар */
+/* Топбар (как раньше) */
 .topbar {
-  height: 48px;
+  height: 56px;
   background: #d9e3e7;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.topbar-logo {
+.topbar-logo-light {
   width: 20px;
   height: 20px;
-  border-radius: 4px;
+  border-radius: 3px;
   background: #111827;
-  color: #e5e7eb;
+  color: #f9fafb;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 10px;
 }
 
-.topbar-title {
-  font-size: 20px;
+.topbar-title-dark {
+  font-size: 22px;
   letter-spacing: 0.35em;
   text-indent: 0.35em;
   color: #111827;
 }
 
-.badge-role {
-  margin-left: 6px;
+.badge-role-light {
+  font-size: 12px;
   padding: 2px 8px;
   border-radius: 999px;
-  background: #e5e7eb;
-  color: #374151;
-  font-size: 11px;
+  background: #eceff1;
+  color: #37474f;
 }
 
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .icon-btn {
@@ -213,7 +210,7 @@ body {
   color: #111827;
 }
 .icon-btn:hover {
-  background: rgba(15, 23, 42, 0.09);
+  background: rgba(0, 0, 0, 0.06);
   border-radius: 4px;
 }
 
@@ -229,104 +226,48 @@ body {
   justify-content: center;
 }
 
-/* Макет диспетчера */
+/* Основной макет */
 .main-layout {
-  padding: 18px;
+  padding: 24px;
 }
 
-.dispatcher-layout {
-  display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
-  gap: 16px;
-  align-items: flex-start;
-}
-
-.dispatcher-main {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.main-layout-centered {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Карточки */
 .card {
-  background: #2b3338;
+  background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 2px 4px rgba(15, 35, 52, 0.06);
   padding: 14px 16px 16px;
-  margin-bottom: 0;
+  margin-bottom: 18px;
 }
 
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .card-header h2 {
-  font-size: 16px;
+  font-size: 18px;
   margin: 0;
-  color: #f3f4f6;
+  color: #111827;
 }
 
 .muted {
   font-size: 12px;
-  color: #9ca3af;
+  color: #78909c;
 }
 
-/* Памятка */
-.memo-card {
-  max-height: calc(100vh - 60px);
-  display: flex;
-  flex-direction: column;
-}
-
-.memo-scroll {
-  margin-top: 6px;
-  padding-right: 4px;
-  overflow-y: auto;
-  max-height: calc(100vh - 120px);
-  font-size: 13px;
-  line-height: 1.45;
-}
-
-.memo-scroll h3,
-.memo-scroll h4 {
-  margin: 8px 0 4px;
-  font-size: 14px;
-}
-
-.memo-scroll p {
-  margin: 4px 0;
-}
-
-.memo-scroll ul {
-  padding-left: 18px;
-  margin: 4px 0;
-}
-
-.memo-scroll li {
-  margin-bottom: 2px;
-}
-
-.memo-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 6px;
-  font-size: 12px;
-}
-
-.memo-table th,
-.memo-table td {
-  border: 1px solid #4b5563;
-  padding: 2px 4px;
-}
-
-/* Формы */
+/* Формы в карточках */
 .form-grid {
   display: grid;
   grid-template-columns: 1.2fr 1.2fr 0.8fr auto;
-  gap: 8px 14px;
+  gap: 8px 16px;
   margin-bottom: 10px;
 }
 
@@ -342,7 +283,7 @@ body {
 
 .form-group label {
   font-size: 12px;
-  color: #d1d5db;
+  color: #455a64;
 }
 
 .form-group-buttons {
@@ -352,10 +293,7 @@ body {
   gap: 8px;
 }
 
-@media (max-width: 1024px) {
-  .dispatcher-layout {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 900px) {
   .form-grid,
   .form-grid-4 {
     grid-template-columns: 1fr;
@@ -373,20 +311,25 @@ body {
   font-size: 13px;
 }
 
-.data-table thead {
-  background: #cfd8dc;
-  color: #111827;
+.data-table-light thead {
+  background: #eceff1;
+  color: #37474f;
 }
 
 .data-table th,
 .data-table td {
   padding: 6px 8px;
-  border-bottom: 1px solid #424b52;
+  border-bottom: 1px solid #e0e5e8;
   text-align: left;
 }
 
 .data-table tr:nth-child(even) td {
-  background: #252c31;
+  background: #fafbfc;
+}
+
+.input-select-sm {
+  padding: 4px 6px;
+  font-size: 12px;
 }
 
 /* Заметки */
@@ -395,11 +338,14 @@ body {
   height: 120px;
   padding: 8px 10px;
   border-radius: 4px;
-  border: 1px solid #4b5563;
-  background: #111827;
-  color: #e5e7eb;
+  border: 1px solid #cfd8dc;
   resize: vertical;
   font-size: 14px;
+}
+
+.notes-area-light {
+  background: #ffffff;
+  color: #111827;
 }
 
 /* Карта */
@@ -421,7 +367,7 @@ body {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -433,12 +379,12 @@ body {
 }
 
 .modal {
-  background: #2b3338;
+  background: #ffffff;
   padding: 16px 18px 14px;
   border-radius: 8px;
   width: 100%;
   max-width: 460px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
 }
 
 .modal-header {
