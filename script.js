@@ -122,11 +122,6 @@ function initDispatcher() {
   const resCallSelect = document.getElementById('res-call');
   const resourcesTableBody = document.getElementById('resources-table-body');
 
-  const mapClickLayer = document.getElementById('map-click-layer');
-  const mapMarkerLayer = document.getElementById('map-marker-layer');
-  let markerPlacementCallId = null;
-
-
   const orientationModal = document.getElementById('orientation-modal');
   const orientationForm = document.getElementById('orientation-form');
   const addOrientationBtn = document.getElementById('add-orientation-btn');
@@ -136,6 +131,11 @@ function initDispatcher() {
 
   const notesField = document.getElementById('notes-field');
   const notesStatus = document.getElementById('notes-status');
+  const memoModal = document.getElementById('memo-modal');
+  const memoBtn = document.getElementById('memo-btn');
+  const memoClose = document.getElementById('memo-close');
+  const memoCloseBottom = document.getElementById('memo-close-bottom');
+
   const activeCallsCount = document.getElementById('active-calls-count');
 
   function updateActiveCallsCounter() {
@@ -166,7 +166,23 @@ function initDispatcher() {
     callStreetInput.value = '';
     callDescInput.value = '';
     saveState();
-    renderCalls();
+  
+  // Памятка по радиообмену
+  function openMemo() {
+    if (!memoModal) return;
+    memoModal.classList.remove('hidden');
+  }
+
+  function closeMemo() {
+    if (!memoModal) return;
+    memoModal.classList.add('hidden');
+  }
+
+  if (memoBtn) memoBtn.addEventListener('click', openMemo);
+  if (memoClose) memoClose.addEventListener('click', closeMemo);
+  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
+
+  renderCalls();
     renderResources();
     renderCallsInResourceSelect();
   });
@@ -189,9 +205,6 @@ function initDispatcher() {
         </td>
         <td>${call.resources.length ? call.resources.join(', ') : '—'}</td>
         <td>
-          <button class="btn btn-ghost btn-sm" data-action="place-marker" data-id="${call.id}">
-            Метка
-          </button>
           <button class="btn btn-ghost btn-sm" data-action="delete-call" data-id="${call.id}">
             Удалить
           </button>
@@ -200,7 +213,6 @@ function initDispatcher() {
       callsTableBody.appendChild(tr);
     });
     updateActiveCallsCounter();
-    renderMapMarkers();
   }
 
   callsTableBody.addEventListener('change', (e) => {
@@ -230,17 +242,27 @@ function initDispatcher() {
       });
       state.calls = state.calls.filter(c => c.id !== id);
       saveState();
-      renderCalls();
+    
+  // Памятка по радиообмену
+  function openMemo() {
+    if (!memoModal) return;
+    memoModal.classList.remove('hidden');
+  }
+
+  function closeMemo() {
+    if (!memoModal) return;
+    memoModal.classList.add('hidden');
+  }
+
+  if (memoBtn) memoBtn.addEventListener('click', openMemo);
+  if (memoClose) memoClose.addEventListener('click', closeMemo);
+  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
+
+  renderCalls();
       renderResources();
       renderCallsInResourceSelect();
     }
 
-    if (action === 'place-marker') {
-      if (!mapClickLayer) return;
-      markerPlacementCallId = id;
-      mapClickLayer.classList.add('active');
-      alert('Кликните по карте, чтобы установить точку для вызова #' + id);
-    }
   });
 
   function renderCallsInResourceSelect() {
@@ -256,48 +278,6 @@ function initDispatcher() {
   }
 
 
-
-  function renderMapMarkers() {
-    if (!mapMarkerLayer) return;
-    mapMarkerLayer.innerHTML = '';
-
-    const rect = mapMarkerLayer.getBoundingClientRect();
-    const width = rect.width || mapMarkerLayer.clientWidth;
-    const height = rect.height || mapMarkerLayer.clientHeight;
-    if (!width || !height) return;
-
-    state.calls.forEach(call => {
-      if (!call.marker) return;
-      const x = call.marker.x * width;
-      const y = call.marker.y * height;
-
-      const dot = document.createElement('div');
-      dot.className = 'map-marker';
-      dot.style.left = x + 'px';
-      dot.style.top = y + 'px';
-      mapMarkerLayer.appendChild(dot);
-    });
-  }
-
-  if (mapClickLayer) {
-    mapClickLayer.addEventListener('click', (e) => {
-      if (!markerPlacementCallId) return;
-
-      const rect = mapClickLayer.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-
-      const call = state.calls.find(c => c.id === markerPlacementCallId);
-      if (call) {
-        call.marker = { x, y };
-        saveState();
-        renderMapMarkers();
-      }
-
-      markerPlacementCallId = null;
-      mapClickLayer.classList.remove('active');
-    });
-  }
 
   // Ресурсы
   resForm.addEventListener('submit', (e) => {
@@ -324,7 +304,23 @@ function initDispatcher() {
 
     saveState();
     renderResources();
-    renderCalls();
+  
+  // Памятка по радиообмену
+  function openMemo() {
+    if (!memoModal) return;
+    memoModal.classList.remove('hidden');
+  }
+
+  function closeMemo() {
+    if (!memoModal) return;
+    memoModal.classList.add('hidden');
+  }
+
+  if (memoBtn) memoBtn.addEventListener('click', openMemo);
+  if (memoClose) memoClose.addEventListener('click', closeMemo);
+  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
+
+  renderCalls();
   });
 
   function renderResources() {
@@ -393,7 +389,23 @@ function initDispatcher() {
       state.resources = state.resources.filter(r => r.id !== id);
       saveState();
       renderResources();
-      renderCalls();
+    
+  // Памятка по радиообмену
+  function openMemo() {
+    if (!memoModal) return;
+    memoModal.classList.remove('hidden');
+  }
+
+  function closeMemo() {
+    if (!memoModal) return;
+    memoModal.classList.add('hidden');
+  }
+
+  if (memoBtn) memoBtn.addEventListener('click', openMemo);
+  if (memoClose) memoClose.addEventListener('click', closeMemo);
+  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
+
+  renderCalls();
     }
 
     if (action === 'edit-resource') {
@@ -409,7 +421,23 @@ function initDispatcher() {
       res.app = newApp.trim();
       saveState();
       renderResources();
-      renderCalls();
+    
+  // Памятка по радиообмену
+  function openMemo() {
+    if (!memoModal) return;
+    memoModal.classList.remove('hidden');
+  }
+
+  function closeMemo() {
+    if (!memoModal) return;
+    memoModal.classList.add('hidden');
+  }
+
+  if (memoBtn) memoBtn.addEventListener('click', openMemo);
+  if (memoClose) memoClose.addEventListener('click', closeMemo);
+  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
+
+  renderCalls();
     }
   });
 
@@ -430,7 +458,23 @@ function initDispatcher() {
       res.callId = val ? Number(val) : null;
       saveState();
       renderResources();
-      renderCalls();
+    
+  // Памятка по радиообмену
+  function openMemo() {
+    if (!memoModal) return;
+    memoModal.classList.remove('hidden');
+  }
+
+  function closeMemo() {
+    if (!memoModal) return;
+    memoModal.classList.add('hidden');
+  }
+
+  if (memoBtn) memoBtn.addEventListener('click', openMemo);
+  if (memoClose) memoClose.addEventListener('click', closeMemo);
+  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
+
+  renderCalls();
       renderCallsInResourceSelect();
     }
   });
@@ -543,15 +587,28 @@ function initDispatcher() {
   }
 
   // Первичный рендер
+
+  // Памятка по радиообмену
+  function openMemo() {
+    if (!memoModal) return;
+    memoModal.classList.remove('hidden');
+  }
+
+  function closeMemo() {
+    if (!memoModal) return;
+    memoModal.classList.add('hidden');
+  }
+
+  if (memoBtn) memoBtn.addEventListener('click', openMemo);
+  if (memoClose) memoClose.addEventListener('click', closeMemo);
+  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
+
   renderCalls();
   renderResources();
   renderOrientations();
   renderCallsInResourceSelect();
   updateActiveCallsCounter();
 
-  // первичный рендер маркеров и подписка на resize
-  renderMapMarkers();
-  window.addEventListener('resize', renderMapMarkers);
 }
 // ==== ГРАЖДАНСКИЙ ====
 
