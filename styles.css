@@ -38,6 +38,7 @@ body.theme-dark {
   display: block;
 }
 
+
 /* Экран выбора роли */
 
 .role-card {
@@ -46,29 +47,38 @@ body.theme-dark {
   left: 50%;
   transform: translate(-50%, -50%);
   min-width: 360px;
-  max-width: 420px;
-  padding: 32px 40px 40px;
-  border-radius: 18px;
-  background: rgba(15, 23, 42, 0.96);
+  max-width: 460px;
+  padding: 44px 40px 40px;
+  border-radius: 20px;
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.35), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.35), transparent 55%),
+              rgba(15, 23, 42, 0.98);
   box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.85),
-    0 0 0 1px rgba(148, 163, 184, 0.28);
+    0 28px 70px rgba(0, 0, 0, 0.95),
+    0 0 0 1px rgba(148, 163, 184, 0.35);
   text-align: center;
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
 }
 
 .logo-line {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+/* Елочка внутри карточки выбора роли */
+.role-card .topbar-logo {
+  margin-top: 0;
+  margin-bottom: 2px;
+  flex-shrink: 0;
 }
 
 .logo-text {
-  font-size: 28px;
-  letter-spacing: 0.65em;
-  text-indent: 0.65em;
+  font-size: 30px;
+  letter-spacing: 0.7em;
+  text-indent: 0.7em;
 }
 
 .field-label {
@@ -80,9 +90,8 @@ body.theme-dark {
 }
 
 .select-wrapper {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
-
 /* Общие элементы ввода */
 
 .input-select,

@@ -656,6 +656,7 @@ function initDispatcher() {
   initElkaMap();
 }
 
+
 // === Инициализация выбора роли ===
 function initRoleSelector() {
   const root = document.querySelector('.role-root');
@@ -664,6 +665,7 @@ function initRoleSelector() {
   const select = document.getElementById('role-select');
   const btn = document.getElementById('role-continue');
 
+  // подставим сохранённую роль, если есть
   if (state.role) {
     select.value = state.role;
   }
@@ -674,22 +676,26 @@ function initRoleSelector() {
       alert('Выберите роль.');
       return;
     }
+
+    // сохраним выбранную роль
     state.role = value;
     saveState();
+
+    // рабочий интерфейс сейчас только у диспетчера
+    let target = 'dispatcher.html';
     if (value === 'dispatcher') {
-      window.location.href = 'dispatcher.html';
+      target = 'dispatcher.html';
     } else if (value === 'citizen') {
-      window.location.href = 'citizen.html';
+      target = 'citizen.html';
     } else if (value === 'forces') {
-      window.location.href = 'forces.html';
+      target = 'forces.html';
     } else if (value === 'rescue') {
-      window.location.href = 'rescue.html';
-    } else {
-      window.location.href = 'dispatcher.html';
+      target = 'rescue.html';
     }
+
+    window.location.href = target;
   });
 }
-
 // === Инициализация общая ===
 window.addEventListener('DOMContentLoaded', () => {
   initRoleSelector();
