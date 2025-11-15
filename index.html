@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ёлка</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app-root">
+
+  <!-- Экран выбора роли -->
+  <section id="role-screen" class="screen screen-active">
+    <div class="role-card">
+      <div class="logo-text">Ё л к а</div>
+
+      <label class="field-label" for="role-select">Выберите роль</label>
+      <div class="select-wrapper">
+        <select id="role-select" class="input-select">
+          <option value="">Выберите роль</option>
+          <option value="citizen">Гражданский</option>
+          <option value="dispatcher">Диспетчер</option>
+          <option value="forces">Силовые структуры</option>
+          <option value="rescue">Служба спасения</option>
+        </select>
+      </div>
+
+      <button id="role-continue" class="btn btn-primary">
+        Продолжить
+      </button>
+    </div>
+  </section>
+
+  <!-- Основной экран -->
+  <section id="main-screen" class="screen">
+    <header class="topbar">
+      <div class="topbar-left">
+        <img src="img/logo.svg" alt="Ёлка" class="topbar-logo" />
+        <span class="topbar-title">Ё л к а</span>
+        <span id="current-role" class="topbar-role"></span>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" title="Уменьшить шрифт">−</button>
+        <span class="counter" title="Число активных вызовов" id="active-calls-count">0</span>
+        <button class="icon-btn" title="Увеличить шрифт">+</button>
+        <button class="icon-btn" title="Тема">🌙</button>
+        <button class="icon-btn" id="logout-btn" title="Выход">⟲ Выход</button>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <!-- Активные вызовы -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Активные вызовы</h2>
+          <button class="btn btn-ghost" id="history-btn">⟲ История</button>
+        </header>
+
+        <form id="call-form" class="form-grid">
+          <div class="form-group">
+            <label for="call-street">Улица *</label>
+            <input id="call-street" class="input-text" type="text" placeholder="Введите улицу" required />
+          </div>
+          <div class="form-group">
+            <label for="call-desc">Описание *</label>
+            <input id="call-desc" class="input-text" type="text" placeholder="Введите описание" required />
+          </div>
+          <div class="form-group form-group-buttons">
+            <button type="submit" class="btn btn-primary">Создать вызов</button>
+            <button type="button" class="btn btn-secondary" id="ai-generate-btn">Сгенерировать ИИ</button>
+          </div>
+        </form>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID вызова</th>
+                <th>Улица</th>
+                <th>Время создания</th>
+                <th>Описание</th>
+                <th>Статус</th>
+                <th>Ресурсы</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="calls-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Список ресурсов -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Список ресурсов</h2>
+        </header>
+
+        <form id="resource-form" class="form-grid form-grid-4">
+          <div class="form-group">
+            <label for="res-name">Имя</label>
+            <input id="res-name" class="input-text" type="text" placeholder="Напр., Патруль 12" />
+          </div>
+          <div class="form-group">
+            <label for="res-app">Приложение</label>
+            <input id="res-app" class="input-text" type="text" placeholder="Рация, Telegram..." />
+          </div>
+          <div class="form-group">
+            <label for="res-status">Статус</label>
+            <select id="res-status" class="input-select">
+              <option value="Свободен">Свободен</option>
+              <option value="Занят">Занят</option>
+              <option value="Недоступен">Недоступен</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="res-call">Закреплён за вызовом</label>
+            <select id="res-call" class="input-select">
+              <option value="">— Нет —</option>
+            </select>
+          </div>
+          <div class="form-group form-group-buttons">
+            <button type="submit" class="btn btn-primary">Добавить ресурс</button>
+          </div>
+        </form>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Имя</th>
+                <th>Приложение</th>
+                <th>Статус</th>
+                <th>Вызов</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="resources-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Ориентировки -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Ориентировки</h2>
+          <button class="btn btn-primary" id="add-orientation-btn">Добавить</button>
+        </header>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Тип</th>
+                <th>Заголовок</th>
+                <th>Описание</th>
+                <th>Действует</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="orientation-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Заметки -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Заметки <span id="notes-status" class="muted">Загружено</span></h2>
+        </header>
+        <textarea id="notes-field" class="notes-area" placeholder="Введите ваши заметки здесь..."></textarea>
+      </section>
+    </main>
+  </section>
+
+  <!-- Модалка ориентировок -->
+  <div id="orientation-modal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Добавить ориентировку</h2>
+        <button id="orientation-close" class="icon-btn">&times;</button>
+      </div>
+
+      <form id="orientation-form" class="modal-body">
+        <div class="form-group">
+          <label for="orientation-type">Тип *</label>
+          <select id="orientation-type" class="input-select" required>
+            <option value="Ориентировка">Ориентировка</option>
+            <option value="Рейд">Рейд</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="orientation-title">Заголовок *</label>
+          <input id="orientation-title" class="input-text" type="text"
+                 placeholder="Напр., Трезвый водитель или Разыскивается: Иванов" required />
+        </div>
+        <div class="form-group">
+          <label for="orientation-desc">Описание *</label>
+          <textarea id="orientation-desc" class="input-textarea" placeholder="Подробное описание" required></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Создать</button>
+          <button type="button" id="orientation-cancel" class="btn btn-secondary">Закрыть</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // === Простое хранилище в localStorage ===
+  const STORAGE_KEY = 'elka_dispatcher_state_v1';
+
+  const defaultState = {
+    role: '',
+    calls: [],
+    resources: [],
+    orientations: [],
+    notes: '',
+    nextCallId: 1,
+    nextResourceId: 1,
+    nextOrientationId: 1,
+  };
+
+  let state = loadState();
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        return Object.assign({}, defaultState, JSON.parse(raw));
+      }
+    } catch (e) {
+      console.warn('Не удалось загрузить состояние', e);
+    }
+    return { ...defaultState };
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    updateActiveCallsCounter();
+  }
+
+  // === DOM-элементы ===
+  const roleScreen = document.getElementById('role-screen');
+  const mainScreen = document.getElementById('main-screen');
+  const roleSelect = document.getElementById('role-select');
+  const roleContinueBtn = document.getElementById('role-continue');
+  const currentRoleSpan = document.getElementById('current-role');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  const callForm = document.getElementById('call-form');
+  const callStreetInput = document.getElementById('call-street');
+  const callDescInput = document.getElementById('call-desc');
+  const callsTableBody = document.getElementById('calls-table-body');
+
+  const resForm = document.getElementById('resource-form');
+  const resNameInput = document.getElementById('res-name');
+  const resAppInput = document.getElementById('res-app');
+  const resStatusSelect = document.getElementById('res-status');
+  const resCallSelect = document.getElementById('res-call');
+  const resourcesTableBody = document.getElementById('resources-table-body');
+
+  const orientationModal = document.getElementById('orientation-modal');
+  const orientationForm = document.getElementById('orientation-form');
+  const addOrientationBtn = document.getElementById('add-orientation-btn');
+  const orientationClose = document.getElementById('orientation-close');
+  const orientationCancel = document.getElementById('orientation-cancel');
+  const orientationTableBody = document.getElementById('orientation-table-body');
+
+  const notesField = document.getElementById('notes-field');
+  const notesStatus = document.getElementById('notes-status');
+  const activeCallsCount = document.getElementById('active-calls-count');
+
+  // === Навигация по экранам ===
+  function showMainScreen() {
+    roleScreen.classList.remove('screen-active');
+    mainScreen.classList.add('screen-active');
+    currentRoleSpan.textContent = state.role ? `(${formatRole(state.role)})` : '';
+  }
+
+  function showRoleScreen() {
+    mainScreen.classList.remove('screen-active');
+    roleScreen.classList.add('screen-active');
+  }
+
+  function formatRole(code) {
+    switch (code) {
+      case 'dispatcher': return 'Диспетчер';
+      case 'citizen': return 'Гражданский';
+      case 'forces': return 'Силовые структуры';
+      case 'rescue': return 'Служба спасения';
+      default: return code;
+    }
+  }
+
+  roleContinueBtn.addEventListener('click', () => {
+    const value = roleSelect.value;
+    if (!value) {
+      alert('Пожалуйста, выберите роль.');
+      return;
+    }
+    state.role = value;
+    saveState();
+    showMainScreen();
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    if (confirm('Сбросить выбранную роль и вернуться к выбору?')) {
+      state.role = '';
+      saveState();
+      showRoleScreen();
+    }
+  });
+
+  // === Вызовы ===
+  callForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const street = callStreetInput.value.trim();
+    const desc = callDescInput.value.trim();
+    if (!street || !desc) {
+      alert('Заполните улицу и описание.');
+      return;
+    }
+
+    const call = {
+      id: state.nextCallId++,
+      street,
+      desc,
+      createdAt: new Date().toISOString(),
+      status: 'Новый',
+      resources: [],
+    };
+    state.calls.push(call);
+    callStreetInput.value = '';
+    callDescInput.value = '';
+    saveState();
+    renderCalls();
+    renderResources(); // чтобы обновились списки вызовов для ресурсов
+    renderCallsInResourceSelect();
+  });
+
+  function renderCalls() {
+    callsTableBody.innerHTML = '';
+    state.calls.forEach((call) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${call.id}</td>
+        <td>${escapeHtml(call.street)}</td>
+        <td>${formatDate(call.createdAt)}</td>
+        <td>${escapeHtml(call.desc)}</td>
+        <td>
+          <select class="input-select input-select-sm call-status" data-id="${call.id}">
+            <option value="Новый"${call.status === 'Новый' ? ' selected' : ''}>Новый</option>
+            <option value="В работе"${call.status === 'В работе' ? ' selected' : ''}>В работе</option>
+            <option value="Завершён"${call.status === 'Завершён' ? ' selected' : ''}>Завершён</option>
+          </select>
+        </td>
+        <td>${call.resources.length ? call.resources.join(', ') : '—'}</td>
+        <td>
+          <button class="btn btn-ghost btn-sm" data-action="delete-call" data-id="${call.id}">
+            Удалить
+          </button>
+        </td>
+      `;
+      callsTableBody.appendChild(tr);
+    });
+    updateActiveCallsCounter();
+  }
+
+  callsTableBody.addEventListener('change', (e) => {
+    if (e.target.classList.contains('call-status')) {
+      const id = Number(e.target.dataset.id);
+      const call = state.calls.find(c => c.id === id);
+      if (call) {
+        call.status = e.target.value;
+        saveState();
+      }
+    }
+  });
+
+  callsTableBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action="delete-call"]');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    if (!confirm('Удалить вызов #' + id + '?')) return;
+
+    // отвяжем ресурсы
+    state.resources.forEach(r => {
+      if (r.callId === id) r.callId = null;
+    });
+    state.calls = state.calls.filter(c => c.id !== id);
+    saveState();
+    renderCalls();
+    renderResources();
+    renderCallsInResourceSelect();
+  });
+
+  function renderCallsInResourceSelect() {
+    const selected = resCallSelect.value;
+    resCallSelect.innerHTML = '<option value="">— Нет —</option>';
+    state.calls.forEach(call => {
+      const opt = document.createElement('option');
+      opt.value = call.id;
+      opt.textContent = `#${call.id}: ${call.street}`;
+      resCallSelect.appendChild(opt);
+    });
+    if (selected) {
+      resCallSelect.value = selected;
+    }
+  }
+
+  function updateActiveCallsCounter() {
+    const count = state.calls.filter(c => c.status !== 'Завершён').length;
+    activeCallsCount.textContent = count;
+  }
+
+  // === Ресурсы ===
+  resForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = resNameInput.value.trim();
+    const app = resAppInput.value.trim();
+    if (!name) {
+      alert('Введите имя ресурса.');
+      return;
+    }
+
+    const res = {
+      id: state.nextResourceId++,
+      name,
+      app,
+      status: resStatusSelect.value,
+      callId: resCallSelect.value ? Number(resCallSelect.value) : null,
+    };
+    state.resources.push(res);
+    resNameInput.value = '';
+    resAppInput.value = '';
+    resStatusSelect.value = 'Свободен';
+    resCallSelect.value = '';
+
+    saveState();
+    renderResources();
+    renderCalls(); // обновить колонку "ресурсы" у вызовов
+  });
+
+  function renderResources() {
+    // сначала очистим привязки ресурсов в вызовах
+    state.calls.forEach(c => c.resources = []);
+
+    // построим список ресурсов в каждом вызове
+    state.resources.forEach(res => {
+      if (res.callId) {
+        const call = state.calls.find(c => c.id === res.callId);
+        if (call) {
+          call.resources.push(res.name);
+        } else {
+          res.callId = null; // защита от "битых" ссылок
+        }
+      }
+    });
+
+    resourcesTableBody.innerHTML = '';
+    state.resources.forEach(res => {
+      const callLabel = res.callId
+        ? '#' + res.callId
+        : '—';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escapeHtml(res.name)}</td>
+        <td>${escapeHtml(res.app || '')}</td>
+        <td>${escapeHtml(res.status)}</td>
+        <td>${callLabel}</td>
+        <td>
+          <button class="btn btn-ghost btn-sm" data-action="delete-resource" data-id="${res.id}">
+            Удалить
+          </button>
+        </td>
+      `;
+      resourcesTableBody.appendChild(tr);
+    });
+  }
+
+  resourcesTableBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action="delete-resource"]');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    if (!confirm('Удалить ресурс #' + id + '?')) return;
+
+    state.resources = state.resources.filter(r => r.id !== id);
+    saveState();
+    renderResources();
+    renderCalls();
+  });
+
+  // === Ориентировки ===
+  function openOrientationModal() {
+    orientationModal.classList.remove('hidden');
+  }
+
+  function closeOrientationModal() {
+    orientationModal.classList.add('hidden');
+    orientationForm.reset();
+  }
+
+  addOrientationBtn.addEventListener('click', openOrientationModal);
+  orientationClose.addEventListener('click', closeOrientationModal);
+  orientationCancel.addEventListener('click', closeOrientationModal);
+
+  orientationForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const type = document.getElementById('orientation-type').value;
+    const title = document.getElementById('orientation-title').value.trim();
+    const desc = document.getElementById('orientation-desc').value.trim();
+
+    if (!title || !desc) {
+      alert('Заполните заголовок и описание.');
+      return;
+    }
+
+    const item = {
+      id: state.nextOrientationId++,
+      type,
+      title,
+      desc,
+      active: true,
+    };
+    state.orientations.push(item);
+    saveState();
+    renderOrientations();
+    closeOrientationModal();
+  });
+
+  function renderOrientations() {
+    orientationTableBody.innerHTML = '';
+    state.orientations.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escapeHtml(item.type)}</td>
+        <td>${escapeHtml(item.title)}</td>
+        <td>${escapeHtml(item.desc)}</td>
+        <td>${item.active ? 'Да' : 'Нет'}</td>
+        <td>
+          <button class="btn btn-ghost btn-sm" data-action="toggle-orientation" data-id="${item.id}">
+            ${item.active ? 'Деактивировать' : 'Активировать'}
+          </button>
+          <button class="btn btn-ghost btn-sm" data-action="delete-orientation" data-id="${item.id}">
+            Удалить
+          </button>
+        </td>
+      `;
+      orientationTableBody.appendChild(tr);
+    });
+  }
+
+  orientationTableBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    const action = btn.dataset.action;
+    const item = state.orientations.find(o => o.id === id);
+    if (!item) return;
+
+    if (action === 'toggle-orientation') {
+      item.active = !item.active;
+    } else if (action === 'delete-orientation') {
+      if (!confirm('Удалить ориентировку?')) return;
+      state.orientations = state.orientations.filter(o => o.id !== id);
+    }
+    saveState();
+    renderOrientations();
+  });
+
+  // === Заметки ===
+  notesField.addEventListener('input', () => {
+    state.notes = notesField.value;
+    notesStatus.textContent = 'Сохранено';
+    saveState();
+    setTimeout(() => {
+      notesStatus.textContent = 'Загружено';
+    }, 600);
+  });
+
+  // === Утилиты ===
+  function formatDate(iso) {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    const pad = n => (n < 10 ? '0' + n : n);
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} ${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`;
+  }
+
+<section class="card">
+  <header class="card-header">
+    <h2>Карта</h2>
+  </header>
+  <div class="map-container">
+    <iframe
+      src="https://map.vzkn.ru/"
+      width="100%"
+      height="500"
+      style="border:0;"
+      allowfullscreen
+      loading="lazy">
+    </iframe>
+  </div>
+</section>
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Кнопка "Сгенерировать ИИ" — просто пример
+  document.getElementById('ai-generate-btn').addEventListener('click', () => {
+    const example = 'Сообщение: подозрительный объект возле подъезда';
+    callDescInput.value = example;
+    alert('Пример описания сгенерирован (фиктивно).');
+  });
+
+  // История — пока просто показывает количество завершённых
+  document.getElementById('history-btn').addEventListener('click', () => {
+    const finished = state.calls.filter(c => c.status === 'Завершён').length;
+    alert('Завершённых вызовов: ' + finished);
+  });
+
+  // === Инициализация ===
+  function init() {
+    // заполнить стартовые значения
+    notesField.value = state.notes || '';
+    roleSelect.value = state.role || '';
+
+    if (state.role) {
+      showMainScreen();
+    } else {
+      showRoleScreen();
+    }
+
+    renderCalls();
+    renderResources();
+    renderOrientations();
+    renderCallsInResourceSelect();
+  }
+
+  init();
+</script>
+</body>
+</html>
