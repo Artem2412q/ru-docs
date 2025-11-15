@@ -154,6 +154,62 @@ function initDispatcher() {
   if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
 
 
+  // Возможность перетаскивать панель-подсказку
+  function makePanelDraggable(panel) {
+    if (!panel) return;
+    const header = panel.querySelector('.modal-header');
+    if (!header) return;
+
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let startLeft = 0;
+    let startTop = 0;
+
+    function onMouseDown(e) {
+      isDragging = true;
+      panel.classList.add('dragging');
+      const rect = panel.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+      startX = e.clientX;
+      startY = e.clientY;
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    }
+
+    function onMouseMove(e) {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      let nextLeft = startLeft + dx;
+      let nextTop = startTop + dy;
+
+      const maxLeft = window.innerWidth - panel.offsetWidth - 16;
+      const maxTop = window.innerHeight - panel.offsetHeight - 16;
+      const minTop = 56; // чуть ниже топбара
+
+      if (nextLeft < 8) nextLeft = 8;
+      if (nextLeft > maxLeft) nextLeft = maxLeft;
+      if (nextTop < minTop) nextTop = minTop;
+      if (nextTop > maxTop) nextTop = maxTop;
+
+      panel.style.left = nextLeft + 'px';
+      panel.style.top = nextTop + 'px';
+    }
+
+    function onMouseUp() {
+      isDragging = false;
+      panel.classList.remove('dragging');
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    header.addEventListener('mousedown', onMouseDown);
+  }
+
+  makePanelDraggable(memoModal);
+
   function updateActiveCallsCounter() {
     if (!activeCallsCount) return;
     const count = state.calls.filter(c => c.status !== 'Завершён').length;

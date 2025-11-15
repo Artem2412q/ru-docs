@@ -914,3 +914,14 @@ body.theme-dark #memo-btn {
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
 }
+
+
+/* Перемещаемые подсказки / панели */
+.memo-panel .modal-header {
+  cursor: move;
+}
+
+.memo-panel.dragging {
+  user-select: none;
+  cursor: move;
+}
