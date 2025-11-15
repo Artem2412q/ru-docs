@@ -366,3 +366,146 @@ body::before {
   height: 100%;
   border: none;
 }
+/* Ролевые представления */
+.role-view {
+  display: none;
+}
+
+.role-view.role-view-active {
+  display: block;
+}
+
+/* Карты */
+.map-container {
+  width: 100%;
+  height: 400px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.map-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Сетка карточек (персонажи / автомобили) */
+.cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Карточка персонажа */
+.person-card {
+  width: 160px;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.person-photo-stub {
+  width: 100%;
+  height: 160px;
+  background: #607d8b;
+  color: #fff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.person-name {
+  font-weight: 600;
+}
+
+.person-dob {
+  font-size: 12px;
+  color: #546e7a;
+}
+
+/* Карточка автомобиля */
+.vehicle-card {
+  width: 210px;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.vehicle-make-model {
+  font-weight: 600;
+}
+
+.vehicle-plate {
+  font-size: 14px;
+}
+
+.vehicle-owner {
+  font-size: 12px;
+  color: #546e7a;
+}
+
+/* Флаг */
+.flag-label {
+  display: inline-block;
+  background: #c62828;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* Карточка добавления */
+.add-card {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #455a64;
+}
+
+.add-card-icon {
+  font-size: 32px;
+}
+
+/* Большие модалки (персонаж/авто/инфо) */
+.modal-large {
+  max-width: 600px;
+}
+
+.person-photo-placeholder {
+  border-radius: 6px;
+  border: 2px dashed #cfd8dc;
+  padding: 20px;
+  margin-bottom: 12px;
+}
+
+.person-photo-inner {
+  text-align: center;
+  color: #607d8b;
+}
+
+.person-photo-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+/* Блок информации об авто */
+.vehicle-info-box {
+  background: #eceff1;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
