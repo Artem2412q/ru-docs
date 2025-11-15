@@ -871,3 +871,46 @@ body.theme-dark .phonetic-table td {
 body.theme-dark .data-table tbody tr:hover td {
   background: rgba(69, 90, 100, 0.55);
 }
+
+
+/* Плавающая боковая памятка */
+.memo-panel {
+  position: fixed;
+  top: 88px;
+  left: 32px;
+  width: 380px;
+  max-width: 32vw;
+  bottom: 32px;
+  z-index: 60;
+}
+
+.memo-panel.hidden {
+  display: none;
+}
+
+/* Внутри используем уже готовые .modal / .memo-body стили */
+
+body.theme-dark .memo-panel .modal {
+  background: #263238;
+}
+
+/* Сделаем значок «?» заметнее */
+#memo-btn {
+  border-radius: 999px;
+  padding-inline: 10px;
+  font-weight: 600;
+  background: #ffc107;
+  color: #263238;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+body.theme-dark #memo-btn {
+  background: #ffd54f;
+  color: #111;
+  box-shadow: 0 0 0 1px rgba(255, 243, 224, 0.3), 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+#memo-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}

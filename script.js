@@ -138,6 +138,22 @@ function initDispatcher() {
 
   const activeCallsCount = document.getElementById('active-calls-count');
 
+  // Памятка по радиообмену
+  function openMemo() {
+    if (!memoModal) return;
+    memoModal.classList.remove('hidden');
+  }
+
+  function closeMemo() {
+    if (!memoModal) return;
+    memoModal.classList.add('hidden');
+  }
+
+  if (memoBtn) memoBtn.addEventListener('click', openMemo);
+  if (memoClose) memoClose.addEventListener('click', closeMemo);
+  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
+
+
   function updateActiveCallsCounter() {
     if (!activeCallsCount) return;
     const count = state.calls.filter(c => c.status !== 'Завершён').length;
@@ -167,21 +183,7 @@ function initDispatcher() {
     callDescInput.value = '';
     saveState();
   
-  // Памятка по радиообмену
-  function openMemo() {
-    if (!memoModal) return;
-    memoModal.classList.remove('hidden');
-  }
-
-  function closeMemo() {
-    if (!memoModal) return;
-    memoModal.classList.add('hidden');
-  }
-
-  if (memoBtn) memoBtn.addEventListener('click', openMemo);
-  if (memoClose) memoClose.addEventListener('click', closeMemo);
-  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
-
+  
   renderCalls();
     renderResources();
     renderCallsInResourceSelect();
