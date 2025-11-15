@@ -2,26 +2,25 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Ёлка — выбор роли</title>
+  <title>Выбор роли — Ёлка</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 </head>
-<body class="theme-dark">
-<div class="app-root role-root">
-  <section class="screen screen-active">
+<body class="theme-light">
+<div class="app-root">
+
+  <section id="role-screen" class="screen screen-active">
     <div class="role-card">
-      <div class="logo-line">
-        <div class="topbar-logo"></div>
-        <div class="logo-text">Ё л к а</div>
-      </div>
+      <div class="logo-text">Ё л к а</div>
 
       <label class="field-label" for="role-select">Выберите роль</label>
       <div class="select-wrapper">
         <select id="role-select" class="input-select">
           <option value="">Выберите роль</option>
-          <option value="dispatcher">Диспетчер</option>
-          <option value="citizen">Гражданский</option>
-          <option value="forces">Силовые структуры</option>
-          <option value="rescue">Экстренные службы</option>
+          <option value="dispatcher.html">Диспетчер</option>
+          <option value="citizen.html">Гражданский</option>
+          <option value="forces.html">Силовые структуры</option>
+          <option value="rescue.html">Экстренные службы</option>
         </select>
       </div>
 
@@ -30,8 +29,19 @@
       </button>
     </div>
   </section>
+
 </div>
 
-<script src="script.js"></script>
+<script>
+  document.getElementById('role-continue').addEventListener('click', function () {
+    var select = document.getElementById('role-select');
+    var value = select.value;
+    if (!value) {
+      alert('Пожалуйста, выберите роль.');
+      return;
+    }
+    window.location.href = value;
+  });
+</script>
 </body>
 </html>

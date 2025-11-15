@@ -2,34 +2,178 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Ёлка — Гражданский</title>
+  <title>Гражданский — Ёлка</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <script defer src="script.js"></script>
 </head>
-<body class="theme-dark">
-<div class="app-root" id="citizen-root">
-  <header class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-logo"></div>
-      <span class="topbar-title">Ё л к а</span>
-      <span class="topbar-role">(Гражданский)</span>
-    </div>
-    <div class="topbar-right">
-      <button class="icon-btn" id="theme-toggle" title="Переключить тему">☾</button>
-      <button class="icon-btn" id="go-home-btn" title="К выбору роли">⟲ Роли</button>
-    </div>
-  </header>
+<body class="theme-light" data-page="citizen">
+<div class="app-root">
+  <section class="screen screen-active">
+    <header class="topbar">
+      <div class="topbar-left">
+        <svg class="logo-tree" width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L6 10h4l-4 6h12l-4-6h4z"/>
+          <rect x="10" y="18" width="4" height="4" />
+        </svg>
+        <span class="topbar-title">Ё л к а</span>
+        <span class="topbar-role">(Гражданский)</span>
+      </div>
+      <div class="topbar-right">
+        <button id="theme-toggle" class="icon-btn" title="Тема">🌙</button>
+        <button class="icon-btn" id="logout-btn" title="Выход">⟲ Выход</button>
+      </div>
+    </header>
 
-  <main class="main-layout">
-    <section class="card">
-      <header class="card-header">
-        <h2>Гражданский</h2>
-      </header>
-      <p class="muted">
-        Интерфейс для роли «Гражданский» будет настроен позже. Сейчас доступен только экран диспетчера.
-      </p>
-    </section>
-  </main>
+    <main class="main-layout">
+      <!-- Персонажи -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Мои персонажи <span id="persons-count" class="muted"></span></h2>
+          <button id="add-person-btn" class="btn btn-primary">Создать персонажа</button>
+        </header>
+        <div id="persons-grid" class="cards-grid"></div>
+      </section>
+
+      <!-- Автомобили -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Мои автомобили <span id="vehicles-count" class="muted"></span></h2>
+          <button id="add-vehicle-btn" class="btn btn-primary">Добавить автомобиль</button>
+        </header>
+        <div id="vehicles-grid" class="cards-grid"></div>
+      </section>
+    </main>
+  </section>
+
+  <!-- Модалка регистрации персонажа -->
+  <div id="person-modal" class="modal-backdrop hidden">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h2>Регистрация персонажа</h2>
+        <button id="person-close" class="icon-btn">&times;</button>
+      </div>
+      <form id="person-form" class="modal-body">
+        <div class="person-photo-placeholder">
+          <div class="person-photo-inner">
+            <div class="person-photo-icon">📷</div>
+            <div>Вставьте фото (Ctrl+V)</div>
+            <div class="muted">(Рекомендуемый размер: 800x1000px)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="person-lastname">Фамилия *</label>
+          <input id="person-lastname" class="input-text" type="text" required />
+        </div>
+        <div class="form-group">
+          <label for="person-firstname">Имя *</label>
+          <input id="person-firstname" class="input-text" type="text" required />
+        </div>
+        <div class="form-group">
+          <label for="person-middlename">Отчество</label>
+          <input id="person-middlename" class="input-text" type="text" />
+        </div>
+        <div class="form-group">
+          <label for="person-dob">Дата рождения *</label>
+          <input id="person-dob" class="input-text" type="date" required />
+        </div>
+        <div class="form-group">
+          <label for="person-flag">Флаг (опционально)</label>
+          <textarea id="person-flag" class="input-textarea"
+            placeholder="Детали флага. Флаги показываются сотрудникам правоохранительных органов при поиске."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="person-cancel" class="btn btn-secondary">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модалка регистрации автомобиля -->
+  <div id="vehicle-modal" class="modal-backdrop hidden">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h2>Регистрация автомобиля</h2>
+        <button id="vehicle-close" class="icon-btn">&times;</button>
+      </div>
+      <form id="vehicle-form" class="modal-body">
+        <div class="form-group">
+          <label for="vehicle-owner-type">Тип владельца *</label>
+          <select id="vehicle-owner-type" class="input-select" required>
+            <option value="person">Персонаж</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="vehicle-person">Персонаж *</label>
+          <select id="vehicle-person" class="input-select" required></select>
+        </div>
+        <div class="form-group">
+          <label for="vehicle-make">Марка *</label>
+          <input id="vehicle-make" class="input-text" type="text" required />
+        </div>
+        <div class="form-group">
+          <label for="vehicle-model">Модель *</label>
+          <input id="vehicle-model" class="input-text" type="text" required />
+        </div>
+        <div class="form-group">
+          <label for="vehicle-year">Год выпуска *</label>
+          <input id="vehicle-year" class="input-text" type="number" required />
+        </div>
+        <div class="form-group">
+          <label for="vehicle-color">Цвет *</label>
+          <input id="vehicle-color" class="input-text" type="text" required />
+        </div>
+        <div class="form-group">
+          <label for="vehicle-plate-type">Тип номера *</label>
+          <select id="vehicle-plate-type" class="input-select" required>
+            <option value="Стандартный (A123BE12)">Стандартный (A123BE12)</option>
+            <option value="Такси (AB1234)">Такси (AB1234)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="vehicle-plate">Гос. номер *</label>
+          <input id="vehicle-plate" class="input-text" type="text" required />
+          <div class="muted">
+            Формат: A123BE12 для стандартного, AB12345 для такси (только A, B, E, K, M, H, O, P, C, T, Y, X).
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="vehicle-vin">VIN</label>
+          <input id="vehicle-vin" class="input-text" type="text" />
+        </div>
+        <div class="form-group">
+          <label for="vehicle-flag">Флаг (опционально)</label>
+          <textarea id="vehicle-flag" class="input-textarea"
+            placeholder="Детали флага. Флаги показываются сотрудникам правоохранительных органов при поиске."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="vehicle-cancel" class="btn btn-secondary">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модалка информации об автомобиле -->
+  <div id="vehicle-info-modal" class="modal-backdrop hidden">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h2 id="vehicle-info-title">Информация об автомобиле</h2>
+        <button id="vehicle-info-close" class="icon-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="vehicle-info-box" id="vehicle-info-box"></div>
+        <div class="modal-footer">
+          <button type="button" id="vehicle-info-ok" class="btn btn-secondary">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<script src="script.js"></script>
 </body>
 </html>

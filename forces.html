@@ -2,34 +2,40 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Ёлка — Силовые структуры</title>
+  <title>Силовые структуры — Ёлка</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <script defer src="script.js"></script>
 </head>
-<body class="theme-dark">
-<div class="app-root" id="forces-root">
-  <header class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-logo"></div>
-      <span class="topbar-title">Ё л к а</span>
-      <span class="topbar-role">(Силовые структуры)</span>
-    </div>
-    <div class="topbar-right">
-      <button class="icon-btn" id="theme-toggle" title="Переключить тему">☾</button>
-      <button class="icon-btn" id="go-home-btn" title="К выбору роли">⟲ Роли</button>
-    </div>
-  </header>
+<body class="theme-light" data-page="forces">
+<div class="app-root">
+  <section class="screen screen-active">
+    <header class="topbar">
+      <div class="topbar-left">
+        <svg class="logo-tree" width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L6 10h4l-4 6h12l-4-6h4z"/>
+          <rect x="10" y="18" width="4" height="4" />
+        </svg>
+        <span class="topbar-title">Ё л к а</span>
+        <span class="topbar-role">(Силовые структуры)</span>
+      </div>
+      <div class="topbar-right">
+        <button id="theme-toggle" class="icon-btn" title="Тема">🌙</button>
+        <button class="icon-btn" id="logout-btn" title="Выход">⟲ Выход</button>
+      </div>
+    </header>
 
-  <main class="main-layout">
-    <section class="card">
-      <header class="card-header">
-        <h2>Силовые структуры</h2>
-      </header>
-      <p class="muted">
-        Интерфейс для роли «Силовые структуры» будет настроен позже. Сейчас доступен только экран диспетчера.
-      </p>
-    </section>
-  </main>
+    <main class="main-layout">
+      <section class="card">
+        <header class="card-header">
+          <h2>Раздел в разработке</h2>
+        </header>
+        <p>Интерфейс для роли «Силовые структуры» пока в разработке. Данные о вызовах,
+        персонажах и автомобилях будут доступны позже на основе общей базы (localStorage).</p>
+      </section>
+    </main>
+  </section>
 </div>
-<script src="script.js"></script>
 </body>
 </html>
