@@ -2,35 +2,253 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Ёлка — выбор роли</title>
+  <title>DRIVE2.SECTOR — оперативная справка</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
 </head>
 <body>
-<div class="app-root role-screen-root">
-  <section id="role-screen" class="screen screen-active">
-    <div class="role-card">
-      <div class="logo-line">
-        <div class="logo-dot logo-dot-light">▲</div>
-        <div class="logo-text logo-text-dark">Ё л к а</div>
+<div class="page-root">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" class="logo-svg">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#22c55e"/>
+              <stop offset="1" stop-color="#0f766e"/>
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="url(#g)"/>
+          <path d="M12 27L18 11L24 27L20 24H16Z" fill="#ecfdf5"/>
+        </svg>
       </div>
-
-      <label class="field-label" for="role-select">Выберите роль</label>
-      <div class="select-wrapper">
-        <select id="role-select" class="input-select">
-          <option value="">Выберите роль</option>
-          <option value="dispatcher">Диспетчер</option>
-          <option value="citizen">Гражданский</option>
-          <option value="forces">Силовые структуры</option>
-          <option value="rescue">Службы спасения</option>
-        </select>
+      <div class="logo-text">
+        <span class="logo-title">DRIVE2.SECTOR</span>
+        <span class="logo-sub">оперативная справка</span>
       </div>
-
-      <button id="role-continue" class="btn btn-primary">
-        Продолжить
+    </div>
+    <div class="topbar-right">
+      <button class="pill-btn" data-open-dossier>
+        Оперативная сводка
       </button>
     </div>
-  </section>
+  </header>
+
+  <main class="main-layout">
+    <section class="hero">
+      <div class="hero-text">
+        <h1>drive2.ru — больше, чем авто-комьюнити</h1>
+        <p>
+          Снаружи — крупнейшая площадка для автолюбителей. Внутри — отлаженный синдикат,
+          контролирующий легальный рынок и ночные трассы города.
+        </p>
+        <div class="hero-actions">
+          <button class="btn primary" data-scroll-target="#public-layer">
+            Публичный уровень
+          </button>
+          <button class="btn ghost" data-open-dossier>
+            Теневое ядро
+          </button>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-card">
+          <span class="stat-label">Участников сообщества</span>
+          <span class="stat-value">120&nbsp;000+</span>
+          <span class="stat-footnote">официально зарегистрировано</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Ночные мероприятия</span>
+          <span class="stat-value">40+</span>
+          <span class="stat-footnote">в месяц по данным наблюдения</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Доля рынка</span>
+          <span class="stat-value">≈ 70%</span>
+          <span class="stat-footnote">легального тюнинга и сервиса</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="public-layer" class="section-grid">
+      <article class="info-card">
+        <div class="info-header">
+          <h2>Кто мы снаружи</h2>
+          <span class="chip chip-green">Фасад</span>
+        </div>
+        <p>
+          Публично <strong>drive2.ru</strong> — это открытое автомобильное сообщество:
+          бортовые журналы, обзоры, фестивали тюнинга и партнёрские автосервисы.
+        </p>
+        <ul class="info-list">
+          <li>рекрутинг талантливых пилотов и механиков;</li>
+          <li>легализация средств через рекламу и мероприятия;</li>
+          <li>формирование образа «просто автоклуба».</li>
+        </ul>
+      </article>
+
+      <article class="info-card">
+        <div class="info-header">
+          <h2>Кто мы внутри</h2>
+          <span class="chip chip-red">Ядро</span>
+        </div>
+        <p>
+          Закрытое ядро — это иерархический клуб, который курирует нелегальные гонки,
+          распределяет ставки и контролирует ключевые сервисы города.
+        </p>
+        <p class="info-note">
+          Доступ только по рекомендациям и после многоступенчатой проверки.
+        </p>
+      </article>
+
+      <article class="info-card">
+        <div class="info-header">
+          <h2>Иерархия</h2>
+          <span class="chip">Структура</span>
+        </div>
+        <ol class="info-list">
+          <li><strong>Верхушка</strong> — анонимный Совет и финансовые контуры.</li>
+          <li><strong>Организаторы</strong> — тактическое управление мероприятиями.</li>
+          <li><strong>Проверенные</strong> — гонщики, механики, споттеры.</li>
+          <li><strong>Кандидаты</strong> — испытательный слой под наблюдением.</li>
+        </ol>
+      </article>
+
+      <article class="info-card">
+        <div class="info-header">
+          <h2>Направления</h2>
+          <span class="chip chip-blue">Активность</span>
+        </div>
+        <p>
+          Ночной дрэг, спринты по кольцу, дрифт на парковках и в порту —
+          всё это завязано на одну сеть контактов, ставок и покрытий.
+        </p>
+        <button class="link-btn" data-open-dossier>
+          Смотреть оперативную раскладку &rarr;
+        </button>
+      </article>
+    </section>
+
+    <section class="section-grid section-muted">
+      <article class="info-card wide">
+        <div class="info-header">
+          <h2>Финансовые потоки</h2>
+          <span class="chip chip-amber">Доходы / Расходы</span>
+        </div>
+        <div class="columns-2">
+          <div>
+            <h3>Откуда деньги</h3>
+            <ul class="info-list">
+              <li>ставки и бай-ин на нелегальных гонках;</li>
+              <li>вступительные и членские взносы;</li>
+              <li>«инвестиции» в пилотов с долей от выигрышей;</li>
+              <li>реклама и билеты на фестивали.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Куда уходят</h3>
+            <ul class="info-list">
+              <li>подкуп и «решение вопросов» на уровне города;</li>
+              <li>инфраструктура: сайт, связь, разведка, техника;</li>
+              <li>призовые фонды и чёрная касса;</li>
+              <li>личная прибыль верхушки.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- ОПЕРАТИВНОЕ ОКНО С ПОЛНЫМ ТЕКСТОМ -->
+  <div id="dossier-backdrop" class="dossier-backdrop hidden" aria-hidden="true">
+    <section class="dossier-panel" role="dialog" aria-modal="true" aria-labelledby="dossier-title">
+      <header class="dossier-header">
+        <div>
+          <h2 id="dossier-title">Drive2.ru — оперативная справка</h2>
+          <p class="dossier-subtitle">
+            Внутренний документ. Не для широкой публикации.
+          </p>
+        </div>
+        <button id="dossier-close" class="icon-btn" type="button" aria-label="Закрыть">&times;</button>
+      </header>
+
+      <div class="dossier-body">
+        <section>
+          <h3>1.0. Общая характеристика</h3>
+          <p>
+            «Drive2.ru» функционирует как гибридная структура с двумя контурами: публичный фасад и теневое ядро.
+          </p>
+          <h4>Публичный уровень (Фасад)</h4>
+          <ul>
+            <li><strong>Рекрутинг:</strong> постоянный приток новых людей через авто-сообщество.</li>
+            <li><strong>Легализация доходов:</strong> реклама, платные услуги, фестивали.</li>
+            <li><strong>Имидж:</strong> образ «простого автоклуба», осложняющий расследования.</li>
+          </ul>
+          <h4>Теневой уровень (Ядро)</h4>
+          <p>
+            Закрытый клуб с жёсткой иерархией, генерирующий основную прибыль и влияние.
+          </p>
+        </section>
+
+        <section>
+          <h3>2.0. Иерархия и условия членства</h3>
+          <h4>Требования к кандидатам</h4>
+          <ul>
+            <li>Возраст от 22 лет.</li>
+            <li>Автомобиль не старше 2015 года, в идеальном состоянии.</li>
+            <li>Рекомендации минимум двух действующих членов ядра.</li>
+          </ul>
+          <h4>Структура</h4>
+          <ul>
+            <li><strong>Верхушка (Совет):</strong> анонимные лидеры, контролирующие стратегию.</li>
+            <li><strong>Организаторы:</strong> отвечают за мероприятия, ставки и безопасность.</li>
+            <li><strong>Проверенные:</strong> гонщики, механики, споттеры, допущенные к ядру.</li>
+            <li><strong>Кандидаты:</strong> новички на испытательном сроке.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>3.0. Направления деятельности</h3>
+          <h4>Легальная деятельность (прикрытие)</h4>
+          <ul>
+            <li>портал drive2.ru с бортовыми журналами и медиа-контентом;</li>
+            <li>официальные фестивали и выставки тюнинга как витрина кадров;</li>
+            <li>медиа-повестка, мягко дискредитирующая конкурентов и рейды полиции.</li>
+          </ul>
+          <h4>Нелегальная деятельность</h4>
+          <ul>
+            <li><strong>Дрэг-рейсинг:</strong> взлётные полосы, промзоны, закрытые прямые.</li>
+            <li><strong>Спринт:</strong> ночные маршруты по кольцам и развязкам города.</li>
+            <li><strong>Дрифт:</strong> крытые парковки ТЦ, серпантины, портовые площадки.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>4.0. Финансовые потоки</h3>
+          <h4>Источник доходов</h4>
+          <ul>
+            <li>ставки и организационный сбор (15–20% банка);</li>
+            <li>вступительные/членские взносы и бай-ин серий гонок;</li>
+            <li>инвестиции в гонщиков с долей до 50% от выигрышей;</li>
+            <li>легальный бизнес: реклама, платные аккаунты, билеты.</li>
+          </ul>
+          <h4>Основные расходы</h4>
+          <ul>
+            <li>коррупция и прикрытие на уровне города и ведомств;</li>
+            <li>инфраструктура: сайт, связь, разведка, техника;</li>
+            <li>призовые фонды и «чёрная касса»;</li>
+            <li>личные выплаты членам Совета.</li>
+          </ul>
+        </section>
+      </div>
+
+      <footer class="dossier-footer">
+        <span class="dossier-tag">Документ условный. Реальной организации не описывает.</span>
+        <button id="dossier-close-bottom" class="btn secondary" type="button">Закрыть</button>
+      </footer>
+    </section>
+  </div>
 </div>
-<script src="script.js"></script>
 </body>
 </html>
