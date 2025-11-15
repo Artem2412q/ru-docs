@@ -5,198 +5,158 @@
   <title>Ёлка — Диспетчер</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="theme-dark">
-<div class="app-root" id="dispatcher-root">
+<body>
+<div class="app-root">
   <header class="topbar">
     <div class="topbar-left">
-      <div class="topbar-logo"></div>
+      <div class="topbar-logo">▲</div>
       <span class="topbar-title">Ё л к а</span>
-      <span id="current-role" class="topbar-role">(Диспетчер)</span>
+      <span class="badge-role">(Диспетчер)</span>
     </div>
     <div class="topbar-right">
-      <button class="icon-btn" id="theme-toggle" title="Переключить тему">☾</button>
-      <button class="icon-btn font-btn" data-font="-1" title="Уменьшить шрифт">A−</button>
-      <button class="icon-btn font-btn" data-font="1" title="Увеличить шрифт">A+</button>
-      <span class="counter" title="Число активных вызовов" id="active-calls-count">0</span>
-      <button class="icon-btn" id="go-home-btn" title="К выбору роли">⟲ Роли</button>
+      <button class="icon-btn" id="theme-toggle" title="Тема">☾</button>
+      <button class="icon-btn" id="font-dec" title="Меньше шрифт">A−</button>
+      <button class="icon-btn" id="font-inc" title="Больше шрифт">A+</button>
+      <span class="counter" id="active-calls-count" title="Активные вызовы">0</span>
+      <button class="icon-btn" id="back-to-roles" title="Роли">↻ Роли</button>
     </div>
   </header>
 
-  <main class="main-layout main-layout-columns">
-    <div class="main-column main-column-wide">
+  <main class="main-layout dispatcher-layout">
+    <!-- Левая колонка: памятка -->
+    <section class="card memo-card">
+      <header class="card-header">
+        <h2>Памятка: политика радиопередач</h2>
+      </header>
+      <div class="memo-scroll">
+        <h3>Политика радиопередач</h3>
+        <p>
+          Данная памятка регламентирует работу ЕДДС и дополняет взаимодействие наземных
+          экстренных служб с дежурным диспетчером.
+        </p>
+        <p>
+          ЕДДС контролирует радиоэфир и действия экипажей во время своей смены на
+          экстренных радиостанциях и в системе «Ёлка».
+        </p>
+
+        <h4>Полномочия дежурного диспетчера</h4>
+        <ul>
+          <li>Принимать и фиксировать экстренные вызовы по линии 112 и радиоэфиру;</li>
+          <li>Направлять и отзывать экипажи, в том числе областные службы;</li>
+          <li>Создавать и завершать ориентировки и рейды;</li>
+          <li>Вводить режим радиомолчания и приоритетных передач;</li>
+          <li>Давать замечания по радиообмену и отключать нарушителей от эфира по согласованию.</li>
+        </ul>
+
+        <h4>Фонетический алфавит (пример)</h4>
+        <table class="memo-table">
+          <thead>
+          <tr>
+            <th>Буква</th><th>Пример</th>
+            <th>Буква</th><th>Пример</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr><td>А</td><td>Анна / Антон</td><td>Л</td><td>Леонид</td></tr>
+          <tr><td>Б</td><td>Борис</td><td>М</td><td>Михаил / Мария</td></tr>
+          <tr><td>В</td><td>Василий</td><td>Н</td><td>Николай</td></tr>
+          <tr><td>Г</td><td>Галина</td><td>О</td><td>Ольга</td></tr>
+          <tr><td>Д</td><td>Дмитрий</td><td>П</td><td>Павел</td></tr>
+          <tr><td>Е</td><td>Елена</td><td>Р</td><td>Роман</td></tr>
+          <tr><td>Ж</td><td>Женя</td><td>С</td><td>Сергей</td></tr>
+          <tr><td>З</td><td>Зинаида</td><td>Т</td><td>Тамара / Татьяна</td></tr>
+          <tr><td>И</td><td>Иван</td><td>У</td><td>Ульяна</td></tr>
+          <tr><td>Й</td><td>Иван краткий</td><td>Ф</td><td>Фёдор</td></tr>
+          <tr><td>К</td><td>Константин</td><td>Х</td><td>Харитон</td></tr>
+          <tr><td>Ц</td><td>Центр</td><td>Ч</td><td>Человек</td></tr>
+          <tr><td>Ш</td><td>Шура</td><td>Щ</td><td>Щука</td></tr>
+          <tr><td>Ъ</td><td>Твёрдый знак</td><td>Ы</td><td>–</td></tr>
+          <tr><td>Ь</td><td>Мягкий знак</td><td>Э</td><td>Эдуард</td></tr>
+          <tr><td>Ю</td><td>Юрий</td><td>Я</td><td>Яков</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Правая колонка -->
+    <div class="dispatcher-main">
+      <!-- Карта -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Карта</h2>
+        </header>
+        <div class="map-container">
+          <iframe src="https://map.vzkn.ru/" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </section>
+
       <!-- Активные вызовы -->
       <section class="card">
         <header class="card-header">
           <div class="card-header-left">
             <h2>Активные вызовы</h2>
-            <span class="muted">Создание и управление текущими инцидентами</span>
           </div>
           <div class="card-header-right">
-            <button class="btn btn-secondary btn-sm" id="history-btn">История</button>
+            <button class="btn btn-ghost btn-sm" id="history-btn">⟳ История</button>
           </div>
         </header>
 
-        <form id="call-form" class="form-grid form-grid-calls">
+        <form id="call-form" class="form-grid">
           <div class="form-group">
             <label for="call-street">Улица *</label>
-            <input id="call-street" class="input-text" type="text" placeholder="Например, Магистральное шоссе 74" required />
+            <input id="call-street" class="input-text" type="text" placeholder="Введите улицу" required />
           </div>
           <div class="form-group">
             <label for="call-desc">Описание *</label>
-            <input id="call-desc" class="input-text" type="text" placeholder="Кратко опишите ситуацию" required />
+            <input id="call-desc" class="input-text" type="text" placeholder="Введите описание" required />
           </div>
           <div class="form-group">
             <label for="call-priority">Приоритет</label>
             <select id="call-priority" class="input-select">
               <option value="Обычный">Обычный</option>
               <option value="Высокий">Высокий</option>
-              <option value="Критический">Критический</option>
+              <option value="Экстренный">Экстренный</option>
             </select>
           </div>
           <div class="form-group form-group-buttons">
             <button type="submit" class="btn btn-primary">Создать вызов</button>
+            <button type="button" class="btn btn-secondary" id="ai-generate-btn">Сгенерировать ИИ</button>
           </div>
         </form>
 
         <div class="table-wrapper">
           <table class="data-table">
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>Улица</th>
-                <th>Описание</th>
-                <th>Приоритет</th>
-                <th>Статус</th>
-                <th>Ресурсы</th>
-                <th>Действия</th>
-              </tr>
+            <tr>
+              <th>ID вызова</th>
+              <th>Улица</th>
+              <th>Описание</th>
+              <th>Приоритет</th>
+              <th>Статус</th>
+              <th>Ресурсы</th>
+              <th>Действия</th>
+            </tr>
             </thead>
             <tbody id="calls-table-body"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- Карта -->
-      <section class="card card-map">
-        <header class="card-header card-header-map">
-          <div class="card-header-left">
-            <h2>Карта города</h2>
-            <span class="muted">Учебный макет города «Невский»</span>
-          </div>
-          <div class="map-toolbar">
-            <button class="icon-btn map-zoom" data-map-zoom="out" title="Отдалить">−</button>
-            <span id="map-scale-label" class="map-scale-label">100%</span>
-            <button class="icon-btn map-zoom" data-map-zoom="in" title="Приблизить">+</button>
-          </div>
-        </header>
-
-        <div id="elka-map" class="elka-map">
-          <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="map-bg" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#020617"/>
-                <stop offset="1" stop-color="#020617"/>
-              </linearGradient>
-              <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#0b2738"/>
-                <stop offset="1" stop-color="#020617"/>
-              </linearGradient>
-              <style>
-                .map-water { fill: url(#water); }
-                .map-block { fill: #020617; stroke: #111827; stroke-width: 2; }
-                .map-road-main { stroke: #e5e7eb; stroke-width: 10; fill: none; stroke-linecap: round;}
-                .map-road-secondary { stroke: #9ca3af; stroke-width: 6; fill:none; stroke-linecap:round;}
-                .map-building { fill:#020617; stroke:#4b5563; stroke-width:1.4;}
-                .map-label-road { fill:#e5e7eb; font-size:16px; font-family:system-ui, -apple-system, BlinkMacSystemFont,"Segoe UI"; letter-spacing:1px;}
-                .map-label-house { fill:#9ca3af; font-size:11px; font-family:system-ui; }
-                .map-park { fill:#064e3b; }
-              </style>
-            </defs>
-
-            <rect width="1200" height="800" fill="url(#map-bg)" />
-
-            <g id="map-content">
-              <rect x="40" y="80" width="1120" height="320" class="map-water" rx="40"/>
-
-              <rect x="80"  y="440" width="460" height="280" class="map-block"/>
-              <rect x="540" y="440" width="580" height="280" class="map-block"/>
-              <rect x="80"  y="120" width="260" height="240" class="map-block"/>
-              <rect x="360" y="120" width="280" height="240" class="map-block"/>
-              <rect x="660" y="120" width="460" height="240" class="map-block"/>
-
-              <path class="map-road-main" d="M 60 620 L 520 620 L 880 700 L 1160 700" />
-              <path class="map-road-main" d="M 120 520 L 1080 520" />
-              <path class="map-road-main" d="M 120 260 L 1080 260" />
-
-              <path class="map-road-secondary" d="M 120 480 L 120 700" />
-              <path class="map-road-secondary" d="M 300 440 L 300 720" />
-              <path class="map-road-secondary" d="M 560 440 L 560 720" />
-              <path class="map-road-secondary" d="M 860 440 L 860 720" />
-              <path class="map-road-secondary" d="M 120 140 L 120 360" />
-              <path class="map-road-secondary" d="M 380 120 L 380 360" />
-              <path class="map-road-secondary" d="M 680 120 L 680 360" />
-              <path class="map-road-secondary" d="M 960 120 L 960 360" />
-
-              <g>
-                <rect x="140" y="560" width="60" height="40" class="map-building"/>
-                <text x="150" y="588" class="map-label-house">74</text>
-
-                <rect x="230" y="560" width="60" height="40" class="map-building"/>
-                <text x="240" y="588" class="map-label-house">76</text>
-
-                <rect x="320" y="560" width="60" height="40" class="map-building"/>
-                <text x="330" y="588" class="map-label-house">78</text>
-
-                <rect x="410" y="560" width="60" height="40" class="map-building"/>
-                <text x="420" y="588" class="map-label-house">80</text>
-              </g>
-
-              <g>
-                <rect x="720" y="220" width="50" height="30" class="map-building"/>
-                <text x="726" y="240" class="map-label-house">27</text>
-
-                <rect x="790" y="220" width="50" height="30" class="map-building"/>
-                <text x="796" y="240" class="map-label-house">29</text>
-
-                <rect x="860" y="220" width="50" height="30" class="map-building"/>
-                <text x="866" y="240" class="map-label-house">31</text>
-
-                <rect x="930" y="220" width="50" height="30" class="map-building"/>
-                <text x="936" y="240" class="map-label-house">32</text>
-              </g>
-
-              <text x="260" y="610" class="map-label-road">МАГИСТРАЛЬНОЕ ШОССЕ</text>
-              <text x="260" y="252" class="map-label-road">ФРАНЦУЗСКАЯ НАБЕРЕЖНАЯ</text>
-              <text x="260" y="512" class="map-label-road">ПЕТРОВСКОЕ ШОССЕ</text>
-              <text x="120" y="160" class="map-label-road" transform="rotate(-90 120 160)">НЕВСКИЙ ПРОСПЕКТ</text>
-              <text x="960" y="160" class="map-label-road" transform="rotate(-90 960 160)">БЕГОВАЯ</text>
-              <text x="420" y="180" class="map-label-road">НАБЕРЕЖНАЯ Р. ФОНТАНКИ</text>
-
-              <rect x="880" y="460" width="180" height="120" class="map-park"/>
-              <text x="890" y="500" class="map-label-road" style="font-size:13px;">ГКБ №2</text>
-            </g>
-          </svg>
-        </div>
-      </section>
-    </div>
-
-    <div class="main-column main-column-narrow">
-      <!-- Ресурсы -->
+      <!-- Список ресурсов -->
       <section class="card">
         <header class="card-header">
           <div class="card-header-left">
-            <h2>Ресурсы</h2>
-            <span class="muted">Экипажи, группы и их статусы</span>
+            <h2>Список ресурсов</h2>
           </div>
           <div class="card-header-right">
             <button id="merge-resources-btn" class="btn btn-secondary btn-sm">Объединить экипажи</button>
           </div>
         </header>
 
-        <form id="resource-form" class="form-grid form-grid-res">
+        <form id="resource-form" class="form-grid form-grid-4">
           <div class="form-group">
             <label for="res-name">Позывной</label>
-            <input id="res-name" class="input-text" type="text" placeholder="Напр., Патруль 10" />
+            <input id="res-name" class="input-text" type="text" placeholder="Напр., Патруль 12" />
           </div>
           <div class="form-group">
             <label for="res-app">Канал / приложение</label>
@@ -225,15 +185,16 @@
         <div class="table-wrapper">
           <table class="data-table">
             <thead>
-              <tr>
-                <th></th>
-                <th>Позывной</th>
-                <th>Канал</th>
-                <th>Статус</th>
-                <th>Вызов</th>
-                <th>Состав группы</th>
-                <th>Действия</th>
-              </tr>
+            <tr>
+              <th></th>
+              <th>Позывной</th>
+              <th>Канал</th>
+              <th>Тип</th>
+              <th>Статус</th>
+              <th>Вызов</th>
+              <th>Состав группы</th>
+              <th>Действия</th>
+            </tr>
             </thead>
             <tbody id="resources-table-body"></tbody>
           </table>
@@ -244,18 +205,18 @@
       <section class="card">
         <header class="card-header">
           <h2>Ориентировки</h2>
-          <button class="btn btn-primary btn-sm" id="add-orientation-btn">Добавить</button>
+          <button class="btn btn-primary" id="add-orientation-btn">Добавить</button>
         </header>
         <div class="table-wrapper">
           <table class="data-table">
             <thead>
-              <tr>
-                <th>Тип</th>
-                <th>Заголовок</th>
-                <th>Описание</th>
-                <th>Активна</th>
-                <th>Действия</th>
-              </tr>
+            <tr>
+              <th>Тип</th>
+              <th>Заголовок</th>
+              <th>Описание</th>
+              <th>Активна</th>
+              <th>Действия</th>
+            </tr>
             </thead>
             <tbody id="orientation-table-body"></tbody>
           </table>
@@ -272,7 +233,7 @@
     </div>
   </main>
 
-  <!-- Модалка ориентировок -->
+  <!-- Модальное окно ориентировки -->
   <div id="orientation-modal" class="modal-backdrop hidden">
     <div class="modal">
       <div class="modal-header">
@@ -282,18 +243,18 @@
       <form id="orientation-form" class="modal-body">
         <div class="form-group">
           <label for="orientation-type">Тип *</label>
-          <select id="orientation-type" class="input-select" required>
+          <select id="orientation-type" class="input-select">
             <option value="Ориентировка">Ориентировка</option>
             <option value="Рейд">Рейд</option>
           </select>
         </div>
         <div class="form-group">
           <label for="orientation-title">Заголовок *</label>
-          <input id="orientation-title" class="input-text" type="text" required />
+          <input id="orientation-title" class="input-text" type="text" placeholder="Например, Трезвый водитель" />
         </div>
         <div class="form-group">
           <label for="orientation-desc">Описание *</label>
-          <textarea id="orientation-desc" class="input-textarea" required></textarea>
+          <textarea id="orientation-desc" class="input-textarea" placeholder="Подробное описание"></textarea>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Создать</button>
@@ -302,40 +263,7 @@
       </form>
     </div>
   </div>
-
-  <!-- История вызовов -->
-  <div id="history-modal" class="modal-backdrop hidden">
-    <div class="modal modal-wide">
-      <div class="modal-header">
-        <h2>История вызовов</h2>
-        <button id="history-close" class="icon-btn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="table-wrapper">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Улица</th>
-                <th>Описание</th>
-                <th>Приоритет</th>
-                <th>Статус</th>
-                <th>Создан</th>
-                <th>Закрыт</th>
-              </tr>
-            </thead>
-            <tbody id="history-table-body"></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="history-close-bottom" class="btn btn-secondary">Закрыть</button>
-      </div>
-    </div>
-  </div>
-
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>
