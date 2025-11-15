@@ -523,3 +523,54 @@ body.theme-dark {
   justify-content: flex-end;
   gap: 10px;
 }
+
+
+/* Подсказки (tooltip) */
+.hint-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.8);
+  background: rgba(15, 23, 42, 0.95);
+  font-size: 11px;
+  color: #e5e7eb;
+  cursor: help;
+  white-space: nowrap;
+}
+
+.hint-pill::before {
+  content: '?';
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.hint-pill::after {
+  content: attr(data-hint);
+  position: absolute;
+  left: 50%;
+  top: 120%;
+  transform: translateX(-50%) translateY(4px);
+  min-width: 220px;
+  max-width: 320px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 12px;
+  text-align: left;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 60;
+}
+
+.hint-pill:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
