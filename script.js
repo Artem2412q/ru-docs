@@ -1,18 +1,17 @@
-// Общее состояние и localStorage
-const STORAGE_KEY = 'elka_state_v1';
+
+// === Простое состояние в localStorage ===
+const STORAGE_KEY = 'elka_dispatcher_state_v2';
 
 const defaultState = {
+  role: '',
   calls: [],
   resources: [],
   orientations: [],
   notes: '',
-  persons: [],
-  vehicles: [],
+  historyCalls: [],
   nextCallId: 1,
   nextResourceId: 1,
-  nextOrientationId: 1,
-  nextPersonId: 1,
-  nextVehicleId: 1
+  nextOrientationId: 1
 };
 
 let state = loadState();
@@ -21,7 +20,8 @@ function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      return Object.assign({}, defaultState, JSON.parse(raw));
+      const parsed = JSON.parse(raw);
+      return Object.assign({}, defaultState, parsed);
     }
   } catch (e) {
     console.warn('Не удалось загрузить состояние', e);
@@ -33,45 +33,7 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-// Тема
-const THEME_KEY = 'elka_theme';
-
-function applyTheme(theme) {
-  const body = document.body;
-  body.classList.remove('theme-light', 'theme-dark');
-  body.classList.add(theme === 'dark' ? 'theme-dark' : 'theme-light');
-}
-
-function loadTheme() {
-  const stored = localStorage.getItem(THEME_KEY);
-  const theme = stored === 'dark' ? 'dark' : 'light';
-  applyTheme(theme);
-}
-
-function toggleTheme() {
-  const body = document.body;
-  const isDark = body.classList.contains('theme-dark');
-  const newTheme = isDark ? 'light' : 'dark';
-  applyTheme(newTheme);
-  localStorage.setItem(THEME_KEY, newTheme);
-}
-
-// Утилиты
-function formatDate(iso) {
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return iso;
-  const pad = n => (n < 10 ? '0' + n : n);
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} ${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`;
-}
-
-function formatDob(dobStr) {
-  if (!dobStr) return '';
-  const d = new Date(dobStr);
-  if (isNaN(d.getTime())) return dobStr;
-  const pad = n => (n < 10 ? '0' + n : n);
-  return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`;
-}
-
+// === Общие утилиты ===
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -81,38 +43,120 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-// Инициализация по странице
-document.addEventListener('DOMContentLoaded', () => {
-  loadTheme();
+function formatDate(iso) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const pad = (n) => (n < 10 ? '0' + n : String(n));
+  return (
+    pad(d.getDate()) +
+    '.' +
+    pad(d.getMonth() + 1) +
+    '.' +
+    d.getFullYear() +
+    ' ' +
+    pad(d.getHours()) +
+    ':' +
+    pad(d.getMinutes())
+  );
+}
 
-  const page = document.body.dataset.page;
+// === Инициализация карты ===
+function initElkaMap() {
+  const mapRoot = document.getElementById('elka-map');
+  if (!mapRoot) return;
+
+  const svg = mapRoot.querySelector('svg');
+  if (!svg) return;
+  const content = svg.querySelector('#map-content');
+  const scaleLabel = document.getElementById('map-scale-label');
+
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+
+  function applyTransform() {
+    content.setAttribute(
+      'transform',
+      `translate(${translateX} ${translateY}) scale(${scale})`
+    );
+    if (scaleLabel) {
+      scaleLabel.textContent = Math.round(scale * 100) + '%';
+    }
+  }
+
+  // Зум колесом
+  mapRoot.addEventListener(
+    'wheel',
+    (e) => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.1 : 0.9;
+      const newScale = Math.min(3, Math.max(0.5, scale * factor));
+      scale = newScale;
+      applyTransform();
+    },
+    { passive: false }
+  );
+
+  // Панорамирование
+  let isPanning = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  mapRoot.addEventListener('mousedown', (e) => {
+    isPanning = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    mapRoot.classList.add('is-panning');
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isPanning) return;
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    translateX += dx / scale;
+    translateY += dy / scale;
+    applyTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    isPanning = false;
+    mapRoot.classList.remove('is-panning');
+  });
+
+  // Кнопки зума
+  document.querySelectorAll('.map-zoom').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const dir = btn.dataset.mapZoom === 'in' ? 1 : -1;
+      const factor = dir > 0 ? 1.2 : 0.8;
+      const newScale = Math.min(3, Math.max(0.5, scale * factor));
+      scale = newScale;
+      applyTransform();
+    });
+  });
+
+  applyTransform();
+}
+
+// === Инициализация диспетчера ===
+function initDispatcher() {
+  const root = document.getElementById('dispatcher-root');
+  if (!root) return;
+
+  const currentRoleSpan = document.getElementById('current-role');
+  if (currentRoleSpan && state.role === 'dispatcher') {
+    currentRoleSpan.textContent = '(Диспетчер)';
+  }
 
   const themeToggle = document.getElementById('theme-toggle');
-  if (themeToggle) {
-    themeToggle.addEventListener('click', toggleTheme);
-  }
+  const goHomeBtn = document.getElementById('go-home-btn');
+  const activeCallsCount = document.getElementById('active-calls-count');
 
-  const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      window.location.href = 'index.html';
-    });
-  }
-
-  if (page === 'dispatcher') initDispatcher();
-  if (page === 'citizen') initCitizen();
-  if (page === 'forces') initForces();
-  if (page === 'rescue') initRescue();
-});
-
-// ==== ДИСПЕТЧЕР ====
-
-function initDispatcher() {
   const callForm = document.getElementById('call-form');
-  if (!callForm) return; // защита
-
   const callStreetInput = document.getElementById('call-street');
   const callDescInput = document.getElementById('call-desc');
+  const callPrioritySelect = document.getElementById('call-priority');
   const callsTableBody = document.getElementById('calls-table-body');
 
   const resForm = document.getElementById('resource-form');
@@ -121,6 +165,7 @@ function initDispatcher() {
   const resStatusSelect = document.getElementById('res-status');
   const resCallSelect = document.getElementById('res-call');
   const resourcesTableBody = document.getElementById('resources-table-body');
+  const mergeResourcesBtn = document.getElementById('merge-resources-btn');
 
   const orientationModal = document.getElementById('orientation-modal');
   const orientationForm = document.getElementById('orientation-form');
@@ -131,98 +176,78 @@ function initDispatcher() {
 
   const notesField = document.getElementById('notes-field');
   const notesStatus = document.getElementById('notes-status');
-  const memoModal = document.getElementById('memo-modal');
-  const memoBtn = document.getElementById('memo-btn');
-  const memoClose = document.getElementById('memo-close');
-  const memoCloseBottom = document.getElementById('memo-close-bottom');
 
-  const activeCallsCount = document.getElementById('active-calls-count');
+  const historyBtn = document.getElementById('history-btn');
+  const historyModal = document.getElementById('history-modal');
+  const historyClose = document.getElementById('history-close');
+  const historyCloseBottom = document.getElementById('history-close-bottom');
+  const historyTableBody = document.getElementById('history-table-body');
 
-  // Памятка по радиообмену
-  function openMemo() {
-    if (!memoModal) return;
-    memoModal.classList.remove('hidden');
+  // Тема
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const body = document.body;
+      if (body.classList.contains('theme-dark')) {
+        body.classList.remove('theme-dark');
+        body.classList.add('theme-light');
+      } else {
+        body.classList.remove('theme-light');
+        body.classList.add('theme-dark');
+      }
+    });
   }
 
-  function closeMemo() {
-    if (!memoModal) return;
-    memoModal.classList.add('hidden');
+  // К выбору роли
+  if (goHomeBtn) {
+    goHomeBtn.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
   }
 
-  if (memoBtn) memoBtn.addEventListener('click', openMemo);
-  if (memoClose) memoClose.addEventListener('click', closeMemo);
-  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
+  // Шрифт
+  document.querySelectorAll('.font-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const dir = Number(btn.dataset.font || 0);
+      const html = document.documentElement;
+      const current = parseFloat(
+        getComputedStyle(html).getPropertyValue('font-size')
+      );
+      const next = Math.min(18, Math.max(12, current + dir));
+      html.style.fontSize = next + 'px';
+    });
+  });
 
-
-  // Возможность перетаскивать панель-подсказку
-  function makePanelDraggable(panel) {
-    if (!panel) return;
-    const header = panel.querySelector('.modal-header');
-    if (!header) return;
-
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-    let startLeft = 0;
-    let startTop = 0;
-
-    function onMouseDown(e) {
-      isDragging = true;
-      panel.classList.add('dragging');
-      const rect = panel.getBoundingClientRect();
-      startLeft = rect.left;
-      startTop = rect.top;
-      startX = e.clientX;
-      startY = e.clientY;
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-    }
-
-    function onMouseMove(e) {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      let nextLeft = startLeft + dx;
-      let nextTop = startTop + dy;
-
-      const maxLeft = window.innerWidth - panel.offsetWidth - 16;
-      const maxTop = window.innerHeight - panel.offsetHeight - 16;
-      const minTop = 56; // чуть ниже топбара
-
-      if (nextLeft < 8) nextLeft = 8;
-      if (nextLeft > maxLeft) nextLeft = maxLeft;
-      if (nextTop < minTop) nextTop = minTop;
-      if (nextTop > maxTop) nextTop = maxTop;
-
-      panel.style.left = nextLeft + 'px';
-      panel.style.top = nextTop + 'px';
-    }
-
-    function onMouseUp() {
-      isDragging = false;
-      panel.classList.remove('dragging');
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    }
-
-    header.addEventListener('mousedown', onMouseDown);
-  }
-
-  makePanelDraggable(memoModal);
-
+  
+// Вызовы
   function updateActiveCallsCounter() {
     if (!activeCallsCount) return;
-    const count = state.calls.filter(c => c.status !== 'Завершён').length;
-    activeCallsCount.textContent = count;
+    const count = state.calls.length;
+    activeCallsCount.textContent = String(count);
   }
 
-  // Вызовы
+  function moveCallToHistory(id) {
+    const idx = state.calls.findIndex((c) => c.id === id);
+    if (idx === -1) return;
+
+    // отвяжем ресурсы
+    state.resources.forEach((r) => {
+      if (r.callId === id) r.callId = null;
+    });
+
+    const [removed] = state.calls.splice(idx, 1);
+    if (!removed.status) removed.status = 'Завершён';
+    if (!removed.closedAt) removed.closedAt = new Date().toISOString();
+    state.historyCalls.push(removed);
+  }
+
   callForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const street = callStreetInput.value.trim();
     const desc = callDescInput.value.trim();
+    const priority = callPrioritySelect.value || 'Обычный';
+
     if (!street || !desc) {
-      alert('Заполните улицу и описание.');
+      alert('Укажите улицу и описание вызова.');
       return;
     }
 
@@ -230,17 +255,16 @@ function initDispatcher() {
       id: state.nextCallId++,
       street,
       desc,
-      createdAt: new Date().toISOString(),
+      priority,
       status: 'Новый',
-      resources: []
+      createdAt: new Date().toISOString()
     };
     state.calls.push(call);
     callStreetInput.value = '';
     callDescInput.value = '';
+    callPrioritySelect.value = 'Обычный';
     saveState();
-  
-  
-  renderCalls();
+    renderCalls();
     renderResources();
     renderCallsInResourceSelect();
   });
@@ -249,11 +273,14 @@ function initDispatcher() {
     callsTableBody.innerHTML = '';
     state.calls.forEach((call) => {
       const tr = document.createElement('tr');
+      const resNames = state.resources
+        .filter((r) => r.callId === call.id)
+        .map((r) => r.name);
       tr.innerHTML = `
         <td>${call.id}</td>
         <td>${escapeHtml(call.street)}</td>
-        <td>${formatDate(call.createdAt)}</td>
         <td>${escapeHtml(call.desc)}</td>
+        <td>${escapeHtml(call.priority || '')}</td>
         <td>
           <select class="input-select input-select-sm call-status" data-id="${call.id}">
             <option value="Новый"${call.status === 'Новый' ? ' selected' : ''}>Новый</option>
@@ -261,10 +288,10 @@ function initDispatcher() {
             <option value="Завершён"${call.status === 'Завершён' ? ' selected' : ''}>Завершён</option>
           </select>
         </td>
-        <td>${call.resources.length ? call.resources.join(', ') : '—'}</td>
+        <td>${resNames.length ? escapeHtml(resNames.join(', ')) : '—'}</td>
         <td>
-          <button class="btn btn-ghost btn-sm" data-action="delete-call" data-id="${call.id}">
-            Удалить
+          <button class="btn btn-ghost btn-sm" data-action="archive-call" data-id="${call.id}">
+            В историю
           </button>
         </td>
       `;
@@ -274,87 +301,82 @@ function initDispatcher() {
   }
 
   callsTableBody.addEventListener('change', (e) => {
-    if (e.target.classList.contains('call-status')) {
-      const id = Number(e.target.dataset.id);
-      const call = state.calls.find(c => c.id === id);
-      if (call) {
-        call.status = e.target.value;
-        saveState();
-        updateActiveCallsCounter();
+    const target = e.target;
+    if (target.classList.contains('call-status')) {
+      const id = Number(target.dataset.id);
+      const call = state.calls.find((c) => c.id === id);
+      if (!call) return;
+      call.status = target.value;
+      if (call.status === 'Завершён') {
+        moveCallToHistory(id);
       }
+      saveState();
+      renderCalls();
+      renderResources();
+      renderCallsInResourceSelect();
     }
   });
 
   callsTableBody.addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-action]');
     if (!btn) return;
-
     const id = Number(btn.dataset.id);
     const action = btn.dataset.action;
 
-    if (action === 'delete-call') {
-      if (!confirm('Удалить вызов #' + id + '?')) return;
+    if (action === 'archive-call') {
+      if (
+        !confirm(
+          'Перенести вызов #' +
+            id +
+            ' в историю и удалить из активных?'
+        )
+      )
+        return;
 
-      state.resources.forEach(r => {
-        if (r.callId === id) r.callId = null;
-      });
-      state.calls = state.calls.filter(c => c.id !== id);
+      moveCallToHistory(id);
       saveState();
-    
-  // Памятка по радиообмену
-  function openMemo() {
-    if (!memoModal) return;
-    memoModal.classList.remove('hidden');
-  }
-
-  function closeMemo() {
-    if (!memoModal) return;
-    memoModal.classList.add('hidden');
-  }
-
-  if (memoBtn) memoBtn.addEventListener('click', openMemo);
-  if (memoClose) memoClose.addEventListener('click', closeMemo);
-  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
-
-  renderCalls();
+      renderCalls();
       renderResources();
       renderCallsInResourceSelect();
     }
-
   });
 
   function renderCallsInResourceSelect() {
     const selected = resCallSelect.value;
     resCallSelect.innerHTML = '<option value="">— Нет —</option>';
-    state.calls.forEach(call => {
+    state.calls.forEach((call) => {
       const opt = document.createElement('option');
       opt.value = call.id;
-      opt.textContent = `#${call.id}: ${call.street}`;
+      opt.textContent = '#' + call.id + ': ' + call.street;
       resCallSelect.appendChild(opt);
     });
-    if (selected) resCallSelect.value = selected;
+    if (selected) {
+      resCallSelect.value = selected;
+    }
   }
 
 
-
-  // Ресурсы
+// Ресурсы
   resForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = resNameInput.value.trim();
     const app = resAppInput.value.trim();
     if (!name) {
-      alert('Введите имя ресурса.');
+      alert('Введите позывной экипажа.');
       return;
     }
 
     const res = {
       id: state.nextResourceId++,
+      type: 'crew',
       name,
       app,
-      status: resStatusSelect.value,
-      callId: resCallSelect.value ? Number(resCallSelect.value) : null
+      status: resStatusSelect.value || 'Свободен',
+      callId: resCallSelect.value ? Number(resCallSelect.value) : null,
+      members: []
     };
     state.resources.push(res);
+
     resNameInput.value = '';
     resAppInput.value = '';
     resStatusSelect.value = 'Свободен';
@@ -362,58 +384,49 @@ function initDispatcher() {
 
     saveState();
     renderResources();
-  
-  // Памятка по радиообмену
-  function openMemo() {
-    if (!memoModal) return;
-    memoModal.classList.remove('hidden');
-  }
-
-  function closeMemo() {
-    if (!memoModal) return;
-    memoModal.classList.add('hidden');
-  }
-
-  if (memoBtn) memoBtn.addEventListener('click', openMemo);
-  if (memoClose) memoClose.addEventListener('click', closeMemo);
-  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
-
-  renderCalls();
+    renderCalls();
   });
 
   function renderResources() {
-    // очистим списки ресурсов у вызовов
-    state.calls.forEach(c => c.resources = []);
-
-    // привязываем ресурсы к вызовам
-    state.resources.forEach(res => {
-      if (res.callId) {
-        const call = state.calls.find(c => c.id === res.callId);
-        if (call) {
-          call.resources.push(res.name);
-        } else {
-          res.callId = null;
-        }
-      }
-    });
-
     resourcesTableBody.innerHTML = '';
-    state.resources.forEach(res => {
-      const callOptions = state.calls.map(call => `
-        <option value="${call.id}"${res.callId === call.id ? ' selected' : ''}>
-          #${call.id}: ${escapeHtml(call.street)}
-        </option>
-      `).join('');
-
+    state.resources.forEach((res) => {
+      const callOptions = state.calls
+        .map(
+          (call) => `
+          <option value="${call.id}"${
+            res.callId === call.id ? ' selected' : ''
+          }>
+            #${call.id}: ${escapeHtml(call.street)}
+          </option>`
+        )
+        .join('');
+      const members =
+        res.members && res.members.length
+          ? escapeHtml(res.members.join(', '))
+          : '—';
+      const typeLabel = res.type === 'group' ? 'Группа' : 'Экипаж';
       const tr = document.createElement('tr');
       tr.innerHTML = `
+        <td>
+          <input type="checkbox" class="res-select" data-id="${res.id}">
+        </td>
         <td>${escapeHtml(res.name)}</td>
         <td>${escapeHtml(res.app || '')}</td>
+        <td>${typeLabel}</td>
         <td>
           <select class="input-select input-select-sm resource-status" data-id="${res.id}">
-            <option value="Свободен"${res.status === 'Свободен' ? ' selected' : ''}>Свободен</option>
-            <option value="Занят"${res.status === 'Занят' ? ' selected' : ''}>Занят</option>
-            <option value="Недоступен"${res.status === 'Недоступен' ? ' selected' : ''}>Недоступен</option>
+            <option value="Свободен"${
+              res.status === 'Свободен' ? ' selected' : ''
+            }>Свободен</option>
+            <option value="В пути"${
+              res.status === 'В пути' ? ' selected' : ''
+            }>В пути</option>
+            <option value="На месте"${
+              res.status === 'На месте' ? ' selected' : ''
+            }>На месте</option>
+            <option value="Недоступен"${
+              res.status === 'Недоступен' ? ' selected' : ''
+            }>Недоступен</option>
           </select>
         </td>
         <td>
@@ -422,6 +435,7 @@ function initDispatcher() {
             ${callOptions}
           </select>
         </td>
+        <td>${members}</td>
         <td>
           <button class="btn btn-ghost btn-sm" data-action="edit-resource" data-id="${res.id}">
             Изменить
@@ -435,80 +449,17 @@ function initDispatcher() {
     });
   }
 
-  resourcesTableBody.addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-action]');
-    if (!btn) return;
-
-    const id = Number(btn.dataset.id);
-    const action = btn.dataset.action;
-
-    if (action === 'delete-resource') {
-      if (!confirm('Удалить ресурс #' + id + '?')) return;
-      state.resources = state.resources.filter(r => r.id !== id);
-      saveState();
-      renderResources();
-    
-  // Памятка по радиообмену
-  function openMemo() {
-    if (!memoModal) return;
-    memoModal.classList.remove('hidden');
-  }
-
-  function closeMemo() {
-    if (!memoModal) return;
-    memoModal.classList.add('hidden');
-  }
-
-  if (memoBtn) memoBtn.addEventListener('click', openMemo);
-  if (memoClose) memoClose.addEventListener('click', closeMemo);
-  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
-
-  renderCalls();
-    }
-
-    if (action === 'edit-resource') {
-      const res = state.resources.find(r => r.id === id);
-      if (!res) return;
-
-      const newName = prompt('Имя ресурса:', res.name);
-      if (newName === null) return;
-      const newApp = prompt('Приложение:', res.app || '');
-      if (newApp === null) return;
-
-      res.name = newName.trim() || res.name;
-      res.app = newApp.trim();
-      saveState();
-      renderResources();
-    
-  // Памятка по радиообмену
-  function openMemo() {
-    if (!memoModal) return;
-    memoModal.classList.remove('hidden');
-  }
-
-  function closeMemo() {
-    if (!memoModal) return;
-    memoModal.classList.add('hidden');
-  }
-
-  if (memoBtn) memoBtn.addEventListener('click', openMemo);
-  if (memoClose) memoClose.addEventListener('click', closeMemo);
-  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
-
-  renderCalls();
-    }
-  });
-
   resourcesTableBody.addEventListener('change', (e) => {
     const target = e.target;
     const id = Number(target.dataset.id);
-    const res = state.resources.find(r => r.id === id);
+    const res = state.resources.find((r) => r.id === id);
     if (!res) return;
 
     if (target.classList.contains('resource-status')) {
       res.status = target.value;
       saveState();
       renderResources();
+      renderCalls();
     }
 
     if (target.classList.contains('resource-call')) {
@@ -516,31 +467,90 @@ function initDispatcher() {
       res.callId = val ? Number(val) : null;
       saveState();
       renderResources();
-    
-  // Памятка по радиообмену
-  function openMemo() {
-    if (!memoModal) return;
-    memoModal.classList.remove('hidden');
-  }
-
-  function closeMemo() {
-    if (!memoModal) return;
-    memoModal.classList.add('hidden');
-  }
-
-  if (memoBtn) memoBtn.addEventListener('click', openMemo);
-  if (memoClose) memoClose.addEventListener('click', closeMemo);
-  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
-
-  renderCalls();
-      renderCallsInResourceSelect();
+      renderCalls();
     }
   });
 
-  // Ориентировки
+  resourcesTableBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    const action = btn.dataset.action;
+    const res = state.resources.find((r) => r.id === id);
+    if (!res) return;
+
+    if (action === 'delete-resource') {
+      if (!confirm('Удалить ресурс #' + id + '?')) return;
+      state.resources = state.resources.filter((r) => r.id !== id);
+      saveState();
+      renderResources();
+      renderCalls();
+      return;
+    }
+
+    if (action === 'edit-resource') {
+      const newName = prompt('Позывной экипажа:', res.name);
+      if (newName === null) return;
+      const newApp = prompt('Канал / приложение:', res.app || '');
+      if (newApp === null) return;
+      res.name = newName.trim() || res.name;
+      res.app = newApp.trim();
+      saveState();
+      renderResources();
+      renderCalls();
+      return;
+    }
+  });
+
+  // Объединение экипажей
+  if (mergeResourcesBtn) {
+    mergeResourcesBtn.addEventListener('click', () => {
+      const checked = Array.from(
+        resourcesTableBody.querySelectorAll('.res-select:checked')
+      ).map((el) => Number(el.dataset.id));
+
+      if (checked.length < 2) {
+        alert('Отметьте хотя бы два экипажа для объединения.');
+        return;
+      }
+
+      const ids = checked;
+      const baseId = ids[0];
+      const base = state.resources.find((r) => r.id === baseId);
+      if (!base) return;
+
+      const label = prompt('Позывной объединённой группы', base.name);
+      if (label === null) return;
+
+      const others = ids
+        .filter((id) => id !== baseId)
+        .map((id) => state.resources.find((r) => r.id === id))
+        .filter(Boolean);
+
+      base.type = 'group';
+      base.name = (label || base.name).trim();
+      base.members = base.members || [];
+      others.forEach((o) => {
+        if (!base.members.includes(o.name)) {
+          base.members.push(o.name);
+        }
+      });
+
+      // удаляем остальные экипажи из списка (группа их заменяет)
+      state.resources = state.resources.filter(
+        (r) => !ids.includes(r.id) || r.id === baseId
+      );
+      saveState();
+      renderResources();
+      renderCalls();
+    });
+  }
+
+// Ориентировки
   function openOrientationModal() {
     orientationModal.classList.remove('hidden');
   }
+
   function closeOrientationModal() {
     orientationModal.classList.add('hidden');
     orientationForm.reset();
@@ -576,7 +586,7 @@ function initDispatcher() {
 
   function renderOrientations() {
     orientationTableBody.innerHTML = '';
-    state.orientations.forEach(item => {
+    state.orientations.forEach((item) => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${escapeHtml(item.type)}</td>
@@ -601,361 +611,134 @@ function initDispatcher() {
     if (!btn) return;
     const id = Number(btn.dataset.id);
     const action = btn.dataset.action;
-    const item = state.orientations.find(o => o.id === id);
+    const item = state.orientations.find((o) => o.id === id);
     if (!item) return;
 
     if (action === 'toggle-orientation') {
       item.active = !item.active;
     } else if (action === 'delete-orientation') {
       if (!confirm('Удалить ориентировку?')) return;
-      state.orientations = state.orientations.filter(o => o.id !== id);
+      state.orientations = state.orientations.filter((o) => o.id !== id);
     }
     saveState();
     renderOrientations();
   });
 
   // Заметки
-  if (notesField) {
-    notesField.value = state.notes || '';
-    notesField.addEventListener('input', () => {
-      state.notes = notesField.value;
-      if (notesStatus) notesStatus.textContent = 'Сохранено';
-      saveState();
-      setTimeout(() => {
-        if (notesStatus) notesStatus.textContent = 'Загружено';
-      }, 600);
+  notesField.value = state.notes || '';
+  notesField.addEventListener('input', () => {
+    state.notes = notesField.value;
+    if (notesStatus) notesStatus.textContent = 'Сохранено';
+    saveState();
+    setTimeout(() => {
+      if (notesStatus) notesStatus.textContent = 'Загружено';
+    }, 600);
+  });
+
+  // История
+  function renderHistoryCalls() {
+    historyTableBody.innerHTML = '';
+    state.historyCalls.forEach((call) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${call.id}</td>
+        <td>${escapeHtml(call.street)}</td>
+        <td>${escapeHtml(call.desc)}</td>
+        <td>${escapeHtml(call.priority || '')}</td>
+        <td>${escapeHtml(call.status || '')}</td>
+        <td>${formatDate(call.createdAt)}</td>
+        <td>${call.closedAt ? formatDate(call.closedAt) : '—'}</td>
+      `;
+      historyTableBody.appendChild(tr);
     });
   }
 
-  // Кнопки генератора и истории
-  const aiBtn = document.getElementById('ai-generate-btn');
-  if (aiBtn) {
-    aiBtn.addEventListener('click', () => {
-      callDescInput.value = 'Сообщение: подозрительный объект возле подъезда';
-      alert('Пример описания сгенерирован (фиктивно).');
-    });
+  function openHistory() {
+    renderHistoryCalls();
+    historyModal.classList.remove('hidden');
   }
 
-  const historyBtn = document.getElementById('history-btn');
-  if (historyBtn) {
-    historyBtn.addEventListener('click', () => {
-      const finished = state.calls.filter(c => c.status === 'Завершён').length;
-      alert('Завершённых вызовов: ' + finished);
-    });
+  function closeHistory() {
+    historyModal.classList.add('hidden');
   }
 
-  // Первичный рендер
+  historyBtn.addEventListener('click', openHistory);
+  historyClose.addEventListener('click', closeHistory);
+  historyCloseBottom.addEventListener('click', closeHistory);
 
-  // Памятка по радиообмену
-  function openMemo() {
-    if (!memoModal) return;
-    memoModal.classList.remove('hidden');
-  }
-
-  function closeMemo() {
-    if (!memoModal) return;
-    memoModal.classList.add('hidden');
-  }
-
-  if (memoBtn) memoBtn.addEventListener('click', openMemo);
-  if (memoClose) memoClose.addEventListener('click', closeMemo);
-  if (memoCloseBottom) memoCloseBottom.addEventListener('click', closeMemo);
-
+  // Стартовый рендер
   renderCalls();
   renderResources();
   renderOrientations();
   renderCallsInResourceSelect();
   updateActiveCallsCounter();
-
+  initElkaMap();
 }
-// ==== ГРАЖДАНСКИЙ ====
 
-function initCitizen() {
-  const personsGrid = document.getElementById('persons-grid');
-  const vehiclesGrid = document.getElementById('vehicles-grid');
-  const personsCountSpan = document.getElementById('persons-count');
-  const vehiclesCountSpan = document.getElementById('vehicles-count');
-  const addPersonBtn = document.getElementById('add-person-btn');
-  const addVehicleBtn = document.getElementById('add-vehicle-btn');
 
-  const personModal = document.getElementById('person-modal');
-  const personForm = document.getElementById('person-form');
-  const personClose = document.getElementById('person-close');
-  const personCancel = document.getElementById('person-cancel');
-  const personLastNameInput = document.getElementById('person-lastname');
-  const personFirstNameInput = document.getElementById('person-firstname');
-  const personMiddleNameInput = document.getElementById('person-middlename');
-  const personDobInput = document.getElementById('person-dob');
-  const personFlagInput = document.getElementById('person-flag');
+// === Инициализация выбора роли ===
+function initRoleSelector() {
+  const root = document.querySelector('.role-root');
+  if (!root) return;
 
-  const vehicleModal = document.getElementById('vehicle-modal');
-  const vehicleForm = document.getElementById('vehicle-form');
-  const vehicleClose = document.getElementById('vehicle-close');
-  const vehicleCancel = document.getElementById('vehicle-cancel');
-  const vehicleOwnerTypeInput = document.getElementById('vehicle-owner-type');
-  const vehiclePersonSelect = document.getElementById('vehicle-person');
-  const vehicleMakeInput = document.getElementById('vehicle-make');
-  const vehicleModelInput = document.getElementById('vehicle-model');
-  const vehicleYearInput = document.getElementById('vehicle-year');
-  const vehicleColorInput = document.getElementById('vehicle-color');
-  const vehiclePlateTypeSelect = document.getElementById('vehicle-plate-type');
-  const vehiclePlateInput = document.getElementById('vehicle-plate');
-  const vehicleVinInput = document.getElementById('vehicle-vin');
-  const vehicleFlagInput = document.getElementById('vehicle-flag');
+  const select = document.getElementById('role-select');
+  const btn = document.getElementById('role-continue');
 
-  const vehicleInfoModal = document.getElementById('vehicle-info-modal');
-  const vehicleInfoTitle = document.getElementById('vehicle-info-title');
-  const vehicleInfoBox = document.getElementById('vehicle-info-box');
-  const vehicleInfoClose = document.getElementById('vehicle-info-close');
-  const vehicleInfoOk = document.getElementById('vehicle-info-ok');
-
-  if (!personsGrid || !vehiclesGrid) return;
-
-  // Персонажи
-  function openPersonModal() {
-    personForm.reset();
-    personModal.classList.remove('hidden');
-  }
-  function closePersonModal() {
-    personModal.classList.add('hidden');
+  // подставим сохранённую роль, если есть
+  if (state.role) {
+    select.value = state.role;
   }
 
-  addPersonBtn.addEventListener('click', openPersonModal);
-  personClose.addEventListener('click', closePersonModal);
-  personCancel.addEventListener('click', closePersonModal);
-
-  personForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const lastName = personLastNameInput.value.trim();
-    const firstName = personFirstNameInput.value.trim();
-    const middleName = personMiddleNameInput.value.trim();
-    const dob = personDobInput.value;
-    const flag = personFlagInput.value.trim();
-
-    if (!lastName || !firstName || !dob) {
-      alert('Заполните фамилию, имя и дату рождения.');
+  btn.addEventListener('click', () => {
+    const value = select.value;
+    if (!value) {
+      alert('Выберите роль.');
       return;
     }
 
-    const person = {
-      id: state.nextPersonId++,
-      lastName,
-      firstName,
-      middleName,
-      dob,
-      flag
-    };
-    state.persons.push(person);
+    // сохраним выбранную роль
+    state.role = value;
     saveState();
-    renderPersons();
-    closePersonModal();
-  });
 
-  function renderPersons() {
-    personsGrid.innerHTML = '';
-    const total = state.persons.length;
-    personsCountSpan.textContent = `${total} / 32`;
-
-    state.persons.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'person-card';
-
-      const initials =
-        (p.firstName ? p.firstName[0] : '?') +
-        (p.lastName ? p.lastName[0] : '?');
-
-      card.innerHTML = `
-        <div class="person-photo-stub">${escapeHtml(initials)}</div>
-        <div class="person-name">
-          ${escapeHtml(p.firstName)} ${escapeHtml(p.lastName)}
-        </div>
-        <div class="person-dob">
-          ${formatDob(p.dob)}
-        </div>
-        <div class="person-flags">
-          ${p.flag ? '<span class="flag-label">Флаг</span>' : ''}
-        </div>
-      `;
-
-      card.addEventListener('click', () => {
-        const text = [
-          `ФИО: ${p.lastName} ${p.firstName} ${p.middleName || ''}`.trim(),
-          `Дата рождения: ${formatDob(p.dob)}`,
-          p.flag ? `Флаг: ${p.flag}` : ''
-        ].filter(Boolean).join('\n');
-        alert(text);
-      });
-
-      personsGrid.appendChild(card);
-    });
-
-    // карточка добавления
-    const addCard = document.createElement('div');
-    addCard.className = 'person-card add-card';
-    addCard.innerHTML = '<div class="add-card-icon">+</div><div>Добавить персонажа</div>';
-    addCard.addEventListener('click', openPersonModal);
-    personsGrid.appendChild(addCard);
-
-    renderVehiclePersonsSelect();
-  }
-
-  function renderVehiclePersonsSelect() {
-    vehiclePersonSelect.innerHTML = '';
-    if (!state.persons.length) {
-      const opt = document.createElement('option');
-      opt.value = '';
-      opt.textContent = 'Нет зарегистрированных персонажей';
-      vehiclePersonSelect.appendChild(opt);
-      return;
+    // рабочий интерфейс сейчас только у диспетчера
+    let target = 'dispatcher.html';
+    if (value === 'dispatcher') {
+      target = 'dispatcher.html';
+    } else if (value === 'citizen') {
+      target = 'citizen.html';
+    } else if (value === 'forces') {
+      target = 'forces.html';
+    } else if (value === 'rescue') {
+      target = 'rescue.html';
     }
-    state.persons.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = `${p.lastName} ${p.firstName} ${p.middleName || ''}`.trim();
-      vehiclePersonSelect.appendChild(opt);
+
+    window.location.href = target;
+  });
+}
+// === Инициализация общая ===
+window.addEventListener('DOMContentLoaded', () => {
+  initRoleSelector();
+  initDispatcher();
+
+  const goHomeBtn = document.getElementById('go-home-btn');
+  const themeToggle = document.getElementById('theme-toggle');
+
+  if (goHomeBtn && !document.getElementById('dispatcher-root')) {
+    goHomeBtn.addEventListener('click', () => {
+      window.location.href = 'index.html';
     });
   }
 
-  // Автомобили
-  function openVehicleModal() {
-    vehicleForm.reset();
-    renderVehiclePersonsSelect();
-    vehicleModal.classList.remove('hidden');
-  }
-  function closeVehicleModal() {
-    vehicleModal.classList.add('hidden');
-  }
-
-  addVehicleBtn.addEventListener('click', () => {
-    if (!state.persons.length) {
-      alert('Сначала создайте хотя бы одного персонажа.');
-      return;
-    }
-    openVehicleModal();
-  });
-
-  vehicleClose.addEventListener('click', closeVehicleModal);
-  vehicleCancel.addEventListener('click', closeVehicleModal);
-
-  vehicleForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const ownerType = vehicleOwnerTypeInput.value;
-    const personId = Number(vehiclePersonSelect.value);
-    const make = vehicleMakeInput.value.trim();
-    const model = vehicleModelInput.value.trim();
-    const year = vehicleYearInput.value.trim();
-    const color = vehicleColorInput.value.trim();
-    const plateType = vehiclePlateTypeSelect.value;
-    const plate = vehiclePlateInput.value.trim();
-    const vin = vehicleVinInput.value.trim();
-    const flag = vehicleFlagInput.value.trim();
-
-    if (!ownerType || !personId || !make || !model || !year || !color || !plateType || !plate) {
-      alert('Заполните все обязательные поля.');
-      return;
-    }
-
-    const vehicle = {
-      id: state.nextVehicleId++,
-      ownerType,
-      personId,
-      make,
-      model,
-      year,
-      color,
-      plateType,
-      plate,
-      vin,
-      flag
-    };
-    state.vehicles.push(vehicle);
-    saveState();
-    renderVehicles();
-    closeVehicleModal();
-  });
-
-  function renderVehicles() {
-    vehiclesGrid.innerHTML = '';
-    const total = state.vehicles.length;
-    vehiclesCountSpan.textContent = `${total} / 64`;
-
-    state.vehicles.forEach(v => {
-      const card = document.createElement('div');
-      card.className = 'vehicle-card';
-
-      const owner = state.persons.find(p => p.id === v.personId);
-
-      card.innerHTML = `
-        <div class="vehicle-main">
-          <div class="vehicle-make-model">
-            ${escapeHtml(v.make)} ${escapeHtml(v.model)}
-          </div>
-          <div class="vehicle-plate">${escapeHtml(v.plate)}</div>
-        </div>
-        <div class="vehicle-owner">
-          ${owner ? escapeHtml(owner.lastName + ' ' + owner.firstName) : 'Владелец не найден'}
-        </div>
-        <div class="vehicle-flags">
-          ${v.flag ? '<span class="flag-label">Флаг</span>' : ''}
-        </div>
-      `;
-
-      card.addEventListener('click', () => openVehicleInfoModal(v.id));
-      vehiclesGrid.appendChild(card);
-    });
-
-    const addCard = document.createElement('div');
-    addCard.className = 'vehicle-card add-card';
-    addCard.innerHTML = '<div class="add-card-icon">+</div><div>Добавить автомобиль</div>';
-    addCard.addEventListener('click', () => {
-      if (!state.persons.length) {
-        alert('Сначала создайте хотя бы одного персонажа.');
+  if (themeToggle && !document.getElementById('dispatcher-root')) {
+    themeToggle.addEventListener('click', () => {
+      const body = document.body;
+      if (body.classList.contains('theme-dark')) {
+        body.classList.remove('theme-dark');
+        body.classList.add('theme-light');
       } else {
-        openVehicleModal();
+        body.classList.remove('theme-light');
+        body.classList.add('theme-dark');
       }
     });
-    vehiclesGrid.appendChild(addCard);
   }
-
-  function openVehicleInfoModal(vehicleId) {
-    const v = state.vehicles.find(x => x.id === vehicleId);
-    if (!v) return;
-    const owner = state.persons.find(p => p.id === v.personId);
-
-    vehicleInfoTitle.textContent = `Информация об автомобиле: ${v.make} ${v.model}`;
-    const ownerName = owner
-      ? `${owner.lastName} ${owner.firstName} ${owner.middleName || ''}`.trim()
-      : 'Неизвестен';
-    const ownerDob = owner ? formatDob(owner.dob) : '—';
-
-    vehicleInfoBox.innerHTML = `
-      <p><strong>Марка:</strong> ${escapeHtml(v.make)}</p>
-      <p><strong>Модель:</strong> ${escapeHtml(v.model)}</p>
-      <p><strong>Год:</strong> ${escapeHtml(v.year)}</p>
-      <p><strong>Цвет:</strong> ${escapeHtml(v.color)}</p>
-      <p><strong>Тип номера:</strong> ${escapeHtml(v.plateType)}</p>
-      <p><strong>Гос. номер:</strong> ${escapeHtml(v.plate)}</p>
-      <p><strong>VIN:</strong> ${v.vin ? escapeHtml(v.vin) : '—'}</p>
-      <p><strong>Владелец:</strong> ${escapeHtml(ownerName)}</p>
-      <p><strong>Дата рождения владельца:</strong> ${ownerDob}</p>
-      ${v.flag ? `<p><strong>Флаг:</strong> ${escapeHtml(v.flag)}</p>` : ''}
-    `;
-
-    vehicleInfoModal.classList.remove('hidden');
-  }
-
-  function closeVehicleInfoModal() {
-    vehicleInfoModal.classList.add('hidden');
-  }
-
-  vehicleInfoClose.addEventListener('click', closeVehicleInfoModal);
-  vehicleInfoOk.addEventListener('click', closeVehicleInfoModal);
-
-  // Первичный рендер
-  renderPersons();
-  renderVehicles();
-}
-
-// Заглушки для других ролей
-function initForces() {}
-function initRescue() {}
+});
