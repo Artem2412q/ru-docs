@@ -32,7 +32,6 @@
             <span class="muted">Создание и управление текущими инцидентами</span>
           </div>
           <div class="card-header-right">
-            <span class="hint-pill" data-hint="Создавайте вызовы по адресу и краткому описанию. Статус «Завершён» или кнопка «В историю» перенесут вызов в архив, освободив экипажи."></span>
             <button class="btn btn-secondary btn-sm" id="history-btn">История</button>
           </div>
         </header>
@@ -102,18 +101,16 @@
                 <stop offset="0" stop-color="#0b2738"/>
                 <stop offset="1" stop-color="#020617"/>
               </linearGradient>
-              
-    <style>
+              <style>
                 .map-water { fill: url(#water); }
-                .map-block { fill: #020617; stroke: #020617; stroke-width: 2; }
-                .map-road-main { stroke: #f9fafb; stroke-width: 10; fill: none; stroke-linecap: round;}
+                .map-block { fill: #020617; stroke: #111827; stroke-width: 2; }
+                .map-road-main { stroke: #e5e7eb; stroke-width: 10; fill: none; stroke-linecap: round;}
                 .map-road-secondary { stroke: #9ca3af; stroke-width: 6; fill:none; stroke-linecap:round;}
                 .map-building { fill:#020617; stroke:#4b5563; stroke-width:1.4;}
                 .map-label-road { fill:#e5e7eb; font-size:16px; font-family:system-ui, -apple-system, BlinkMacSystemFont,"Segoe UI"; letter-spacing:1px;}
                 .map-label-house { fill:#9ca3af; font-size:11px; font-family:system-ui; }
                 .map-park { fill:#064e3b; }
-    </style>
-
+              </style>
             </defs>
 
             <rect width="1200" height="800" fill="url(#map-bg)" />
@@ -192,7 +189,6 @@
             <span class="muted">Экипажи, группы и их статусы</span>
           </div>
           <div class="card-header-right">
-            <span class="hint-pill" data-hint="Добавляйте экипажи, привязывайте их к вызовам и объединяйте в группы. Для объединения отметьте несколько экипажей галочками и нажмите «Объединить»."></span>
             <button id="merge-resources-btn" class="btn btn-secondary btn-sm">Объединить экипажи</button>
           </div>
         </header>
@@ -233,7 +229,6 @@
                 <th></th>
                 <th>Позывной</th>
                 <th>Канал</th>
-                <th>Тип</th>
                 <th>Статус</th>
                 <th>Вызов</th>
                 <th>Состав группы</th>

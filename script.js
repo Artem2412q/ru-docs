@@ -217,27 +217,11 @@ function initDispatcher() {
     });
   });
 
-  
-// Вызовы
+  // Вызовы
   function updateActiveCallsCounter() {
     if (!activeCallsCount) return;
     const count = state.calls.length;
     activeCallsCount.textContent = String(count);
-  }
-
-  function moveCallToHistory(id) {
-    const idx = state.calls.findIndex((c) => c.id === id);
-    if (idx === -1) return;
-
-    // отвяжем ресурсы
-    state.resources.forEach((r) => {
-      if (r.callId === id) r.callId = null;
-    });
-
-    const [removed] = state.calls.splice(idx, 1);
-    if (!removed.status) removed.status = 'Завершён';
-    if (!removed.closedAt) removed.closedAt = new Date().toISOString();
-    state.historyCalls.push(removed);
   }
 
   callForm.addEventListener('submit', (e) => {
@@ -290,7 +274,7 @@ function initDispatcher() {
         </td>
         <td>${resNames.length ? escapeHtml(resNames.join(', ')) : '—'}</td>
         <td>
-          <button class="btn btn-ghost btn-sm" data-action="archive-call" data-id="${call.id}">
+          <button class="btn btn-ghost btn-sm" data-action="delete-call" data-id="${call.id}">
             В историю
           </button>
         </td>
@@ -305,15 +289,11 @@ function initDispatcher() {
     if (target.classList.contains('call-status')) {
       const id = Number(target.dataset.id);
       const call = state.calls.find((c) => c.id === id);
-      if (!call) return;
-      call.status = target.value;
-      if (call.status === 'Завершён') {
-        moveCallToHistory(id);
+      if (call) {
+        call.status = target.value;
+        saveState();
+        renderCalls();
       }
-      saveState();
-      renderCalls();
-      renderResources();
-      renderCallsInResourceSelect();
     }
   });
 
@@ -322,8 +302,7 @@ function initDispatcher() {
     if (!btn) return;
     const id = Number(btn.dataset.id);
     const action = btn.dataset.action;
-
-    if (action === 'archive-call') {
+    if (action === 'delete-call') {
       if (
         !confirm(
           'Перенести вызов #' +
@@ -333,7 +312,17 @@ function initDispatcher() {
       )
         return;
 
-      moveCallToHistory(id);
+      state.resources.forEach((r) => {
+        if (r.callId === id) r.callId = null;
+      });
+
+      const idx = state.calls.findIndex((c) => c.id === id);
+      if (idx !== -1) {
+        const [removed] = state.calls.splice(idx, 1);
+        removed.closedAt = new Date().toISOString();
+        state.historyCalls.push(removed);
+      }
+
       saveState();
       renderCalls();
       renderResources();
@@ -355,8 +344,7 @@ function initDispatcher() {
     }
   }
 
-
-// Ресурсы
+  // Ресурсы
   resForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = resNameInput.value.trim();
@@ -368,7 +356,6 @@ function initDispatcher() {
 
     const res = {
       id: state.nextResourceId++,
-      type: 'crew',
       name,
       app,
       status: resStatusSelect.value || 'Свободен',
@@ -404,7 +391,6 @@ function initDispatcher() {
         res.members && res.members.length
           ? escapeHtml(res.members.join(', '))
           : '—';
-      const typeLabel = res.type === 'group' ? 'Группа' : 'Экипаж';
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>
@@ -412,7 +398,6 @@ function initDispatcher() {
         </td>
         <td>${escapeHtml(res.name)}</td>
         <td>${escapeHtml(res.app || '')}</td>
-        <td>${typeLabel}</td>
         <td>
           <select class="input-select input-select-sm resource-status" data-id="${res.id}">
             <option value="Свободен"${
@@ -459,7 +444,6 @@ function initDispatcher() {
       res.status = target.value;
       saveState();
       renderResources();
-      renderCalls();
     }
 
     if (target.classList.contains('resource-call')) {
@@ -468,6 +452,7 @@ function initDispatcher() {
       saveState();
       renderResources();
       renderCalls();
+      renderCallsInResourceSelect();
     }
   });
 
@@ -507,19 +492,17 @@ function initDispatcher() {
     mergeResourcesBtn.addEventListener('click', () => {
       const checked = Array.from(
         resourcesTableBody.querySelectorAll('.res-select:checked')
-      ).map((el) => Number(el.dataset.id));
-
+      );
       if (checked.length < 2) {
-        alert('Отметьте хотя бы два экипажа для объединения.');
+        alert('Выберите минимум два экипажа для объединения.');
         return;
       }
-
-      const ids = checked;
+      const ids = checked.map((ch) => Number(ch.dataset.id));
       const baseId = ids[0];
       const base = state.resources.find((r) => r.id === baseId);
       if (!base) return;
 
-      const label = prompt('Позывной объединённой группы', base.name);
+      const label = prompt('Позывной объединённого экипажа', base.name);
       if (label === null) return;
 
       const others = ids
@@ -527,7 +510,6 @@ function initDispatcher() {
         .map((id) => state.resources.find((r) => r.id === id))
         .filter(Boolean);
 
-      base.type = 'group';
       base.name = (label || base.name).trim();
       base.members = base.members || [];
       others.forEach((o) => {
@@ -536,7 +518,6 @@ function initDispatcher() {
         }
       });
 
-      // удаляем остальные экипажи из списка (группа их заменяет)
       state.resources = state.resources.filter(
         (r) => !ids.includes(r.id) || r.id === baseId
       );
@@ -546,7 +527,7 @@ function initDispatcher() {
     });
   }
 
-// Ориентировки
+  // Ориентировки
   function openOrientationModal() {
     orientationModal.classList.remove('hidden');
   }
