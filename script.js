@@ -548,13 +548,11 @@ function initDispatcher() {
   renderOrientations();
   renderCallsInResourceSelect();
   updateActiveCallsCounter();
-}
-
-
 
   // первичный рендер маркеров и подписка на resize
   renderMapMarkers();
   window.addEventListener('resize', renderMapMarkers);
+}
 // ==== ГРАЖДАНСКИЙ ====
 
 function initCitizen() {
