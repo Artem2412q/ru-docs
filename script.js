@@ -98,6 +98,12 @@ function initDispatcher() {
   const notesField = document.getElementById('notes-field');
   const notesStatus = document.getElementById('notes-status');
 
+  // Плавающая подсказка по радиообмену
+  const radioHintBtn = document.getElementById('radio-hint-toggle');
+  const radioHint = document.getElementById('radio-hint');
+  const radioHintClose = document.getElementById('radio-hint-close');
+  const radioHintHeader = document.getElementById('radio-hint-header');
+
   // Вызовы
   if (callForm) {
     callForm.addEventListener('submit', e => {
@@ -506,6 +512,85 @@ function initDispatcher() {
         }, 400);
       }
     });
+  }
+
+
+  // Логика подсказки
+  if (radioHintBtn && radioHint) {
+    radioHintBtn.addEventListener('click', () => {
+      radioHint.classList.remove('hidden');
+    });
+  }
+  if (radioHintClose && radioHint) {
+    radioHintClose.addEventListener('click', () => {
+      radioHint.classList.add('hidden');
+    });
+  }
+
+  // Перетаскивание подсказки
+  if (radioHint && radioHintHeader) {
+    const STORAGE_POS_KEY = 'elka_radio_hint_pos_v1';
+
+    // восстановим сохранённую позицию
+    try {
+      const saved = localStorage.getItem(STORAGE_POS_KEY);
+      if (saved) {
+        const pos = JSON.parse(saved);
+        if (typeof pos.left === 'number' && typeof pos.top === 'number') {
+          radioHint.style.left = pos.left + 'px';
+          radioHint.style.top = pos.top + 'px';
+        }
+      }
+    } catch (e) {
+      console.warn('Не удалось восстановить позицию подсказки', e);
+    }
+
+    let drag = null;
+
+    radioHintHeader.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const rect = radioHint.getBoundingClientRect();
+      drag = {
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top
+      };
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+    });
+
+    function onMove(e) {
+      if (!drag) return;
+      let left = e.clientX - drag.offsetX;
+      let top = e.clientY - drag.offsetY;
+
+      const vpW = window.innerWidth;
+      const vpH = window.innerHeight;
+      const rect = radioHint.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+
+      left = Math.max(8, Math.min(vpW - width - 8, left));
+      top = Math.max(56, Math.min(vpH - height - 8, top));
+
+      radioHint.style.left = left + 'px';
+      radioHint.style.top = top + 'px';
+    }
+
+    function onUp() {
+      if (!drag) return;
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      const rect = radioHint.getBoundingClientRect();
+      drag = null;
+      try {
+        localStorage.setItem(
+          STORAGE_POS_KEY,
+          JSON.stringify({ left: rect.left, top: rect.top })
+        );
+      } catch (e) {
+        console.warn('Не удалось сохранить позицию подсказки', e);
+      }
+    }
   }
 
   // Первичная отрисовка
