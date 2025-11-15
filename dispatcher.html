@@ -33,9 +33,12 @@
       <section class="card">
         <header class="card-header">
           <h2>Карта</h2>
+          <span class="muted">Нажмите «Метка» у вызова, затем кликните по карте</span>
         </header>
         <div class="map-container">
           <iframe src="https://map.vzkn.ru/" allowfullscreen loading="lazy"></iframe>
+          <div id="map-click-layer" class="map-click-layer"></div>
+          <div id="map-marker-layer" class="map-marker-layer"></div>
         </div>
       </section>
 

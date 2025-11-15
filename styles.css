@@ -627,3 +627,112 @@ body.theme-dark .person-photo-inner {
 body.theme-dark .vehicle-info-box {
   background: #263238;
 }
+
+
+/* === Современный вид и улучшения === */
+
+/* Градиентный фон для всего приложения */
+body.theme-light {
+  background: radial-gradient(circle at top, #ffffff 0, #e7edf3 45%, #dde3ea 100%);
+}
+
+body.theme-dark {
+  background: radial-gradient(circle at top, #1b242b 0, #05080c 60%, #020304 100%);
+}
+
+/* Карточки с лёгкой анимацией подъёма */
+.card {
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  border: 1px solid rgba(145, 163, 176, 0.35);
+}
+
+body.theme-dark .card {
+  border-color: rgba(120, 144, 156, 0.4);
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* Топбар слегка «стеклянный» */
+.topbar {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(120, 144, 156, 0.45);
+}
+
+/* Интерактивные кнопки */
+.btn,
+.icon-btn {
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.08s ease;
+}
+
+.btn:active,
+.icon-btn:active {
+  transform: translateY(1px);
+}
+
+/* Карта – делаем контейнер относительным, чтобы размещать слои поверх iframe */
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 420px;
+}
+
+/* Слои поверх карты */
+.map-click-layer,
+.map-marker-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.map-click-layer {
+  cursor: crosshair;
+  pointer-events: none;
+}
+
+.map-click-layer.active {
+  pointer-events: auto;
+}
+
+/* Маркеры вызовов */
+.map-marker-layer {
+  pointer-events: none;
+}
+
+.map-marker {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #ff5252;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.85);
+  transform: translate(-50%, -50%);
+}
+
+/* Таблица ресурсов – компактнее и читабельнее на тёмной теме */
+body.theme-dark .data-table thead {
+  background: #263238;
+}
+
+body.theme-dark .data-table tr:nth-child(even) td {
+  background: #11171c;
+}
+
+/* Карточки персонажей и авто: чуть больше «воздуха» */
+.cards-grid {
+  gap: 16px;
+}
+
+.person-card,
+.vehicle-card {
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.person-card:hover,
+.vehicle-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
