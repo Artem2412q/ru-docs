@@ -1,11 +1,10 @@
-/* ======= ГЛОБАЛЬНЫЕ СТИЛИ ======= */
-
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+/* Базовая типографика и фон */
 html,
 body {
   margin: 0;
@@ -13,34 +12,25 @@ body {
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
+}
 
-  /* НОВЫЙ ФОН */
-  background: url("https://img.freepik.com/free-photo/pine-trees-mountains_23-2147803878.jpg?semt=ais_hybrid&w=740&q=80") no-repeat center center fixed;
-  background-size: cover;
+/* Светлая / тёмная темы */
+body.theme-light {
+  background: #f6f8f9;
   color: #222;
-
-  position: relative;
 }
 
-/* Затемняющий слой */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(2px);
-  z-index: -1;
+body.theme-dark {
+  background: #121212;
+  color: #f5f5f5;
 }
 
+/* Общий контейнер */
 .app-root {
   min-height: 100vh;
 }
 
-/* ======= ЭКРАНЫ ======= */
-
+/* Экраны */
 .screen {
   display: none;
 }
@@ -49,8 +39,7 @@ body::before {
   display: block;
 }
 
-/* ======= ЭКРАН ВЫБОРА РОЛИ ======= */
-
+/* Экран выбора роли */
 .role-card {
   position: absolute;
   top: 50%;
@@ -63,6 +52,10 @@ body::before {
   background: #ffffff;
   box-shadow: 0 12px 40px rgba(15, 35, 52, 0.16);
   text-align: center;
+}
+
+body.theme-dark .role-card {
+  background: #1f1f1f;
 }
 
 .logo-text {
@@ -80,11 +73,15 @@ body::before {
   color: #555;
 }
 
+body.theme-dark .field-label {
+  color: #ccc;
+}
+
 .select-wrapper {
   margin-bottom: 20px;
 }
 
-/* Поля формы */
+/* Поля ввода */
 .input-select,
 .input-text,
 .input-textarea {
@@ -95,6 +92,20 @@ body::before {
   font-size: 14px;
   outline: none;
   background: #ffffff;
+  color: #222;
+}
+
+.input-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+body.theme-dark .input-select,
+body.theme-dark .input-text,
+body.theme-dark .input-textarea {
+  background: #222;
+  color: #f5f5f5;
+  border-color: #555;
 }
 
 .input-select:focus,
@@ -103,8 +114,7 @@ body::before {
   border-color: #607d8b;
 }
 
-/* ======= КНОПКИ ======= */
-
+/* Кнопки */
 .btn {
   border: none;
   border-radius: 4px;
@@ -135,6 +145,15 @@ body::before {
   background: #e0e5e8;
 }
 
+body.theme-dark .btn-secondary {
+  background: #424242;
+  color: #f5f5f5;
+}
+
+body.theme-dark .btn-secondary:hover {
+  background: #505050;
+}
+
 .btn-ghost {
   background: transparent;
   color: #37474f;
@@ -144,22 +163,33 @@ body::before {
   background: #eceff1;
 }
 
+body.theme-dark .btn-ghost {
+  color: #e0e0e0;
+}
+
+body.theme-dark .btn-ghost:hover {
+  background: #333;
+}
+
 .btn-sm {
   padding: 4px 8px;
   font-size: 12px;
 }
 
-/* ======= ТОПБАР ======= */
-
+/* Топбар */
 .topbar {
   height: 56px;
-  background: rgba(217, 227, 231, 0.85); /* прозрачность добавлена */
-  backdrop-filter: blur(4px);
+  background: #d9e3e7;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.04);
+}
+
+body.theme-dark .topbar {
+  background: #1e272b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 .topbar-left {
@@ -168,9 +198,13 @@ body::before {
   gap: 12px;
 }
 
-.topbar-logo {
-  width: 20px;
-  height: 20px;
+.logo-tree {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+body.theme-dark .logo-tree {
+  stroke: #f5f5f5;
 }
 
 .topbar-title {
@@ -183,6 +217,10 @@ body::before {
   font-size: 13px;
   margin-left: 8px;
   color: #455a64;
+}
+
+body.theme-dark .topbar-role {
+  color: #b0bec5;
 }
 
 .topbar-right {
@@ -205,14 +243,21 @@ body::before {
   border-radius: 4px;
 }
 
+body.theme-dark .icon-btn {
+  color: #eceff1;
+}
+
+body.theme-dark .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .counter {
   font-size: 13px;
   min-width: 20px;
   text-align: center;
 }
 
-/* ======= ОСНОВНОЙ МАКЕТ ======= */
-
+/* Основной макет */
 .main-layout {
   padding: 24px;
   max-width: 1200px;
@@ -220,12 +265,16 @@ body::before {
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(3px);
+  background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(15, 35, 52, 0.1);
+  box-shadow: 0 2px 4px rgba(15, 35, 52, 0.06);
   padding: 16px 18px 18px;
   margin-bottom: 18px;
+}
+
+body.theme-dark .card {
+  background: #1f1f1f;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .card-header {
@@ -240,8 +289,7 @@ body::before {
   margin: 0;
 }
 
-/* ======= ФОРМЫ ======= */
-
+/* Формы */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr auto;
@@ -264,6 +312,10 @@ body::before {
   color: #455a64;
 }
 
+body.theme-dark .form-group label {
+  color: #b0bec5;
+}
+
 .form-group-buttons {
   display: flex;
   flex-direction: row;
@@ -278,8 +330,7 @@ body::before {
   }
 }
 
-/* ======= ТАБЛИЦЫ ======= */
-
+/* Таблицы */
 .table-wrapper {
   overflow-x: auto;
 }
@@ -294,6 +345,10 @@ body::before {
   background: #eceff1;
 }
 
+body.theme-dark .data-table thead {
+  background: #263238;
+}
+
 .data-table th,
 .data-table td {
   padding: 6px 8px;
@@ -301,12 +356,34 @@ body::before {
   text-align: left;
 }
 
+body.theme-dark .data-table th,
+body.theme-dark .data-table td {
+  border-bottom-color: #37474f;
+}
+
+.data-table th {
+  font-weight: 600;
+  color: #37474f;
+}
+
+body.theme-dark .data-table th {
+  color: #eceff1;
+}
+
 .data-table tr:nth-child(even) td {
   background: #fafbfc;
 }
 
-/* ======= ЗАМЕТКИ ======= */
+body.theme-dark .data-table tr:nth-child(even) td {
+  background: #1c262b;
+}
 
+.input-select-sm {
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+/* Заметки */
 .notes-area {
   width: 100%;
   height: 120px;
@@ -321,18 +398,26 @@ body::before {
   border-color: #607d8b;
 }
 
+body.theme-dark .notes-area {
+  background: #222;
+  color: #f5f5f5;
+  border-color: #555;
+}
+
 .muted {
   font-size: 12px;
   color: #78909c;
 }
 
-/* ======= МОДАЛЬНОЕ ОКНО ======= */
+body.theme-dark .muted {
+  color: #90a4ae;
+}
 
+/* Модальное окно */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -350,32 +435,45 @@ body::before {
   width: 100%;
   max-width: 460px;
   box-shadow: 0 12px 40px rgba(15, 35, 52, 0.26);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
-/* ======= КАРТА ======= */
-
-.map-container {
-  width: 100%;
-  height: 400px;
-  border-radius: 8px;
-  overflow: hidden;
+body.theme-dark .modal {
+  background: #1f1f1f;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
 }
 
-.map-container iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-/* Ролевые представления */
-.role-view {
-  display: none;
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
-.role-view.role-view-active {
-  display: block;
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
 }
 
-/* Карты */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.modal-large {
+  max-width: 600px;
+}
+
+/* Карта */
 .map-container {
   width: 100%;
   height: 400px;
@@ -408,6 +506,10 @@ body::before {
   align-items: flex-start;
   gap: 4px;
   cursor: pointer;
+}
+
+body.theme-dark .person-card {
+  background: #263238;
 }
 
 .person-photo-stub {
@@ -445,6 +547,10 @@ body::before {
   cursor: pointer;
 }
 
+body.theme-dark .vehicle-card {
+  background: #263238;
+}
+
 .vehicle-make-model {
   font-weight: 600;
 }
@@ -476,15 +582,15 @@ body::before {
   color: #455a64;
 }
 
+body.theme-dark .add-card {
+  color: #cfd8dc;
+}
+
 .add-card-icon {
   font-size: 32px;
 }
 
-/* Большие модалки (персонаж/авто/инфо) */
-.modal-large {
-  max-width: 600px;
-}
-
+/* Загрузка фото персонажа */
 .person-photo-placeholder {
   border-radius: 6px;
   border: 2px dashed #cfd8dc;
@@ -492,9 +598,17 @@ body::before {
   margin-bottom: 12px;
 }
 
+body.theme-dark .person-photo-placeholder {
+  border-color: #546e7a;
+}
+
 .person-photo-inner {
   text-align: center;
   color: #607d8b;
+}
+
+body.theme-dark .person-photo-inner {
+  color: #b0bec5;
 }
 
 .person-photo-icon {
@@ -508,4 +622,8 @@ body::before {
   border-radius: 4px;
   padding: 12px 16px;
   margin-bottom: 12px;
+}
+
+body.theme-dark .vehicle-info-box {
+  background: #263238;
 }

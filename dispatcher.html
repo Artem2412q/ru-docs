@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Диспетчер — Ёлка</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
+</head>
+<body class="theme-light" data-page="dispatcher">
+<div class="app-root">
+  <section id="main-screen" class="screen screen-active">
+    <header class="topbar">
+      <div class="topbar-left">
+        <svg class="logo-tree" width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L6 10h4l-4 6h12l-4-6h4z"/>
+          <rect x="10" y="18" width="4" height="4" />
+        </svg>
+        <span class="topbar-title">Ё л к а</span>
+        <span class="topbar-role">(Диспетчер)</span>
+      </div>
+      <div class="topbar-right">
+        <button id="theme-toggle" class="icon-btn" title="Тема">🌙</button>
+        <span class="counter" title="Число активных вызовов" id="active-calls-count">0</span>
+        <button class="icon-btn" id="logout-btn" title="Выход">⟲ Выход</button>
+      </div>
+    </header>
+
+    <main class="main-layout">
+
+      <!-- Карта -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Карта</h2>
+        </header>
+        <div class="map-container">
+          <iframe src="https://map.vzkn.ru/" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </section>
+
+      <!-- Активные вызовы -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Активные вызовы</h2>
+          <button class="btn btn-ghost" id="history-btn">⟲ История</button>
+        </header>
+
+        <form id="call-form" class="form-grid">
+          <div class="form-group">
+            <label for="call-street">Улица *</label>
+            <input id="call-street" class="input-text" type="text" placeholder="Введите улицу" required />
+          </div>
+          <div class="form-group">
+            <label for="call-desc">Описание *</label>
+            <input id="call-desc" class="input-text" type="text" placeholder="Введите описание" required />
+          </div>
+          <div class="form-group form-group-buttons">
+            <button type="submit" class="btn btn-primary">Создать вызов</button>
+            <button type="button" class="btn btn-secondary" id="ai-generate-btn">Сгенерировать ИИ</button>
+          </div>
+        </form>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID вызова</th>
+                <th>Улица</th>
+                <th>Время создания</th>
+                <th>Описание</th>
+                <th>Статус</th>
+                <th>Ресурсы</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="calls-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Список ресурсов -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Список ресурсов</h2>
+        </header>
+
+        <form id="resource-form" class="form-grid form-grid-4">
+          <div class="form-group">
+            <label for="res-name">Имя</label>
+            <input id="res-name" class="input-text" type="text" placeholder="Напр., Патруль 12" />
+          </div>
+          <div class="form-group">
+            <label for="res-app">Приложение</label>
+            <input id="res-app" class="input-text" type="text" placeholder="Рация, Telegram..." />
+          </div>
+          <div class="form-group">
+            <label for="res-status">Статус</label>
+            <select id="res-status" class="input-select">
+              <option value="Свободен">Свободен</option>
+              <option value="Занят">Занят</option>
+              <option value="Недоступен">Недоступен</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="res-call">Закреплён за вызовом</label>
+            <select id="res-call" class="input-select">
+              <option value="">— Нет —</option>
+            </select>
+          </div>
+          <div class="form-group form-group-buttons">
+            <button type="submit" class="btn btn-primary">Добавить ресурс</button>
+          </div>
+        </form>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Имя</th>
+                <th>Приложение</th>
+                <th>Статус</th>
+                <th>Вызов</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="resources-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Ориентировки -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Ориентировки</h2>
+          <button class="btn btn-primary" id="add-orientation-btn">Добавить</button>
+        </header>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Тип</th>
+                <th>Заголовок</th>
+                <th>Описание</th>
+                <th>Действует</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="orientation-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Заметки -->
+      <section class="card">
+        <header class="card-header">
+          <h2>Заметки <span id="notes-status" class="muted">Загружено</span></h2>
+        </header>
+        <textarea id="notes-field" class="notes-area" placeholder="Введите ваши заметки здесь..."></textarea>
+      </section>
+    </main>
+  </section>
+
+  <!-- Модалка ориентировок -->
+  <div id="orientation-modal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Добавить ориентировку</h2>
+        <button id="orientation-close" class="icon-btn">&times;</button>
+      </div>
+
+      <form id="orientation-form" class="modal-body">
+        <div class="form-group">
+          <label for="orientation-type">Тип *</label>
+          <select id="orientation-type" class="input-select" required>
+            <option value="Ориентировка">Ориентировка</option>
+            <option value="Рейд">Рейд</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="orientation-title">Заголовок *</label>
+          <input id="orientation-title" class="input-text" type="text"
+                 placeholder="Напр., Трезвый водитель или Разыскивается: Иванов" required />
+        </div>
+        <div class="form-group">
+          <label for="orientation-desc">Описание *</label>
+          <textarea id="orientation-desc" class="input-textarea" placeholder="Подробное описание" required></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Создать</button>
+          <button type="button" id="orientation-cancel" class="btn btn-secondary">Закрыть</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
