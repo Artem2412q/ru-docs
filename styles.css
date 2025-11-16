@@ -1112,8 +1112,7 @@ body {
   border-radius: var(--radius-md);
   border: 1px solid var(--border-soft);
   overflow: hidden;
-  min-height: 220px;
-  background: #020617 url("https://i.ibb.co/QLcH8tB/Group-166.png") center/cover no-repeat;
+  background: #020617;
 }
 
 .community-route-map img {
