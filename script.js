@@ -6,6 +6,8 @@ const defaultState = {
   currentUser: null,  // login
   secretUnlocked: false,
   theme: 'dark',      // 'dark' | 'light'
+  wallet: 50000,      // виртуальный баланс в кредитах
+  bets: [],           // история условных ставок
 };
 
 let state = loadState();
@@ -229,6 +231,48 @@ accessForm.addEventListener('submit', (e) => {
 
 const themeToggleBtn = document.getElementById('theme-toggle');
 const themeToggleIcon = document.getElementById('theme-toggle-icon');
+const walletAmountSpan = document.getElementById('wallet-amount');
+const walletResetBtn = document.getElementById('wallet-reset-btn');
+const orgWalletAmountSpan = document.getElementById('org-wallet-amount');
+const orgWalletDeltaSpan = document.getElementById('org-wallet-delta');
+
+// базовый «скрытый» баланс организации: 3 единицы условного актива, сконвертированные в ₽
+const ORG_WALLET_BASE_UNITS = 3;
+const ORG_UNIT_TO_RUB = 6000000; // условный курс на момент сборки
+const ORG_WALLET_BASE_RUB = ORG_WALLET_BASE_UNITS * ORG_UNIT_TO_RUB;
+
+function updateWalletUi() {
+  if (!walletAmountSpan) return;
+  const amount = Number(state.wallet || 0);
+  walletAmountSpan.textContent = amount.toLocaleString('ru-RU');
+}
+
+function updateOrgWalletUi() {
+  if (!orgWalletAmountSpan || !orgWalletDeltaSpan) return;
+  const now = Date.now();
+  // небольшие колебания вокруг базового значения, чтобы выглядело как мониторинг
+  const phase = now / 60000; // минуты
+  const offsetFactor = Math.sin(phase) * 0.015; // ±1.5%
+  const currentRub = Math.round(ORG_WALLET_BASE_RUB * (1 + offsetFactor));
+  const diff = currentRub - ORG_WALLET_BASE_RUB;
+  const sign = diff > 0 ? '+' : diff < 0 ? '−' : '';
+  orgWalletAmountSpan.textContent = currentRub.toLocaleString('ru-RU');
+  if (diff === 0) {
+    orgWalletDeltaSpan.textContent = 'без изменений за минуту';
+  } else {
+    orgWalletDeltaSpan.textContent = `${sign}${Math.abs(diff).toLocaleString('ru-RU')} ₽ за минуту`;
+  }
+}
+
+if (walletResetBtn) {
+  walletResetBtn.addEventListener('click', () => {
+    state.wallet = 50000;
+    state.bets = [];
+    saveState();
+    updateWalletUi();
+    renderBetHistory();
+  });
+}
 
 function applyTheme() {
   const theme = state.theme === 'light' ? 'light' : 'dark';
@@ -243,6 +287,9 @@ themeToggleBtn.addEventListener('click', () => {
   saveState();
   applyTheme();
 });
+
+// периодически обновляем мониторинг кошелька организации
+setInterval(updateOrgWalletUi, 7000);
 
 /* =========================
    Раздел «Заработок» — генерация карточек
@@ -445,6 +492,13 @@ function renderEarnMain(participant) {
         Потенциальный выигрыш считается по формуле: ставка × коэффициент.
         Все кредиты внутриигровые, реальные деньги не используются.
       </p>
+      <div class="bet-history" id="bet-history">
+        <div class="bet-history-header">
+          <span>История ставок</span>
+          <button type="button" class="btn btn-ghost btn-xs" id="bet-history-clear">Очистить</button>
+        </div>
+        <div class="bet-history-list" id="bet-history-list"></div>
+      </div>
     </div>
   `;
 
@@ -453,15 +507,89 @@ function renderEarnMain(participant) {
 
   betBtn.addEventListener('click', () => {
     const amount = Number(selectEl.value || 0);
+    if (!amount || amount <= 0) return;
+
+    const current = Number(state.wallet || 0);
+    if (current < amount) {
+      alert('Недостаточно средств на игровом балансе для такой ставки. Уменьшите сумму или обновите раунд.');
+      return;
+    }
+
     const potentialWin = amount * participant.odds;
+    state.wallet = current - amount;
+
+    // сохраняем ставку в историю до пересчёта интерфейса
+    const betRecord = {
+      id: Date.now(),
+      name: participant.name,
+      car: participant.car,
+      amount,
+      odds: participant.odds,
+      potentialWin
+    };
+
+    if (!Array.isArray(state.bets)) {
+      state.bets = [];
+    }
+    state.bets.unshift(betRecord);
+    // ограничим историю, чтобы не разрасталась бесконечно
+    state.bets = state.bets.slice(0, 20);
+
+    saveState();
+    updateWalletUi();
+    renderBetHistory();
 
     const message =
       `Вы условно поставили ${amount.toLocaleString('ru-RU')} кредитов на участника "${participant.name}".` +
+      `\nТекущий игровой баланс: ${state.wallet.toLocaleString('ru-RU')} кредитов.` +
       `\n\nТеоретический выигрыш (игровой): ${potentialWin.toLocaleString('ru-RU', {maximumFractionDigits: 0})} кредитов.` +
       `\n\nВсе расчёты остаются частью сеттинга проекта, реальные деньги не используются.`;
 
     alert(message);
   });
+}
+
+function renderBetHistory() {
+  const listEl = document.getElementById('bet-history-list');
+  const clearBtn = document.getElementById('bet-history-clear');
+  if (!listEl) return;
+
+  const bets = Array.isArray(state.bets) ? state.bets : [];
+  listEl.innerHTML = '';
+
+  if (!bets.length) {
+    const empty = document.createElement('div');
+    empty.className = 'bet-history-empty muted small';
+    empty.textContent = 'Ставок пока нет. Сделайте первую условную ставку, чтобы увидеть историю.';
+    listEl.appendChild(empty);
+  } else {
+    bets.forEach((bet) => {
+      const row = document.createElement('div');
+      row.className = 'bet-history-row';
+      row.innerHTML = `
+        <div class="bet-history-main">
+          <div class="bet-history-name">${bet.name}</div>
+          <div class="bet-history-car muted small">${bet.car}</div>
+        </div>
+        <div class="bet-history-meta">
+          <div class="bet-history-amount">${bet.amount.toLocaleString('ru-RU')} кр.</div>
+          <div class="bet-history-odds muted small">×${Number(bet.odds).toFixed(2)}</div>
+        </div>
+        <div class="bet-history-win muted small">
+          Потенц. выигрыш: ${Math.round(bet.potentialWin).toLocaleString('ru-RU')} кр.
+        </div>
+      `;
+      listEl.appendChild(row);
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.onclick = () => {
+      state.bets = [];
+      saveState();
+      renderBetHistory();
+    };
+  }
 }
 
 function selectParticipant(id) {
@@ -479,8 +607,11 @@ function init() {
   applyTheme();
   updateAuthUi();
   updateSecretNav();
+  updateWalletUi();
+  updateOrgWalletUi();
   showPage('cars');
   renderEarnCards();
+  renderBetHistory();
 }
 
 document.addEventListener('DOMContentLoaded', init);

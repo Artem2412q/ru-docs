@@ -897,3 +897,196 @@ body {
     height: 210px;
   }
 }
+
+/* Earn wallet */
+.earn-wallet {
+  margin-top: 8px;
+  margin-bottom: 6px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-soft);
+  background: var(--bg-card-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.earn-wallet-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.earn-wallet-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.earn-wallet-row {
+  margin-top: 8px;
+  margin-bottom: 4px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
+  gap: 10px;
+  align-items: stretch;
+}
+
+.earn-wallet .btn {
+  margin-left: auto;
+}
+
+.org-wallet {
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-soft);
+  background: radial-gradient(circle at 10% 0%, rgba(248, 113, 113, 0.12), var(--bg-card-soft));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.org-wallet-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.org-wallet-main {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.org-wallet-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* история ставок */
+
+.bet-history {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border-soft);
+  padding-top: 8px;
+}
+
+.bet-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.bet-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.bet-history-row {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+  padding: 6px 8px;
+  background: var(--bg-card-soft);
+  font-size: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
+  gap: 4px 10px;
+}
+
+.bet-history-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bet-history-name {
+  font-weight: 500;
+}
+
+.bet-history-meta {
+  text-align: right;
+}
+
+.bet-history-amount {
+  font-weight: 600;
+}
+
+.bet-history-odds {
+  font-variant-numeric: tabular-nums;
+}
+
+.bet-history-win {
+  grid-column: 1 / -1;
+}
+
+.bet-history-empty {
+  padding: 6px 8px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-soft);
+}
+
+/* логотип организации в блоке авто */
+
+.cars-block-with-logo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.org-logo-block {
+  min-height: 160px;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border-soft);
+  background: radial-gradient(circle at 20% 0%, rgba(248, 113, 113, 0.16), var(--bg-card-soft));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.org-logo-emblem {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  background: #111827;
+  color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: 0.08em;
+}
+
+.org-logo-text {
+  text-align: center;
+}
+
+.org-logo-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.org-logo-tagline {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 960px) {
+  .earn-wallet-row {
+    grid-template-columns: 1fr;
+  }
+
+  .cars-block-with-logo {
+    grid-template-columns: 1fr;
+  }
+}

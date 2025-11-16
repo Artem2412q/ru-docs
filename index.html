@@ -92,18 +92,27 @@
               </p>
             </section>
 
-            <section class="cars-block">
-              <h3>Российский автопром: жив, тюнингуем, эксплуатируем</h3>
-              <p>
-                Да, мемов про отечественные машины гораздо больше, чем рекламных постеров.
-                Но «Жигули» и «Волги» — это огромный пласт культуры. Для кого-то это дешёвая
-                техника «на каждый день», для кого-то — платформа под безумный проект.
-              </p>
-              <p>
-                Классика на карбоне, свап на турбо-мотор, сварка пола в гараже и
-                обязательная фраза «делал для себя» — всё это неотъемлемая часть
-                гаражной романтики, из которой и выросло наше сообщество.
-              </p>
+            <section class="cars-block cars-block-with-logo">
+              <div class="cars-block-text">
+                <h3>Российский автопром: жив, тюнингуем, эксплуатируем</h3>
+                <p>
+                  Да, мемов про отечественные машины гораздо больше, чем рекламных постеров.
+                  Но «Жигули» и «Волги» — это огромный пласт культуры. Для кого-то это дешёвая
+                  техника «на каждый день», для кого-то — платформа под безумный проект.
+                </p>
+                <p>
+                  Классика на карбоне, свап на турбо-мотор, сварка пола в гараже и
+                  обязательная фраза «делал для себя» — всё это неотъемлемая часть
+                  гаражной романтики, из которой и выросло наше сообщество.
+                </p>
+              </div>
+              <div class="org-logo-block">
+                <div class="org-logo-emblem">D3</div>
+                <div class="org-logo-text">
+                  <div class="org-logo-title">drive3.ru</div>
+                  <div class="org-logo-tagline">Закрытое автомобильное сообщество</div>
+                </div>
+              </div>
             </section>
 
             <section class="cars-block">
@@ -308,6 +317,25 @@
               Это не реальный букмекер и не предложение сделать ставку за деньги.
               Ставки условные, используются только для отыгрыша ролей и сюжетов.
             </p>
+
+            <div class="earn-wallet-row">
+              <div class="earn-wallet">
+                <div class="earn-wallet-label">Личный игровой баланс</div>
+                <div class="earn-wallet-value"><span id="wallet-amount">0</span> кредитов</div>
+                <button type="button" class="btn btn-secondary btn-xs" id="wallet-reset-btn">
+                  Сбросить баланс / новый сезон
+                </button>
+              </div>
+              <div class="org-wallet">
+                <div class="org-wallet-label">Кошелёк организации</div>
+                <div class="org-wallet-main">
+                  <span id="org-wallet-amount">0</span> ₽
+                </div>
+                <div class="org-wallet-sub">
+                  <span id="org-wallet-delta">Обновление…</span>
+                </div>
+              </div>
+            </div>
 
             <div class="earn-layout">
               <div id="earn-main" class="earn-main-slot">
