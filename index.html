@@ -1,373 +1,318 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>DRIVE2.SECTOR — сообщество и организация</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="script.js"></script>
+  <meta charset="UTF-8">
+  <title>Drive2.Nevsky — автомобильное сообщество</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<div class="app-root">
+<body class="theme-dark">
+<div class="app-shell">
+
   <!-- Верхняя панель -->
-  <header class="site-header">
-    <div class="site-header-left">
-      <a href="#" class="brand">
-        <span class="brand-badge">DRIVE2</span>
-        <span class="brand-tail">.SECTOR</span>
-      </a>
-      <span class="brand-tagline">Автомобильное сообщество нового формата</span>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-badge">D2</div>
+      <div class="topbar-title">
+        <div class="brand-name">Drive2.Nevsky</div>
+        <div class="brand-tagline">Автомобильное сообщество</div>
+      </div>
     </div>
-    <div class="site-header-center">
-      <form class="search-form" action="#" onsubmit="return false;">
-        <input type="search" placeholder="Поиск по стене и машинам" />
-      </form>
-    </div>
-    <div class="site-header-right" id="auth-area">
-      <!-- сюда рендерится авторизация -->
+    <div class="topbar-right">
+      <button id="access-code-btn" class="btn btn-ghost btn-xs">Код доступа</button>
+      <div id="auth-anon" class="auth-block">
+        <button id="login-open" class="btn btn-ghost btn-xs">Войти</button>
+        <button id="register-open" class="btn btn-primary btn-xs">Регистрация</button>
+      </div>
+      <div id="auth-user" class="auth-block hidden">
+        <span id="auth-username" class="auth-username"></span>
+        <button id="logout-btn" class="btn btn-ghost btn-xs">Выйти</button>
+      </div>
     </div>
   </header>
 
-  <main class="layout-main">
-    <!-- Левая колонка-меню -->
+  <div class="layout">
+    <!-- Левое меню -->
     <aside class="sidebar">
-      <nav class="side-nav" id="side-nav">
-        <a href="#" class="side-link active" data-view="cars">Автомобили</a>
-        <a href="#" class="side-link" data-view="wall">Стена</a>
-        <a href="#" class="side-link side-link-secret hidden" data-view="org" id="side-org-link">Организация</a>
-      </nav>
+      <div class="sidebar-section">
+        <div class="sidebar-caption">Разделы</div>
+
+        <button class="nav-item nav-item-active" data-page="cars" id="nav-cars">
+          Автомобили
+        </button>
+
+        <button class="nav-item nav-secret hidden" data-page="community" id="nav-community">
+          Сообщество
+          <span class="nav-dot"></span>
+        </button>
+
+        <button class="nav-item nav-secret hidden" data-page="org" id="nav-org">
+          Организация
+          <span class="nav-dot"></span>
+        </button>
+      </div>
     </aside>
 
-    <!-- Центральная колонка: контент -->
-    <section class="content">
-      <!-- Раздел «Автомобили» -->
-      <article class="post-card view-active" id="view-cars">
-        <header class="post-header">
-          <h1 class="post-title">Автомобили, факты и кто может участвовать.</h1>
-          <div class="post-meta">
-            <span class="meta-pill">Раздел: машины</span>
-            <span class="meta-dot"></span>
-            <span class="meta-text">открытая часть DRIVE2.SECTOR</span>
-          </div>
-        </header>
+    <!-- Основной контент -->
+    <main class="main">
 
-        <section class="post-body">
-          <h2>Немного забавных фактов</h2>
-
-          <h3>Про китайские автомобили</h3>
-          <p>
-            Китайский автопром прошёл путь от «копии всего подряд» до машин, которые уже копируют <em>мы</em> —
-            по мультимедиа, опциям и подогреву всего, что только можно. Geely и Chery давно перестали быть
-            шуткой, а Haval и BYD уже всерьёз конкурируют с привычными кроссоверами.
-          </p>
-          <p>
-            Есть и стереотип: «китаец — это одноразовый автомобиль». На практике чаще одноразовым оказывается
-            владелец, который экономит на ТО и ездит на треке на зимней резине в июне.
-          </p>
-
-          <h3>Про российский автопром</h3>
-          <p>
-            Российский автопром — это вечная борьба между «дешево, сердито» и «хочется как в Германии».
-            Классические LADA учили нас ремонтировать машину одним ключом на 13 и стукнув по карбюратору,
-            а новые Vesta, обновлённые УАЗы и проекты вроде Aurus показывают, что мы умеем делать комфорт и
-            броню в одном флаконе.
-          </p>
-          <p>
-            Главный плюс отечественных машин — выживаемость. Они умеют жить там, где любая премия возвращается
-            на эвакуаторе уже после первого выезда на «грунтовочный Nürburgring».
-          </p>
-
-          <h3>Зарубежная классика и легенды</h3>
-          <ul>
-            <li>
-              <strong>Mercedes S600</strong> — официальный автомобиль тех, кто говорит «я потихоньку».
-              V12 не знает слова «потихоньку», он знает слово «крутящий момент».
-            </li>
-            <li>
-              <strong>BMW M3 и M4</strong> — машины, которые учат отличать «умею рулить» от «умею заносить
-              задок для фотографий». В правильных руках — идеальный трек-инструмент, в неправильных —
-              экспонат в разделе «как не надо».
-            </li>
-            <li>
-              <strong>Nissan GT-R</strong> — тот самый «Годзилла», который заставил пересчитать рекорды круга
-              по всему миру. Электронный мозг, который знает о зацепе больше, чем водитель.
-            </li>
-            <li>
-              <strong>Alfa Romeo</strong> — машина для тех, кто готов любить, даже когда нужно менять
-              что-нибудь непонятное каждые полгода. Зато характер, звук и дизайн — как у очень дорогого
-              итальянского мотоцикла, только с крышей.
-            </li>
-          </ul>
-
-          <h2>Какие машины могут участвовать у нас</h2>
-          <p>
-            Мы не делим людей по маркам, но у нас есть технический здравый смысл. Для участия в
-            активностях DRIVE2.SECTOR подойдут машины, которые:
-          </p>
-          <ul>
-            <li>технически исправны (тормоза, подвеска, резина — в приоритете перед лошадиными силами);</li>
-            <li>моложе примерно 2005 года или старше, но в состоянии «лучше, чем с завода»;</li>
-            <li>не переделаны в «ракеты» исключительно по прямой без намёка на безопасность;</li>
-            <li>имеют исправный свет, ремни безопасности и адекватный выхлоп по громкости.</li>
-          </ul>
-
-          <h3>Примеры допускаемых классов</h3>
-          <ul>
-            <li>
-              <strong>Street Daily</strong> — городские седаны и хэтчбеки: современные LADA, Kia/Hyundai,
-              Skoda, китайские кроссоверы при хорошем техническом состоянии.
-            </li>
-            <li>
-              <strong>Street Performance</strong> — мощные гражданские машины: BMW M-серии, AMG,
-              Nissan GT-R, Subaru WRX/STI, горячие хэтчи, заряженные китайцы и т.п.
-            </li>
-            <li>
-              <strong>Old but Gold</strong> — ухоженные youngtimer’ы и классика: W124/W140, старые M3,
-              японские купе 90-х и редкие Alfa Romeo. Главное — состояние и безопасность.
-            </li>
-          </ul>
-
-          <p class="callout">
-            Такси на убитом газе, коммерческие фургоны, машины с «плавающим» рулём и отсутствующими
-            тормозами — не допускаются даже в качестве шутки. Мы любим машины, но ещё больше мы любим людей,
-            которые в них сидят.
-          </p>
-        </section>
-      </article>
-
-      <!-- Стена -->
-      <article class="post-card hidden" id="view-wall">
-        <header class="post-header">
-          <h1 class="post-title">Стена сообщества</h1>
-          <div class="post-meta">
-            <span class="meta-pill">Посты участников</span>
-            <span class="meta-dot"></span>
-            <span class="meta-text">видят все авторизованные пользователи</span>
-          </div>
-        </header>
-
-        <section class="post-body">
-          <div class="wall-disclaimer">
-            Все данные «Стены» и мессенджера хранятся только в вашем браузере (localStorage).
-            Не используйте реальные логины и пароли.
-          </div>
-
-          <section class="create-post" id="create-post-section">
-            <h2>Новый пост</h2>
-            <form id="post-form">
-              <label class="field-label" for="post-title">Заголовок</label>
-              <input id="post-title" class="input" type="text" placeholder="Например: мой первый выезд на трек" />
-
-              <label class="field-label" for="post-text">Текст</label>
-              <textarea id="post-text" class="textarea" rows="4" placeholder="Поделитесь впечатлениями, настройкой машины или забавной историей..."></textarea>
-
-              <label class="field-label" for="post-files">Фото / видео (необязательно)</label>
-              <input id="post-files" class="input" type="file" accept="image/*,video/*" multiple />
-
-              <button type="submit" class="btn primary full">Опубликовать</button>
-            </form>
-          </section>
-
-          <section class="wall-list">
-            <h2>Лента постов</h2>
-            <div id="posts-container" class="posts-container">
-              <!-- сюда рендерятся посты -->
+      <!-- Автомобили -->
+      <section id="page-cars" class="page page-active">
+        <div class="card">
+          <header class="card-header">
+            <div>
+              <h2>Автомобили и участники</h2>
+              <div class="card-subtitle">
+                Легальная витрина сообщества: мы любим людей, которые любят машины.
+              </div>
             </div>
-          </section>
-        </section>
-      </article>
+          </header>
 
-      <!-- Секретный раздел «Организация» -->
-      <article class="post-card hidden" id="view-org">
-        <header class="post-header">
-          <h1 class="post-title">Drive2.ru — внутренняя оперативная записка.</h1>
-          <div class="post-meta">
-            <span class="meta-pill">Статус доступа: внутренний</span>
-            <span class="meta-dot"></span>
-            <span class="meta-text">просмотр доступен только после активации ключа</span>
+          <div class="card-body cars-grid">
+            <section class="cars-block">
+              <h3>Китайский автопром: от шутки до лидера рынка</h3>
+              <p>
+                Когда‑то китайские автомобили считались «одноразовыми»: скучный дизайн, копии
+                чужих моделей и мутная репутация безопасности. В 2020‑х всё поменялось:
+                бренды вроде Geely, Chery, Haval и Zeekr начали вкладываться в дизайн‑студии
+                Европы, краш‑тесты и электронику.
+              </p>
+              <p>
+                Забавный факт: в некоторых городах ДВ и Сибири китайских кроссоверов стало
+                больше, чем «традиционных» японцев с правым рулём. А многие владельцы
+                впервые почувствовали подогрев всей машины, а не только водительского сиденья.
+              </p>
+            </section>
+
+            <section class="cars-block">
+              <h3>Российский автопром: жив, тюнингуем, эксплуатируем</h3>
+              <p>
+                Да, мемов про отечественные машины гораздо больше, чем рекламных постеров.
+                Но «Жигули» и «Волги» — это огромный пласт культуры. Для кого‑то это дешёвая
+                техника «на каждый день», для кого‑то — платформа под безумный проект.
+              </p>
+              <p>
+                Классика на карбоне, свап на турбо‑мотор, сварка пола в гараже и
+                обязательная фраза «делал для себя» — всё это неотъемлемая часть
+                гаражной романтики, из которой и выросло наше сообщество.
+              </p>
+            </section>
+
+            <section class="cars-block">
+              <h3>Техника «тяжёлого класса»</h3>
+              <p>
+                <strong>Mercedes‑Benz S600</strong> — символ тихого люкса. Длинный кузов,
+                V12 под капотом, звукоизоляция уровня «свой мир внутри». В наших сценариях
+                такие машины чаще всего принадлежат людям, которые не любят шум, но умеют
+                его создавать по необходимости.
+              </p>
+              <p>
+                <strong>BMW M3 / M4</strong> — это уже про характер. Острый руль, задний
+                привод, мотор, который просит крутить его до отсечки. На треке они
+                по‑настоящему раскрываются, а на городских улицах требуют максимального
+                уважения к педали газа.
+              </p>
+              <p>
+                <strong>Nissan GT‑R</strong> — народный «Годзилла». Полный привод,
+                продвинутая электроника и запас прочности, изначально рассчитанный на
+                тюнинг. Машина, которая создавалась для того, чтобы ломать чужие рекорды.
+              </p>
+              <p>
+                <strong>Alfa Romeo</strong> — автомобили, которые, по легенде,
+                выбирают сердцем. Дизайн, звук мотора и странная смесь эмоций
+                «очень люблю» и «иногда страдаю» делают их собранием живых историй
+                владельцев.
+              </p>
+            </section>
+
+            <section class="cars-block cars-block-highlight">
+              <h3>Кто может участвовать в наших активностях</h3>
+              <ul>
+                <li>Любой исправный автомобиль не старше 2010 года в базовой легенде.</li>
+                <li>Техника старше — по договорённости, если состояние и безопасность на уровне.</li>
+                <li>Обязательны: исправные тормоза, нормальная резина, ремни безопасности.</li>
+                <li>
+                  Мы за ролевой отыгрыш и атмосферу, а не за реальное нарушение ПДД.
+                  Все сценарии и заезды — художественный сеттинг.
+                </li>
+              </ul>
+              <p class="muted">
+                Пожалуйста, не переносите игровые и сюжетные сценарии на реальные дороги.
+                Так мы дольше будем оставаться именно сообществом, а не сводкой происшествий.
+              </p>
+            </section>
           </div>
-        </header>
-
-        <section class="post-body">
-          <p>
-            Настоящий документ представляет собой художественную модель организации, скрытой
-            под фасадом крупного автомобильного сообщества. Любые совпадения с реальными людьми,
-            ресурсами и событиями случайны.
-          </p>
-
-          <h2>1.0. Общая характеристика</h2>
-          <p>
-            «Drive2.ru» описывается как структура двойного назначения. Снаружи — медиа-портал и
-            социальная сеть для автолюбителей. Внутри — закрытое ядро, курирующее ночные гонки
-            и значимую часть автомобильного рынка города.
-          </p>
-          <p>
-            Публичный уровень служит фасадом: создает позитивный образ, привлекает новых людей
-            и позволяет легализовывать деньги через рекламу и мероприятия. Теневой уровень
-            работает по другим правилам: закрытые чаты, личные знакомства и жёсткая иерархия.
-          </p>
-
-          <h2>2.0. Иерархия и условия членства</h2>
-          <p>
-            В ядро не попадают случайно. Кандидат должен быть старше 22 лет, иметь исправный
-            современный автомобиль, подтверждённую репутацию и две рекомендации действующих участников.
-          </p>
-          <ul>
-            <li><strong>Верхушка (Совет):</strong> несколько анонимных кураторов, определяющих стратегию и распределение финансов.</li>
-            <li><strong>Организаторы:</strong> отвечают за конкретные мероприятия, ставки, безопасность и связь с представителями власти.</li>
-            <li><strong>Проверенные:</strong> гонщики, механики и споттеры, получающие доступ к закрытым заездам и части прибыли.</li>
-            <li><strong>Кандидаты:</strong> новички на испытательном сроке, выполняющие технические поручения и участвующие в заездах с низкими ставками.</li>
-          </ul>
-
-          <h2>3.0. Направления деятельности</h2>
-          <h3>3.1. Легальное прикрытие</h3>
-          <p>
-            На уровне фасада организация поддерживает сайт, фестивали, трек-дни и выставки тюнинга.
-            Здесь формируется «витрина»: красивые проекты, медиа-охват, партнёрства с брендами.
-          </p>
-
-          <h3>3.2. Теневой контур (модель)</h3>
-          <p>
-            В закрытом контуре проводятся нелегальные форматы: дрэг-рейсинг, спринты по
-            городским маршрутам и дрифт на закрытых площадках. Вся информация распространяется
-            через ограниченные каналы связи, а локации контролируются споттерами.
-          </p>
-
-          <h2>4.0. Финансовые потоки</h2>
-          <p>
-            Доходы условной организации формируются из ставок, бай-инов за участие, членских
-            взносов и долей с самых успешных пилотов. Часть средств проходит через легальный
-            бизнес: рекламу, платные аккаунты, билеты на фестивали.
-          </p>
-
-          <h2>5.0. Дисклеймер</h2>
-          <p class="callout">
-            Описанная структура — элемент вымышленного сеттинга. Текст не является руководством
-            к действиям и не описывает реальные схемы или участников.
-          </p>
-        </section>
-      </article>
-    </section>
-
-    <!-- Правая колонка: инфоблоки + мессенджер -->
-    <aside class="rightbar">
-      <section class="info-box" id="info-public">
-        <h2 class="info-title">Кто мы</h2>
-        <p class="info-status">
-          <span class="dot dot-green"></span>
-          Статус: онлайн-сообщество автолюбителей.
-        </p>
-        <p class="info-text">
-          DRIVE2.SECTOR — платформа, где владельцы машин делятся опытом, ведут бортовые журналы
-          и обсуждают легальные мероприятия.
-        </p>
+        </div>
       </section>
 
-      <section class="info-box muted">
-        <h3 class="info-title">Важно</h3>
-        <p class="info-text">
-          Открытая часть проекта не поддерживает и не продвигает нелегальные гонки или любую
-          деятельность, которая создаёт угрозу для людей.
-        </p>
+      <!-- Сообщество -->
+      <section id="page-community" class="page hidden">
+        <div class="card">
+          <header class="card-header">
+            <div>
+              <h2>Сообщество</h2>
+              <div class="card-subtitle">
+                Анонсы и внутренняя жизнь проекта. Доступно только участникам с кодом.
+              </div>
+            </div>
+          </header>
+
+          <article class="community-post">
+            <header class="community-post-header">
+              <div class="community-date">01.12.2025</div>
+              <div class="community-label">Анонс драг‑заезда</div>
+            </header>
+
+            <h3 class="community-title">
+              Ночной драг‑заезд: ТРЦ «ГРАДЪ» → район ТЭЦ, Невский
+            </h3>
+
+            <div class="community-media">
+              <img src="img/events/drag_volchansk_2025-12-01.jpg"
+                   alt="Пригород Волчанска — туманная лесополоса и линия старой дороги">
+            </div>
+
+            <div class="community-body">
+              <p>
+                1 декабря 2025 года в рамках сюжетного сезона планируется ночной драг‑заезд
+                в пригороде пгт. Волчанск. Точка сбора по легенде — парковка у ТРЦ «ГРАДЪ»,
+                далее колонна растягивается вдоль старой дороги в сторону промышленной зоны
+                и ТЭЦ города Невский.
+              </p>
+
+              <p>
+                <strong>Что такое драг‑заезд?</strong><br>
+                В классическом понимании это короткая прямая гонка «лоб в лоб» между двумя
+                автомобилями. Важны реакция на старт, сцепление с покрытием и умение держать
+                машину по прямой. В нормальной спортивной практике драг всегда проводится на
+                закрытых трассах, с хронометрией, техкомиссией и медиками.
+              </p>
+
+              <p>
+                <strong>Правовые моменты.</strong><br>
+                Всё, что описано в этом анонсе — часть художественного мира проекта
+                «Drive2.Nevsky». Мы не призываем нарушать ПДД и законодательство РФ.
+                Любые реальные попытки устроить гонки на дорогах общего пользования
+                опасны и противозаконны. Организаторы и авторы проекта не несут
+                ответственности за действия участников в реальной жизни; ответственность
+                полностью лежит на водителе и владельце автомобиля.
+              </p>
+
+              <p>
+                Если вам хочется скорости и адреналина — используйте легальные форматы:
+                трек‑дни, картинг, официальные соревнования и лицензированные автодромы.
+                Там есть разметка, отбойники, маршалы и медики — всё, чего нет у обычной
+                городской улицы.
+              </p>
+
+              <p>
+                Внутри проекта этот заезд — повод собрать истории персонажей, показать
+                технику, обсудить подготовку машин и отыграть атмосферу ночного пригорода.
+                Следите за обновлениями: возможны изменения по маршруту, составу участников
+                и дополнительным условиям.
+              </p>
+            </div>
+          </article>
+        </div>
       </section>
 
-      <section class="info-box messenger-box">
-        <div class="messenger-header">
-          <div>
-            <h3 class="info-title">Мессенджер</h3>
-            <p class="messenger-subtitle">Публичные и закрытые чаты</p>
-          </div>
-          <button class="pill small" id="new-chat-btn">Новый чат</button>
-        </div>
+      <!-- Организация -->
+      <section id="page-org" class="page hidden">
+        <div class="card">
+          <header class="card-header">
+            <div>
+              <h2>Drive2.ru — внутренняя структура (легенда)</h2>
+              <div class="card-subtitle">
+                Художественное описание организации в сеттинге проекта. Не руководство к действию.
+              </div>
+            </div>
+          </header>
 
-        <div class="messenger-layout">
-          <div class="chat-list" id="chat-list">
-            <!-- список чатов -->
-          </div>
-          <div class="chat-main">
-            <div class="chat-title-row">
-              <span id="chat-title-label">Общий чат</span>
-              <span id="chat-privacy-label" class="chat-privacy"></span>
-            </div>
-            <div class="chat-messages" id="chat-messages">
-              <!-- сообщения -->
-            </div>
-            <form id="chat-form" class="chat-form">
-              <input id="chat-input" type="text" placeholder="Сообщение..." autocomplete="off" />
-              <button type="submit" class="btn secondary">Отправить</button>
-            </form>
+          <div class="card-body org-body">
+            <p class="muted">
+              Ниже — переработанная «оперативная справка» в рамках ролевого мира.
+              Все совпадения с реальностью случайны, а любые нелегальные активности
+              остаются элементами вымышленного сюжета.
+            </p>
+
+            <h3>1. Общая характеристика</h3>
+            <p>
+              «Drive2.ru» в игровом мире — не только большое автомобильное медиа‑сообщество,
+              но и синдикат двойного назначения. На поверхности — платформa для владельцев
+              машин, бортовые журналы, обзоры и фестивали. В тени — закрытый клуб, который
+              контролирует большую часть нелегальной гоночной активности в условном городе.
+            </p>
+
+            <h3>2. Публичный уровень</h3>
+            <ul>
+              <li><strong>Рекрутинг.</strong> Через легальный портал в клуб попадает свежая кровь.</li>
+              <li><strong>Легализация доходов.</strong> Реклама, партнёрки и мероприятия — фасад для денег.</li>
+              <li><strong>Имидж.</strong> Внешне — «просто сообщество энтузиастов», сложно придраться.</li>
+            </ul>
+
+            <h3>3. Теневой уровень</h3>
+            <p>
+              В ядре структуры находится закрытый клуб с жёсткой иерархией. Туда попадают
+              только по рекомендациям и после испытательного срока. Формально это всё
+              «просто встречи автолюбителей», по факту — координация заездов, ставок и
+              собственной службы безопасности.
+            </p>
+
+            <h4>Роли внутри легенды</h4>
+            <ul>
+              <li><strong>Совет.</strong> Несколько анонимных лидеров, задающих правила игры.</li>
+              <li><strong>Организаторы.</strong> Люди, которые проводят мероприятия и решают вопросы.</li>
+              <li><strong>Проверенные.</strong> Гонщики, механики и споттеры, прошедшие проверку.</li>
+              <li><strong>Кандидаты.</strong> Новички на испытательном сроке.</li>
+            </ul>
+
+            <h3>4. Направления активности</h3>
+            <p>
+              В сеттинге фигурируют драг‑рейсинг на закрытых площадках, ночные спринты,
+              дрифт‑сессии на условных парковках и промзонах. Все эти элементы используются
+              для построения сюжетов, конфликтов между персонажами и работы игровых служб.
+            </p>
+
+            <p class="muted">
+              В реальности мы подчёркиваем: любые подобные активности должны оставаться
+              в пределах игры, сценариев и цифрового пространства. На реальных дорогах
+              уместны только ПДД, адекватность и уважение к другим людям.
+            </p>
           </div>
         </div>
-        <p class="messenger-hint">
-          Мессенджер работает только для авторизованных пользователей и хранится в localStorage.
-        </p>
       </section>
-    </aside>
-  </main>
 
-  <!-- Модалка: ввод кода доступа -->
-  <div id="key-backdrop" class="dossier-backdrop hidden" aria-hidden="true">
-    <section class="key-panel" role="dialog" aria-modal="true" aria-labelledby="key-title">
-      <header class="dossier-header">
-        <div>
-          <h2 id="key-title">Активация доступа</h2>
-          <p class="dossier-subtitle">
-            Введите код, выданный вам куратором проекта. Неверный код не даст никакого эффекта.
-          </p>
-        </div>
-        <button id="key-close" class="icon-btn" type="button" aria-label="Закрыть">&times;</button>
-      </header>
-      <div class="key-body">
-        <label class="key-label" for="key-input">Код доступа</label>
-        <input id="key-input" class="key-input" type="password" autocomplete="off" />
-        <p class="key-hint">Пример формата: <code>site.domain_code</code></p>
-        <p id="key-message" class="key-message"></p>
-      </div>
-      <footer class="dossier-footer">
-        <button id="key-apply" class="btn secondary" type="button">Активировать</button>
-      </footer>
-    </section>
-  </div>
-
-  <!-- Модалка: авторизация / регистрация -->
-  <div id="auth-backdrop" class="dossier-backdrop hidden" aria-hidden="true">
-    <section class="key-panel" role="dialog" aria-modal="true" aria-labelledby="auth-title">
-      <header class="dossier-header">
-        <div>
-          <h2 id="auth-title">Вход в DRIVE2.SECTOR</h2>
-          <p class="dossier-subtitle">
-            Данные аккаунта хранятся только в вашем браузере. Не используйте реальные пароли.
-          </p>
-        </div>
-        <button id="auth-close" class="icon-btn" type="button" aria-label="Закрыть">&times;</button>
-      </header>
-      <div class="key-body">
-        <div class="auth-tabs">
-          <button class="auth-tab active" data-tab="login">Вход</button>
-          <button class="auth-tab" data-tab="register">Регистрация</button>
-        </div>
-
-        <form id="login-form" class="auth-form">
-          <label class="key-label" for="login-username">Никнейм</label>
-          <input id="login-username" class="key-input" autocomplete="off" />
-          <label class="key-label" for="login-password">Пароль</label>
-          <input id="login-password" class="key-input" type="password" autocomplete="off" />
-          <button type="submit" class="btn secondary full">Войти</button>
-        </form>
-
-        <form id="register-form" class="auth-form hidden">
-          <label class="key-label" for="reg-username">Никнейм</label>
-          <input id="reg-username" class="key-input" autocomplete="off" />
-          <label class="key-label" for="reg-password">Пароль</label>
-          <input id="reg-password" class="key-input" type="password" autocomplete="off" />
-          <p class="key-hint">Минимум 4 символа. Не используйте реальный пароль.</p>
-          <button type="submit" class="btn secondary full">Создать аккаунт</button>
-        </form>
-
-        <p id="auth-message" class="key-message"></p>
-      </div>
-    </section>
+    </main>
   </div>
 </div>
+
+<!-- Модалка входа/регистрации -->
+<div id="auth-modal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="auth-modal-title">Вход</h2>
+      <button id="auth-modal-close" class="icon-btn">&times;</button>
+    </div>
+    <form id="auth-form" class="modal-body">
+      <div class="form-group">
+        <label for="auth-login">Никнейм</label>
+        <input id="auth-login" class="input-text" type="text" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="auth-password">Пароль</label>
+        <input id="auth-password" class="input-text" type="password" required>
+      </div>
+      <p class="muted small">
+        Данные хранятся локально в вашем браузере. Для безопасности не используйте реальные пароли.
+      </p>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="auth-submit-btn">Войти</button>
+        <button type="button" class="btn btn-secondary" id="auth-switch-mode">Создать аккаунт</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
