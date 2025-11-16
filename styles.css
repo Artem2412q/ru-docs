@@ -1090,3 +1090,31 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Community route map */
+.community-route {
+  margin-top: 16px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.community-route-title {
+  margin: 0;
+  font-size: 15px;
+}
+
+.community-route-map {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+  overflow: hidden;
+  background: #020617;
+}
+
+.community-route-map img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
