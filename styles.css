@@ -1112,11 +1112,72 @@ body {
   border-radius: var(--radius-md);
   border: 1px solid var(--border-soft);
   overflow: hidden;
-  background: #020617;
+  min-height: 220px;
+  background: #020617 url("https://i.ibb.co/QLcH8tB/Group-166.png") center/cover no-repeat;
 }
 
 .community-route-map img {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* org wallet progress */
+.org-wallet-progress {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.org-wallet-progress-bar {
+  position: relative;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.6);
+  overflow: hidden;
+}
+
+.org-wallet-progress-fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ef4444, #f97316);
+  transition: width 0.4s ease;
+}
+
+.org-wallet-progress-label {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* compact one-line bet history */
+.bet-history-row {
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.25);
+}
+
+.bet-history-row:last-child {
+  border-bottom: none;
+}
+
+.bet-history-line {
+  font-size: 11px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: baseline;
+}
+
+.bet-history-user {
+  font-weight: 600;
+}
+
+.bet-history-amount {
+  font-weight: 500;
+}
+
+.bet-history-name {
+  font-weight: 500;
 }

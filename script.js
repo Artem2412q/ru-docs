@@ -8,6 +8,7 @@ const defaultState = {
   theme: 'dark',      // 'dark' | 'light'
   wallet: 50000,      // виртуальный баланс в кредитах
   bets: [],           // история условных ставок
+  orgOffset: 0,       // накопленный прогресс кошелька организации
 };
 
 let state = loadState();
@@ -235,11 +236,15 @@ const walletAmountSpan = document.getElementById('wallet-amount');
 const walletResetBtn = document.getElementById('wallet-reset-btn');
 const orgWalletAmountSpan = document.getElementById('org-wallet-amount');
 const orgWalletDeltaSpan = document.getElementById('org-wallet-delta');
+const orgWalletProgressFill = document.getElementById('org-wallet-progress-fill');
+const orgWalletProgressLabel = document.getElementById('org-wallet-progress-label');
 
 // базовый «скрытый» баланс организации: 3 единицы условного актива, сконвертированные в ₽
 const ORG_WALLET_BASE_UNITS = 3;
 const ORG_UNIT_TO_RUB = 6000000; // условный курс на момент сборки
 const ORG_WALLET_BASE_RUB = ORG_WALLET_BASE_UNITS * ORG_UNIT_TO_RUB;
+// целевое значение сезона для прогресс-бара (например, +50% к базовому балансу)
+const ORG_WALLET_GOAL_RUB = Math.round(ORG_WALLET_BASE_RUB * 1.5);
 
 function updateWalletUi() {
   if (!walletAmountSpan) return;
@@ -253,14 +258,27 @@ function updateOrgWalletUi() {
   // небольшие колебания вокруг базового значения, чтобы выглядело как мониторинг
   const phase = now / 60000; // минуты
   const offsetFactor = Math.sin(phase) * 0.015; // ±1.5%
-  const currentRub = Math.round(ORG_WALLET_BASE_RUB * (1 + offsetFactor));
+  const extra = Number(state.orgOffset || 0);
+  const baseWithExtra = ORG_WALLET_BASE_RUB + extra;
+  const currentRub = Math.round(baseWithExtra * (1 + offsetFactor));
+
   const diff = currentRub - ORG_WALLET_BASE_RUB;
   const sign = diff > 0 ? '+' : diff < 0 ? '−' : '';
   orgWalletAmountSpan.textContent = currentRub.toLocaleString('ru-RU');
+
   if (diff === 0) {
     orgWalletDeltaSpan.textContent = 'без изменений за минуту';
   } else {
     orgWalletDeltaSpan.textContent = `${sign}${Math.abs(diff).toLocaleString('ru-RU')} ₽ за минуту`;
+  }
+
+  // прогресс сезона: от базового значения до целевого
+  if (orgWalletProgressFill && orgWalletProgressLabel) {
+    const progressRaw = (baseWithExtra - ORG_WALLET_BASE_RUB) / (ORG_WALLET_GOAL_RUB - ORG_WALLET_BASE_RUB);
+    const progress = Math.max(0, Math.min(1, progressRaw));
+    const percent = Math.round(progress * 100);
+    orgWalletProgressFill.style.width = `${percent}%`;
+    orgWalletProgressLabel.textContent = `Прогресс сезона: ${percent}%`;
   }
 }
 
@@ -268,8 +286,10 @@ if (walletResetBtn) {
   walletResetBtn.addEventListener('click', () => {
     state.wallet = 50000;
     state.bets = [];
+    state.orgOffset = 0;
     saveState();
     updateWalletUi();
+    updateOrgWalletUi();
     renderBetHistory();
   });
 }
@@ -321,8 +341,15 @@ const CARS = [
 
 const ODDS = [1.7, 1.9, 2.1, 2.4, 2.8, 3.2, 3.6];
 
-function getRandomItem(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+// детерминированный генератор, чтобы у всех пользователей были одни и те же участники
+let earnSeed = 123456;
+function seededRandom() {
+  earnSeed = (earnSeed * 1664525 + 1013904223) % 4294967296;
+  return earnSeed / 4294967296;
+}
+function seededChoice(arr) {
+  const idx = Math.floor(seededRandom() * arr.length);
+  return arr[idx];
 }
 
 function generateParticipants(count = 6) {
@@ -333,23 +360,25 @@ function generateParticipants(count = 6) {
     let fullName;
     let attempts = 0;
     do {
-      fullName = getRandomItem(FIRST_NAMES) + ' ' + getRandomItem(LAST_NAMES);
+      const first = seededChoice(FIRST_NAMES);
+      const last = seededChoice(LAST_NAMES);
+      fullName = first + ' ' + last;
       attempts++;
-    } while (usedNames.has(fullName) && attempts < 10);
+    } while (usedNames.has(fullName) && attempts < 20);
     usedNames.add(fullName);
 
-    const races = 5 + Math.floor(Math.random() * 26); // 5-30
-    const wins = Math.floor(races * (0.25 + Math.random() * 0.45));
-    const power = 350 + Math.floor(Math.random() * 300);
-    const reaction = (0.15 + Math.random() * 0.25).toFixed(2);
-    const reliability = 60 + Math.floor(Math.random() * 40);
-    const aggression = 40 + Math.floor(Math.random() * 50);
+    const races = 5 + Math.floor(seededRandom() * 26); // 5-30
+    const wins = Math.floor(races * (0.25 + seededRandom() * 0.45));
+    const power = 350 + Math.floor(seededRandom() * 300);
+    const reaction = (0.15 + seededRandom() * 0.25).toFixed(2);
+    const reliability = 60 + Math.floor(seededRandom() * 40);
+    const aggression = 40 + Math.floor(seededRandom() * 50);
 
     participants.push({
-      id: 'p' + i + '_' + Date.now(),
+      id: 'p' + i,
       name: fullName,
-      car: getRandomItem(CARS),
-      odds: getRandomItem(ODDS),
+      car: seededChoice(CARS),
+      odds: seededChoice(ODDS),
       stats: {
         races,
         wins,
@@ -518,9 +547,14 @@ function renderEarnMain(participant) {
     const potentialWin = amount * participant.odds;
     state.wallet = current - amount;
 
+    // небольшая доля ставки уходит в прогресс кошелька организации
+    const houseCut = Math.round(amount * 0.02);
+    state.orgOffset = (Number(state.orgOffset || 0) + houseCut);
+
     // сохраняем ставку в историю до пересчёта интерфейса
     const betRecord = {
       id: Date.now(),
+      user: state.currentUser || 'Аноним',
       name: participant.name,
       car: participant.car,
       amount,
@@ -537,6 +571,7 @@ function renderEarnMain(participant) {
 
     saveState();
     updateWalletUi();
+    updateOrgWalletUi();
     renderBetHistory();
 
     const message =
@@ -567,16 +602,17 @@ function renderBetHistory() {
       const row = document.createElement('div');
       row.className = 'bet-history-row';
       row.innerHTML = `
-        <div class="bet-history-main">
-          <div class="bet-history-name">${bet.name}</div>
-          <div class="bet-history-car muted small">${bet.car}</div>
-        </div>
-        <div class="bet-history-meta">
-          <div class="bet-history-amount">${bet.amount.toLocaleString('ru-RU')} кр.</div>
-          <div class="bet-history-odds muted small">×${Number(bet.odds).toFixed(2)}</div>
-        </div>
-        <div class="bet-history-win muted small">
-          Потенц. выигрыш: ${Math.round(bet.potentialWin).toLocaleString('ru-RU')} кр.
+        <div class="bet-history-line">
+          <span class="bet-history-user">${bet.user || 'Аноним'}</span>
+          <span class="bet-history-text">поставил(а)</span>
+          <span class="bet-history-amount">${bet.amount.toLocaleString('ru-RU')} кр.</span>
+          <span class="bet-history-text">на</span>
+          <span class="bet-history-name">${bet.name}</span>
+          <span class="bet-history-car muted small">(${bet.car})</span>
+          <span class="bet-history-odds muted small">коэф. ×${Number(bet.odds).toFixed(2)}</span>
+          <span class="bet-history-win muted small">
+            / потенц. выигрыш: ${Math.round(bet.potentialWin).toLocaleString('ru-RU')} кр.
+          </span>
         </div>
       `;
       listEl.appendChild(row);
