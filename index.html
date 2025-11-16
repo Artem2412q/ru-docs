@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>DRIVE2.SECTOR — автомобили и организация</title>
+  <title>DRIVE2.SECTOR — сообщество и организация</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
   <script defer src="script.js"></script>
@@ -20,13 +20,11 @@
     </div>
     <div class="site-header-center">
       <form class="search-form" action="#" onsubmit="return false;">
-        <input type="search" placeholder="Поиск по машинам и людям" />
+        <input type="search" placeholder="Поиск по стене и машинам" />
       </form>
     </div>
-    <div class="site-header-right">
-      <button class="hdr-btn ghost">Войти</button>
-      <button class="hdr-btn ghost" id="key-open-btn">Активировать код</button>
-      <button class="hdr-btn primary">Зарегистрироваться</button>
+    <div class="site-header-right" id="auth-area">
+      <!-- сюда рендерится авторизация -->
     </div>
   </header>
 
@@ -35,6 +33,7 @@
     <aside class="sidebar">
       <nav class="side-nav" id="side-nav">
         <a href="#" class="side-link active" data-view="cars">Автомобили</a>
+        <a href="#" class="side-link" data-view="wall">Стена</a>
         <a href="#" class="side-link side-link-secret hidden" data-view="org" id="side-org-link">Организация</a>
       </nav>
     </aside>
@@ -90,12 +89,12 @@
               экспонат в разделе «как не надо».
             </li>
             <li>
-              <strong>Nissan GT‑R</strong> — тот самый «Годзилла», который заставил пересчитать рекорды круга
+              <strong>Nissan GT-R</strong> — тот самый «Годзилла», который заставил пересчитать рекорды круга
               по всему миру. Электронный мозг, который знает о зацепе больше, чем водитель.
             </li>
             <li>
               <strong>Alfa Romeo</strong> — машина для тех, кто готов любить, даже когда нужно менять
-              что‑нибудь непонятное каждые полгода. Зато характер, звук и дизайн — как у очень дорогого
+              что-нибудь непонятное каждые полгода. Зато характер, звук и дизайн — как у очень дорогого
               итальянского мотоцикла, только с крышей.
             </li>
           </ul>
@@ -112,19 +111,19 @@
             <li>имеют исправный свет, ремни безопасности и адекватный выхлоп по громкости.</li>
           </ul>
 
-          <h3>Примеры допускаемых классov</h3>
+          <h3>Примеры допускаемых классов</h3>
           <ul>
             <li>
               <strong>Street Daily</strong> — городские седаны и хэтчбеки: современные LADA, Kia/Hyundai,
               Skoda, китайские кроссоверы при хорошем техническом состоянии.
             </li>
             <li>
-              <strong>Street Performance</strong> — мощные гражданские машины: BMW M‑серии, AMG,
-              Nissan GT‑R, Subaru WRX/STI, горячие хэтчи, заряженные китайцы и т.п.
+              <strong>Street Performance</strong> — мощные гражданские машины: BMW M-серии, AMG,
+              Nissan GT-R, Subaru WRX/STI, горячие хэтчи, заряженные китайцы и т.п.
             </li>
             <li>
               <strong>Old but Gold</strong> — ухоженные youngtimer’ы и классика: W124/W140, старые M3,
-              японские купе 90‑х и редкие Alfa Romeo. Главное — состояние и безопасность.
+              японские купе 90-х и редкие Alfa Romeo. Главное — состояние и безопасность.
             </li>
           </ul>
 
@@ -136,7 +135,49 @@
         </section>
       </article>
 
-      <!-- Секретный раздел «Организация» (как раньше) -->
+      <!-- Стена -->
+      <article class="post-card hidden" id="view-wall">
+        <header class="post-header">
+          <h1 class="post-title">Стена сообщества</h1>
+          <div class="post-meta">
+            <span class="meta-pill">Посты участников</span>
+            <span class="meta-dot"></span>
+            <span class="meta-text">видят все авторизованные пользователи</span>
+          </div>
+        </header>
+
+        <section class="post-body">
+          <div class="wall-disclaimer">
+            Все данные «Стены» и мессенджера хранятся только в вашем браузере (localStorage).
+            Не используйте реальные логины и пароли.
+          </div>
+
+          <section class="create-post" id="create-post-section">
+            <h2>Новый пост</h2>
+            <form id="post-form">
+              <label class="field-label" for="post-title">Заголовок</label>
+              <input id="post-title" class="input" type="text" placeholder="Например: мой первый выезд на трек" />
+
+              <label class="field-label" for="post-text">Текст</label>
+              <textarea id="post-text" class="textarea" rows="4" placeholder="Поделитесь впечатлениями, настройкой машины или забавной историей..."></textarea>
+
+              <label class="field-label" for="post-files">Фото / видео (необязательно)</label>
+              <input id="post-files" class="input" type="file" accept="image/*,video/*" multiple />
+
+              <button type="submit" class="btn primary full">Опубликовать</button>
+            </form>
+          </section>
+
+          <section class="wall-list">
+            <h2>Лента постов</h2>
+            <div id="posts-container" class="posts-container">
+              <!-- сюда рендерятся посты -->
+            </div>
+          </section>
+        </section>
+      </article>
+
+      <!-- Секретный раздел «Организация» -->
       <article class="post-card hidden" id="view-org">
         <header class="post-header">
           <h1 class="post-title">Drive2.ru — внутренняя оперативная записка.</h1>
@@ -184,11 +225,6 @@
             На уровне фасада организация поддерживает сайт, фестивали, трек-дни и выставки тюнинга.
             Здесь формируется «витрина»: красивые проекты, медиа-охват, партнёрства с брендами.
           </p>
-          <ul>
-            <li>портал с бортовыми журналами и отчётами о легальных мероприятиях;</li>
-            <li>официальные фестивали, где оценивают технику и владельцев;</li>
-            <li>медиа-контент, влияющий на отношение аудитории к рейдам полиции и конкурентам.</li>
-          </ul>
 
           <h3>3.2. Теневой контур (модель)</h3>
           <p>
@@ -203,11 +239,6 @@
             взносов и долей с самых успешных пилотов. Часть средств проходит через легальный
             бизнес: рекламу, платные аккаунты, билеты на фестивали.
           </p>
-          <p>
-            Расходы включают оплату инфраструктуры, призовые фонды, информационную безопасность,
-            «смазку» бюрократических механизмов и резервный фонд на непредвиденные ситуации.
-            Оставшаяся прибыль распределяется между членами Совета.
-          </p>
 
           <h2>5.0. Дисклеймер</h2>
           <p class="callout">
@@ -218,7 +249,7 @@
       </article>
     </section>
 
-    <!-- Правая колонка: инфоблоки -->
+    <!-- Правая колонка: инфоблоки + мессенджер -->
     <aside class="rightbar">
       <section class="info-box" id="info-public">
         <h2 class="info-title">Кто мы</h2>
@@ -237,6 +268,38 @@
         <p class="info-text">
           Открытая часть проекта не поддерживает и не продвигает нелегальные гонки или любую
           деятельность, которая создаёт угрозу для людей.
+        </p>
+      </section>
+
+      <section class="info-box messenger-box">
+        <div class="messenger-header">
+          <div>
+            <h3 class="info-title">Мессенджер</h3>
+            <p class="messenger-subtitle">Публичные и закрытые чаты</p>
+          </div>
+          <button class="pill small" id="new-chat-btn">Новый чат</button>
+        </div>
+
+        <div class="messenger-layout">
+          <div class="chat-list" id="chat-list">
+            <!-- список чатов -->
+          </div>
+          <div class="chat-main">
+            <div class="chat-title-row">
+              <span id="chat-title-label">Общий чат</span>
+              <span id="chat-privacy-label" class="chat-privacy"></span>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+              <!-- сообщения -->
+            </div>
+            <form id="chat-form" class="chat-form">
+              <input id="chat-input" type="text" placeholder="Сообщение..." autocomplete="off" />
+              <button type="submit" class="btn secondary">Отправить</button>
+            </form>
+          </div>
+        </div>
+        <p class="messenger-hint">
+          Мессенджер работает только для авторизованных пользователей и хранится в localStorage.
         </p>
       </section>
     </aside>
@@ -263,6 +326,46 @@
       <footer class="dossier-footer">
         <button id="key-apply" class="btn secondary" type="button">Активировать</button>
       </footer>
+    </section>
+  </div>
+
+  <!-- Модалка: авторизация / регистрация -->
+  <div id="auth-backdrop" class="dossier-backdrop hidden" aria-hidden="true">
+    <section class="key-panel" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <header class="dossier-header">
+        <div>
+          <h2 id="auth-title">Вход в DRIVE2.SECTOR</h2>
+          <p class="dossier-subtitle">
+            Данные аккаунта хранятся только в вашем браузере. Не используйте реальные пароли.
+          </p>
+        </div>
+        <button id="auth-close" class="icon-btn" type="button" aria-label="Закрыть">&times;</button>
+      </header>
+      <div class="key-body">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Вход</button>
+          <button class="auth-tab" data-tab="register">Регистрация</button>
+        </div>
+
+        <form id="login-form" class="auth-form">
+          <label class="key-label" for="login-username">Никнейм</label>
+          <input id="login-username" class="key-input" autocomplete="off" />
+          <label class="key-label" for="login-password">Пароль</label>
+          <input id="login-password" class="key-input" type="password" autocomplete="off" />
+          <button type="submit" class="btn secondary full">Войти</button>
+        </form>
+
+        <form id="register-form" class="auth-form hidden">
+          <label class="key-label" for="reg-username">Никнейм</label>
+          <input id="reg-username" class="key-input" autocomplete="off" />
+          <label class="key-label" for="reg-password">Пароль</label>
+          <input id="reg-password" class="key-input" type="password" autocomplete="off" />
+          <p class="key-hint">Минимум 4 символа. Не используйте реальный пароль.</p>
+          <button type="submit" class="btn secondary full">Создать аккаунт</button>
+        </form>
+
+        <p id="auth-message" class="key-message"></p>
+      </div>
     </section>
   </div>
 </div>
