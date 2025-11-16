@@ -731,19 +731,3 @@ html {
 #apply-status {
   min-height: 18px;
 }
-
-.apply-list {
-  margin-top: 8px;
-  border-top: 1px dashed var(--border-soft);
-  padding-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.apply-item {
-  font-size: 13px;
-  padding: 6px 8px;
-  border-radius: var(--radius-md);
-  background: var(--bg-card-soft);
-}
