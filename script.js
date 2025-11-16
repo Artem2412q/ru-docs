@@ -248,7 +248,8 @@ themeToggleBtn.addEventListener('click', () => {
    Раздел «Заработок» — генерация карточек
    ========================= */
 
-const earnGrid = document.getElementById('earn-grid');
+const earnMain = document.getElementById('earn-main');
+const earnList = document.getElementById('earn-list');
 
 const FIRST_NAMES = [
   'Алексей', 'Дмитрий', 'Иван', 'Максим', 'Сергей',
@@ -316,119 +317,150 @@ function generateParticipants(count = 6) {
 }
 
 let participantsCache = [];
+let selectedParticipantId = null;
 
-function renderEarnCards() {
-  if (!earnGrid) return;
-  earnGrid.innerHTML = '';
-  participantsCache = generateParticipants(6);
-
+function renderEarnList() {
+  if (!earnList) return;
+  earnList.innerHTML = '';
   participantsCache.forEach((p, index) => {
-    const card = document.createElement('div');
-    card.className = 'earn-card';
-    card.dataset.id = p.id;
+    const mini = document.createElement('div');
+    mini.className = 'earn-mini-card';
+    mini.dataset.id = p.id;
 
-    card.innerHTML = `
-      <div class="earn-main">
-        <div class="earn-row earn-header-row">
-          <div class="earn-name">${p.name}</div>
-          <div class="earn-tag">Участник #${index + 1}</div>
+    mini.innerHTML = `
+      <div class="earn-mini-top">
+        <div class="earn-mini-name">${p.name}</div>
+        <div class="earn-mini-tag">#${index + 1}</div>
+      </div>
+      <div class="earn-mini-row">
+        <div class="earn-mini-label">Автомобиль</div>
+        <div class="earn-mini-value">${p.car}</div>
+      </div>
+      <div class="earn-mini-row">
+        <div class="earn-mini-label">Коэфф.</div>
+        <div class="earn-mini-value earn-mini-odds">×${p.odds.toFixed(2)}</div>
+      </div>
+    `;
+
+    mini.addEventListener('click', () => {
+      selectParticipant(p.id);
+    });
+
+    earnList.appendChild(mini);
+  });
+
+  // если уже кто-то выбран — подсветим
+  highlightSelectedInList();
+}
+
+function highlightSelectedInList() {
+  if (!earnList) return;
+  const cards = Array.from(earnList.querySelectorAll('.earn-mini-card'));
+  cards.forEach(card => {
+    const isSelected = card.dataset.id === selectedParticipantId;
+    card.classList.toggle('selected', isSelected);
+  });
+}
+
+function renderEarnMain(participant) {
+  if (!earnMain) return;
+  if (!participant) {
+    earnMain.innerHTML = `
+      <div class="earn-main-placeholder muted small">
+        Выберите участника справа, чтобы увидеть детальную статистику по нему и автомобилю.
+      </div>
+    `;
+    return;
+  }
+
+  earnMain.innerHTML = `
+    <div class="earn-main-card">
+      <div class="earn-main-header">
+        <div>
+          <div class="earn-main-name">${participant.name}</div>
+          <div class="earn-main-car">${participant.car}</div>
         </div>
-        <div class="earn-row">
-          <div class="earn-label">Автомобиль</div>
-          <div class="earn-value">${p.car}</div>
-        </div>
-        <div class="earn-row">
-          <div class="earn-label">Коэффициент на победу</div>
-          <div class="earn-value odds">×${p.odds.toFixed(2)}</div>
-        </div>
-        <div class="earn-row earn-bet-row">
-          <div class="earn-label">Условная ставка</div>
-          <div class="earn-bet-controls">
-            <select class="earn-select">
-              <option value="500">500 кредитов</option>
-              <option value="1000">1 000 кредитов</option>
-              <option value="2000">2 000 кредитов</option>
-              <option value="5000">5 000 кредитов</option>
-            </select>
-            <button type="button" class="btn btn-primary btn-xs earn-bet-btn">Поставить</button>
-          </div>
+        <div class="earn-main-odds">
+          Коэффициент<br>
+          <strong>×${participant.odds.toFixed(2)}</strong>
         </div>
       </div>
+
+      <div class="earn-main-meta">
+        <span class="earn-pill">Заездов: ${participant.stats.races}</span>
+        <span class="earn-pill">Побед: ${participant.stats.wins}</span>
+        <span class="earn-pill">Мощность: ${participant.stats.power} л.с.</span>
+        <span class="earn-pill">Реакция: ${participant.stats.reaction} с</span>
+        <span class="earn-pill">Надёжность: ${participant.stats.reliability}%</span>
+        <span class="earn-pill">Агрессия: ${participant.stats.aggression}%</span>
+      </div>
+
       <div class="earn-orbit">
         <div class="earn-orbit-ring"></div>
         <div class="earn-orbit-center">
-          <div class="earn-orbit-name">${p.name}</div>
-          <div class="earn-orbit-car">${p.car}</div>
-          <div class="earn-orbit-odds">Коэф. ×${p.odds.toFixed(2)}</div>
+          <div class="earn-orbit-name">${participant.name}</div>
+          <div class="earn-orbit-car">${participant.car}</div>
+          <div class="earn-orbit-odds">Коэф. ×${participant.odds.toFixed(2)}</div>
         </div>
         <div class="earn-orbit-item pos-top">
-          Заездов<br><strong>${p.stats.races}</strong>
+          Заездов<br><strong>${participant.stats.races}</strong>
         </div>
         <div class="earn-orbit-item pos-right">
-          Побед<br><strong>${p.stats.wins}</strong>
+          Побед<br><strong>${participant.stats.wins}</strong>
         </div>
         <div class="earn-orbit-item pos-bottom">
-          Мощность<br><strong>${p.stats.power} л.с.</strong>
+          Мощность<br><strong>${participant.stats.power} л.с.</strong>
         </div>
         <div class="earn-orbit-item pos-left">
-          Реакция<br><strong>${p.stats.reaction} с</strong>
+          Реакция<br><strong>${participant.stats.reaction} с</strong>
         </div>
         <div class="earn-orbit-item pos-diag-left">
-          Надёжность<br><strong>${p.stats.reliability}%</strong>
+          Надёжность<br><strong>${participant.stats.reliability}%</strong>
         </div>
         <div class="earn-orbit-item pos-diag-right">
-          Агрессия<br><strong>${p.stats.aggression}%</strong>
+          Агрессия<br><strong>${participant.stats.aggression}%</strong>
         </div>
+      </div>
+
+      <div class="earn-main-footer">
+        <select class="earn-select">
+          <option value="500">500 кредитов</option>
+          <option value="1000">1 000 кредитов</option>
+          <option value="2000">2 000 кредитов</option>
+          <option value="5000">5 000 кредитов</option>
+        </select>
+        <button type="button" class="btn btn-primary btn-xs earn-main-bet-btn">
+          Поставить (игрово)
+        </button>
       </div>
       <p class="earn-note muted small">
         Потенциальный выигрыш считается по формуле: ставка × коэффициент.
         Все кредиты внутриигровые, реальные деньги не используются.
       </p>
-    `;
+    </div>
+  `;
 
-    const betBtn = card.querySelector('.earn-bet-btn');
-    const select = card.querySelector('.earn-select');
+  const betBtn = earnMain.querySelector('.earn-main-bet-btn');
+  const selectEl = earnMain.querySelector('.earn-select');
 
-    // Ставка — только расчёт, без переключения анимации
-    betBtn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const amount = Number(select.value || 0);
-      const potentialWin = amount * p.odds;
+  betBtn.addEventListener('click', () => {
+    const amount = Number(selectEl.value || 0);
+    const potentialWin = amount * participant.odds;
 
-      const message =
-        `Вы условно поставили ${amount.toLocaleString('ru-RU')} кредитов на участника "${p.name}".` +
-        `\n\nТеоретический выигрыш (игровой): ${potentialWin.toLocaleString('ru-RU', {maximumFractionDigits: 0})} кредитов.` +
-        `\n\nВсе расчёты остаются частью сеттинга проекта, реальные деньги не используются.`;
+    const message =
+      `Вы условно поставили ${amount.toLocaleString('ru-RU')} кредитов на участника "${participant.name}".` +
+      `\n\nТеоретический выигрыш (игровой): ${potentialWin.toLocaleString('ru-RU', {maximumFractionDigits: 0})} кредитов.` +
+      `\n\nВсе расчёты остаются частью сеттинга проекта, реальные деньги не используются.`;
 
-      alert(message);
-    });
-
-    // Выбор кандидата — плавная анимация и раскрытие статистики
-    card.addEventListener('click', () => {
-      expandEarnCard(p.id);
-    });
-
-    earnGrid.appendChild(card);
+    alert(message);
   });
 }
 
-function expandEarnCard(id) {
-  if (!earnGrid) return;
-
-  const cards = Array.from(earnGrid.querySelectorAll('.earn-card'));
-  let target = null;
-
-  cards.forEach(card => {
-    const isTarget = card.dataset.id === id;
-    if (isTarget) target = card;
-    card.classList.toggle('earn-card-expanded', isTarget);
-    card.classList.toggle('earn-card-collapsed', !isTarget);
-  });
-
-  if (target) {
-    earnGrid.classList.add('earn-expanded-mode');
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+function selectParticipant(id) {
+  selectedParticipantId = id;
+  const participant = participantsCache.find(p => p.id === id) || null;
+  highlightSelectedInList();
+  renderEarnMain(participant);
 }
 
 /* =========================
