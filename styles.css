@@ -1,48 +1,18 @@
-:root {
-  /* Базовые цвета (светлая тема) */
-  --bg-app: #f3f4f6;
-  --bg-topbar: #ffffff;
-  --bg-sidebar: #f9fafb;
-  --bg-card: #ffffff;
-  --bg-card-soft: #f9fafb;
-  --bg-block-soft: #f3f4f6;
 
+:root {
+  --bg-main: #f5f5f5;
+  --bg-elevated: #ffffff;
+  --bg-sidebar: #f3f4f6;
+  --bg-topbar: #f8fafc;
+  --border-soft: #d4d4d8;
+  --border-strong: #a1a1aa;
   --text-main: #111827;
   --text-muted: #6b7280;
-
-  --border-soft: #e5e7eb;
-  --border-strong: #d1d5db;
-
-  --accent-red: #e31e24;
+  --accent-red: #dc2626;
   --accent-red-soft: #fee2e2;
-  --accent-amber: #f97316;
-
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-
-  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+  --accent-dark: #7f1d1d;
+  --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.12);
 }
-
-/* Тёмная тема переопределяет переменные */
-body.theme-dark {
-  --bg-app: #020617;
-  --bg-topbar: #020617;
-  --bg-sidebar: #020617;
-  --bg-card: #020617;
-  --bg-card-soft: #020617;
-  --bg-block-soft: #020617;
-
-  --text-main: #e5e7eb;
-  --text-muted: #9ca3af;
-
-  --border-soft: #1f2937;
-  --border-strong: #374151;
-
-  --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.7);
-}
-
-/* Сбросы */
 
 *,
 *::before,
@@ -57,10 +27,8 @@ html, body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* Базовая разметка */
-
-body {
-  background: var(--bg-app);
+body.theme-dark {
+  background: var(--bg-main);
   color: var(--text-main);
 }
 
@@ -71,41 +39,39 @@ body {
 /* Topbar */
 
 .topbar {
-  height: 56px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 18px;
   background: var(--bg-topbar);
   border-bottom: 1px solid var(--border-soft);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .logo-badge {
-  min-width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 999px;
-  background: var(--accent-red);
+  background: radial-gradient(circle at 30% 20%, #fecaca 0, var(--accent-red) 50%, #7f1d1d 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-main);
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.9), 0 8px 18px rgba(34, 197, 94, 0.55);
 }
 
 .topbar-title .brand-name {
   font-size: 15px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -117,7 +83,7 @@ body {
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .auth-block {
@@ -136,14 +102,10 @@ body {
 .layout {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 18px 20px 32px;
-  gap: 20px;
-}
-
-.main {
-  min-height: 0;
+  padding: 16px 18px 32px;
+  gap: 16px;
 }
 
 /* Sidebar */
@@ -154,16 +116,16 @@ body {
 
 .sidebar-section {
   background: var(--bg-sidebar);
-  border-radius: var(--radius-lg);
-  padding: 12px 10px 12px;
+  border-radius: 16px;
+  padding: 10px 10px 12px;
   border: 1px solid var(--border-soft);
   box-shadow: var(--shadow-soft);
 }
 
 .sidebar-caption {
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: var(--text-muted);
   margin-bottom: 8px;
 }
@@ -174,18 +136,18 @@ body {
   border: none;
   background: transparent;
   color: var(--text-main);
-  padding: 7px 10px;
-  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  border-radius: 9px;
   font-size: 14px;
   cursor: pointer;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .nav-item:hover {
-  background: rgba(227, 30, 36, 0.06);
+  background: rgba(220, 38, 38, 0.08);
 }
 
 .nav-item-active {
@@ -194,29 +156,28 @@ body {
 }
 
 .nav-item-active:hover {
-  background: #c81e1e;
+  background: #b91c1c;
 }
 
 .nav-dot {
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--accent-red);
 }
 
 /* Buttons & inputs */
 
 .btn {
   border-radius: 999px;
-  border: 1px solid transparent;
-  padding: 6px 14px;
+  border: none;
+  padding: 8px 14px;
   font-size: 13px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
 }
 
 .btn-xs {
@@ -225,45 +186,34 @@ body {
 }
 
 .btn-primary {
-  background: var(--accent-red);
-  color: #ffffff;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #022c22;
+  font-weight: 600;
 }
 
 .btn-primary:hover {
-  background: #c81e1e;
+  background: linear-gradient(135deg, #16a34a, #15803d);
 }
 
 .btn-secondary {
-  background: transparent;
+  background: #0f172a;
   color: var(--text-main);
-  border-color: var(--border-soft);
+  border: 1px solid #374151;
 }
 
 .btn-secondary:hover {
-  background: rgba(148, 163, 184, 0.12);
+  background: #111827;
 }
 
 .btn-ghost {
   background: transparent;
   color: var(--text-main);
+  border: 1px solid transparent;
 }
 
 .btn-ghost:hover {
-  background: rgba(148, 163, 184, 0.12);
-}
-
-.btn-success {
-  background: #faf5f5;
-  color: #7f1d1d;
-  border-color: #fecaca;
-}
-
-.btn-success:hover {
-  background: #fee2e2;
-}
-
-.btn:active {
-  transform: translateY(1px);
+  border-color: #374151;
+  background: #ffffff;
 }
 
 .icon-btn {
@@ -271,7 +221,7 @@ body {
   background: transparent;
   cursor: pointer;
   padding: 2px 6px;
-  font-size: 18px;
+  font-size: 20px;
   color: var(--text-muted);
 }
 
@@ -283,24 +233,23 @@ body {
 
 .input-text {
   width: 100%;
-  padding: 7px 10px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-strong);
-  background: var(--bg-card-soft);
+  padding: 7px 9px;
+  border-radius: 9px;
+  border: 1px solid #374151;
+  background: #020617;
   color: var(--text-main);
   font-size: 14px;
 }
 
-.input-text::placeholder {
-  color: var(--text-muted);
-}
-
 .input-text:focus {
-  outline: 2px solid rgba(227, 30, 36, 0.4);
-  border-color: rgba(227, 30, 36, 0.6);
+  outline: 1px solid #1d4ed8;
 }
 
-/* Page visibility */
+/* Main */
+
+.main {
+  min-height: 0;
+}
 
 .page {
   display: none;
@@ -313,9 +262,9 @@ body {
 /* Cards */
 
 .card {
-  background: linear-gradient(135deg, rgba(227, 30, 36, 0.04), var(--bg-card));
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-soft);
+  background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.3), #020617 46%);
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
   box-shadow: var(--shadow-soft);
   padding: 14px 16px 16px;
 }
@@ -354,15 +303,15 @@ body {
 
 .cars-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
   gap: 14px;
 }
 
 .cars-block {
-  background: var(--bg-block-soft);
-  border-radius: var(--radius-md);
+  background: rgba(15, 23, 42, 0.92);
+  border-radius: 12px;
   padding: 10px 12px;
-  border: 1px solid var(--border-soft);
+  border: 1px solid rgba(55, 65, 81, 0.7);
 }
 
 .cars-block h3 {
@@ -377,16 +326,22 @@ body {
 
 .cars-block-highlight {
   grid-column: span 2;
-  background: linear-gradient(135deg, rgba(220, 38, 38, 0.06), var(--bg-card));
+  background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.18), rgba(15, 23, 42, 0.95));
+}
+
+.cars-block-highlight ul {
+  margin: 0 0 6px 18px;
+  padding: 0;
 }
 
 /* Community */
 
 .community-post {
-  background: var(--bg-card-soft);
-  border-radius: var(--radius-md);
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 14px;
   padding: 10px 12px 12px;
   border: 1px solid var(--border-soft);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -407,8 +362,8 @@ body {
 .community-label {
   padding: 2px 8px;
   border-radius: 999px;
-  background: rgba(248, 113, 113, 0.16);
-  color: #b91c1c;
+  background: rgba(37, 99, 235, 0.2);
+  color: #bfdbfe;
   font-size: 11px;
 }
 
@@ -418,7 +373,7 @@ body {
 }
 
 .community-media {
-  border-radius: var(--radius-md);
+  border-radius: 10px;
   overflow: hidden;
   margin-bottom: 8px;
   max-height: 260px;
@@ -453,352 +408,12 @@ body {
   padding-left: 18px;
 }
 
-
-/* Earn */
-
-.earn-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.earn-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.1fr);
-  gap: 14px;
-  align-items: flex-start;
-}
-
-.earn-main-slot {
-  min-height: 260px;
-  position: relative;
-}
-
-.earn-main-placeholder {
-  padding: 18px 14px;
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--border-soft);
-  background: var(--bg-card-soft);
-}
-
-.earn-main-card {
-  position: relative;
-  background: var(--bg-card-soft);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-soft);
-  padding: 12px 14px 14px;
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.35);
-  overflow: hidden;
-  animation: earn-main-pop 0.45s ease forwards;
-  opacity: 0;
-  transform: translateY(14px) scale(0.96);
-}
-
-@keyframes earn-main-pop {
-  0% {
-    opacity: 0;
-    transform: translateY(18px) scale(0.92);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(4px) scale(1.02);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.earn-main-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.earn-main-name {
-  font-weight: 600;
-  font-size: 15px;
-}
-
-.earn-main-car {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.earn-main-odds {
-  font-size: 13px;
-  text-align: right;
-}
-
-.earn-main-odds strong {
-  font-variant-numeric: tabular-nums;
-}
-
-.earn-main-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.earn-pill {
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: #111827;
-  color: #f9fafb;
-}
-
-.earn-main-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.earn-main-footer .earn-select {
-  min-width: 120px;
-}
-
-/* список справа */
-
-.earn-list-slot {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 420px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.earn-mini-card {
-  background: var(--bg-card-soft);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-soft);
-  padding: 8px 10px;
-  font-size: 13px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
-}
-
-.earn-mini-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.earn-mini-name {
-  font-weight: 500;
-}
-
-.earn-mini-tag {
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: rgba(248, 113, 113, 0.16);
-  color: #7f1d1d;
-}
-
-.earn-mini-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.earn-mini-label {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.earn-mini-value {
-  font-size: 12px;
-}
-
-.earn-mini-odds {
-  font-variant-numeric: tabular-nums;
-  font-weight: 500;
-}
-
-.earn-mini-card:hover {
-  background: #fef2f2;
-  border-color: #fecaca;
-  transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-}
-
-.earn-mini-card.selected {
-  background: #7f1d1d;
-  border-color: #fecaca;
-  color: #fef2f2;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-}
-
-.earn-mini-card.selected .earn-mini-label {
-  color: #fee2e2;
-}
-
-.earn-mini-card.selected .earn-mini-tag {
-  background: rgba(254, 226, 226, 0.22);
-  color: #fee2e2;
-}
-
-/* круговая статистика */
-
-.earn-orbit {
-  position: relative;
-  width: 260px;
-  height: 260px;
-  margin: 8px auto 4px;
-}
-
-.earn-orbit-ring {
-  position: absolute;
-  inset: 24px;
-  border-radius: 999px;
-  border: 1px dashed rgba(248, 113, 113, 0.8);
-  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.2);
-  animation: earn-orbit-spin 18s linear infinite;
-}
-
-@keyframes earn-orbit-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.earn-orbit-center {
-  position: absolute;
-  inset: 70px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 30% 15%, #ef4444, #7f1d1d);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 10px;
-  font-size: 12px;
-  color: #f9fafb;
-}
-
-.earn-orbit-name {
-  font-weight: 600;
-  margin-bottom: 2px;
-  font-size: 13px;
-}
-
-.earn-orbit-car {
-  opacity: 0.9;
-  margin-bottom: 2px;
-}
-
-.earn-orbit-odds {
-  font-weight: 600;
-  opacity: 0.95;
-}
-
-.earn-orbit-item {
-  position: absolute;
-  min-width: 92px;
-  max-width: 120px;
-  padding: 4px 7px;
-  border-radius: 999px;
-  background: #111827;
-  color: #f9fafb;
-  font-size: 11px;
-  text-align: center;
-  line-height: 1.3;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
-  transform-origin: center;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.7);
-  animation: orbit-pop 0.5s ease forwards;
-}
-
-@keyframes orbit-pop {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.4);
-  }
-  60% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.05);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-.earn-orbit-item strong {
-  font-size: 12px;
-}
-
-.earn-orbit-item.pos-top {
-  top: 7%;
-  left: 50%;
-}
-
-.earn-orbit-item.pos-bottom {
-  top: 93%;
-  left: 50%;
-}
-
-.earn-orbit-item.pos-left {
-  top: 50%;
-  left: 5%;
-}
-
-.earn-orbit-item.pos-right {
-  top: 50%;
-  left: 95%;
-}
-
-.earn-orbit-item.pos-diag-left {
-  top: 20%;
-  left: 10%;
-}
-
-.earn-orbit-item.pos-diag-right {
-  top: 80%;
-  left: 90%;
-}
-
-/* Responsive */
-
-@media (max-width: 960px) {
-  .earn-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .earn-list-slot {
-    max-height: none;
-    order: -1;
-  }
-
-  .earn-orbit {
-    width: 220px;
-    height: 220px;
-  }
-}
-
-@media (max-width: 640px) {
-  .earn-orbit {
-    width: 200px;
-    height: 200px;
-  }
-}
-
 /* Modal */
 
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(15, 23, 42, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -811,11 +426,11 @@ body {
 
 .modal {
   width: 100%;
-  max-width: 380px;
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-soft);
-  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.7);
+  max-width: 360px;
+  background: #020617;
+  border-radius: 16px;
+  border: 1px solid #1f2937;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.95);
   padding: 14px 16px 12px;
 }
 
@@ -875,365 +490,228 @@ body {
   .cars-block-highlight {
     grid-column: span 1;
   }
-
-  .earn-grid.earn-expanded-mode {
-    grid-template-columns: 1fr;
-  }
-
-  .earn-card-collapsed {
-    transform: translateX(0) scale(0.97);
-  }
 }
 
-@media (max-width: 640px) {
-  .topbar {
-    padding: 0 10px;
-  }
 
-  .layout {
-    padding: 14px 10px 24px;
-  }
+/* === Drive2-style dark layout overrides === */
 
-  .earn-orbit {
-    width: 210px;
-    height: 210px;
-  }
+body {
+  background: #181818;
 }
 
-/* Earn wallet */
-.earn-wallet {
-  margin-top: 8px;
-  margin-bottom: 6px;
-  padding: 8px 10px;
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--border-soft);
-  background: var(--bg-card-soft);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+body.theme-dark {
+  background: #181818;
+  color: #f5f5f5;
 }
 
-.earn-wallet-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
+/* Top bar */
+
+.topbar {
+  background: #111111;
+  border-bottom: 1px solid #262626;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  padding: 6px 20px;
 }
 
-.earn-wallet-value {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.earn-wallet-row {
-  margin-top: 8px;
-  margin-bottom: 4px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
-  gap: 10px;
-  align-items: stretch;
-}
-
-.earn-wallet .btn {
-  margin-left: auto;
-}
-
-.org-wallet {
-  padding: 8px 10px;
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--border-soft);
-  background: radial-gradient(circle at 10% 0%, rgba(248, 113, 113, 0.12), var(--bg-card-soft));
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-}
-
-.org-wallet-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-}
-
-.org-wallet-main {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.org-wallet-sub {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-/* история ставок */
-
-.bet-history {
-  margin-top: 10px;
-  border-top: 1px dashed var(--border-soft);
-  padding-top: 8px;
-}
-
-.bet-history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-  font-size: 13px;
-}
-
-.bet-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-height: 150px;
-  overflow-y: auto;
-}
-
-.bet-history-row {
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-soft);
-  padding: 6px 8px;
-  background: var(--bg-card-soft);
-  font-size: 12px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
-  gap: 4px 10px;
-}
-
-.bet-history-main {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.bet-history-name {
-  font-weight: 500;
-}
-
-.bet-history-meta {
-  text-align: right;
-}
-
-.bet-history-amount {
-  font-weight: 600;
-}
-
-.bet-history-odds {
-  font-variant-numeric: tabular-nums;
-}
-
-.bet-history-win {
-  grid-column: 1 / -1;
-}
-
-.bet-history-empty {
-  padding: 6px 8px;
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--border-soft);
-}
-
-/* логотип организации в блоке авто */
-
-.cars-block-with-logo {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: 14px;
-  align-items: center;
-}
-
-.org-logo-block {
-  min-height: 160px;
-  border-radius: var(--radius-lg);
-  border: 1px dashed var(--border-soft);
-  background: radial-gradient(circle at 20% 0%, rgba(248, 113, 113, 0.16), var(--bg-card-soft));
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-}
-
-.org-logo-emblem {
-  width: 64px;
-  height: 64px;
-  border-radius: 999px;
-  background: #111827;
-  color: #f9fafb;
-  display: flex;
+.logo-badge {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 4px 10px;
+  border-radius: 3px;
+  background: #e31e24;
+  box-shadow: none;
+}
+
+.logo-badge-inner {
   font-weight: 700;
-  font-size: 24px;
   letter-spacing: 0.08em;
 }
 
-.org-logo-text {
-  text-align: center;
+/* Layout */
+
+.main {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 16px 0 32px;
 }
 
-.org-logo-title {
-  font-weight: 600;
-  font-size: 15px;
+.layout {
+  align-items: flex-start;
+  gap: 24px;
 }
 
-.org-logo-tagline {
-  font-size: 12px;
-  color: var(--text-muted);
+.sidebar {
+  width: 220px;
 }
 
-@media (max-width: 960px) {
-  .earn-wallet-row {
-    grid-template-columns: 1fr;
-  }
-
-  .cars-block-with-logo {
-    grid-template-columns: 1fr;
-  }
+.sidebar-section {
+  background: #111111;
+  border-radius: 4px;
+  padding: 12px 10px 12px;
+  border: 1px solid #262626;
+  box-shadow: none;
 }
 
-/* Community route map */
+.nav-header {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #9ca3af;
+  margin: 0 0 8px 2px;
+}
+
+.nav-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: #e5e7eb;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.nav-item span {
+  color: inherit;
+}
+
+.nav-item:hover {
+  background: #272727;
+}
+
+.nav-item-active {
+  background: #e31e24;
+  color: #ffffff;
+}
+
+.nav-item-active:hover {
+  background: #c81e1e;
+}
+
+/* Cards / content */
+
+.card {
+  background: #202020;
+  border-radius: 4px;
+  border: 1px solid #2a2a2a;
+  box-shadow: none;
+  padding: 14px 16px 16px;
+}
+
+.card-header h2 {
+  font-size: 17px;
+}
+
+.page-title,
+.card h1,
+.card h2,
+.card h3 {
+  color: #f9fafb;
+}
+
+/* Inputs & buttons */
+
+.input,
+.input-inline,
+.auth-input {
+  background: #111827;
+  border-radius: 3px;
+  border: 1px solid #374151;
+  color: #e5e7eb;
+}
+
+.input::placeholder,
+.input-inline::placeholder,
+.auth-input::placeholder {
+  color: #6b7280;
+}
+
+.btn {
+  border-radius: 3px;
+  font-size: 13px;
+}
+
+.btn-primary {
+  background: #e31e24;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #c81e1e;
+}
+
+.btn-secondary {
+  background: #111827;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+}
+
+.btn-secondary:hover {
+  background: #1f2933;
+}
+
+/* Cars & community blocks */
+
+.cars-grid {
+  gap: 12px;
+}
+
+.cars-block {
+  background: #181818;
+  border-radius: 4px;
+  padding: 10px 12px;
+  border: 1px solid #2a2a2a;
+}
+
+.cars-block-highlight {
+  background: #111111;
+}
+
+.community-post {
+  background: #181818;
+  border-radius: 4px;
+  padding: 10px 12px 12px;
+  border: 1px solid #2a2a2a;
+  box-shadow: none;
+}
+
+/* Auth box */
+
+.auth-box {
+  background: #111111;
+  border-radius: 4px;
+  border: 1px solid #262626;
+}
+
+/* Simple scroll tuning for dark background */
+
+body,
+html {
+  color-scheme: dark;
+}
+
+
+
+/* Сообщество: карта заезда */
 .community-route {
-  margin-top: 16px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border-soft);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin-top: 18px;
 }
 
 .community-route-title {
-  margin: 0;
-  font-size: 15px;
+  margin-bottom: 6px;
 }
 
 .community-route-map {
+  margin-top: 10px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-soft);
   overflow: hidden;
-  min-height: 220px;
-  background: #020617 url("https://i.ibb.co/QLcH8tB/Group-166.png") center/cover no-repeat;
+  background: #020617;
 }
 
 .community-route-map img {
   display: block;
   width: 100%;
   height: auto;
-}
-
-/* org wallet progress */
-.org-wallet-progress {
-  margin-top: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.org-wallet-progress-bar {
-  position: relative;
-  height: 4px;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.6);
-  overflow: hidden;
-}
-
-.org-wallet-progress-fill {
-  position: absolute;
-  inset: 0;
-  width: 0%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #ef4444, #f97316);
-  transition: width 0.4s ease;
-}
-
-.org-wallet-progress-label {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-/* compact one-line bet history */
-.bet-history-row {
-  padding: 4px 0;
-  border-bottom: 1px dashed rgba(148, 163, 184, 0.25);
-}
-
-.bet-history-row:last-child {
-  border-bottom: none;
-}
-
-.bet-history-line {
-  font-size: 11px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  align-items: baseline;
-}
-
-.bet-history-user {
-  font-weight: 600;
-}
-
-.bet-history-amount {
-  font-weight: 500;
-}
-
-.bet-history-name {
-  font-weight: 500;
-}
-
-/* лидирующий участник по ставкам */
-.earn-mini-card.earn-mini-popular {
-  border-color: #f97316;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
-}
-
-.earn-mini-popular-label {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  background: linear-gradient(90deg, #ef4444, #f97316);
-  color: #fef2f2;
-}
-
-/* анимация прогресса кошелька организации */
-.org-wallet-progress-fill.bump {
-  animation: wallet-bump 0.45s ease;
-}
-
-@keyframes wallet-bump {
-  0% { transform: scaleX(1); }
-  50% { transform: scaleX(1.03); }
-  100% { transform: scaleX(1); }
-}
-
-.earn-season {
-  margin-bottom: 6px;
-  font-size: 11px;
-}
-.bet-history-line {
-  font-size: 11px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-.bet-history-user,
-.bet-history-name,
-.bet-history-amount {
-  font-weight: 500;
-}
-.bet-history-text {
-  opacity: 0.8;
-}
-
-
-/* растягиваем блок "Техника тяжёлого класса" на всю ширину,
-   чтобы под логотипом не оставался пустой прямоугольник */
-.cars-grid > .cars-block:nth-of-type(3) {
-  grid-column: 1 / -1;
 }
