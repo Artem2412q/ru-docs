@@ -6,14 +6,9 @@ const defaultState = {
   currentUser: null,  // login
   orgUnlocked: false,
   communityUnlocked: false,
+  applications: [],   // локальный список заявок с этой машины
 };
-
-let state = loadState();
-
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
+   if (raw) {
       const parsed = JSON.parse(raw);
       return Object.assign({}, defaultState, parsed);
     }
@@ -190,35 +185,59 @@ accessCodeBtn.addEventListener('click', () => {
 });
 
 // Подать заявку: отправка в Google Форму (заполни свой ID формы и поля)
+// Подать заявку: локальное сохранение (без внешних сервисов)
 async function sendApplicationToGoogle(formData) {
-  // TODO: замени на URL своей формы формата:
-  // https://docs.google.com/forms/d/e/FORM_ID/formResponse
-  const url = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+  // Здесь мы просто добавляем заявку в локальное состояние и сохраняем в localStorage.
+  // Никаких внешних запросов, всё остаётся только на этой машине.
+  const application = {
+    id: Date.now(),
+    lastName: formData.lastName,
+    firstName: formData.firstName,
+    car: formData.car,
+    experience: formData.experience,
+    reason: formData.reason,
+  };
 
-  const body = new FormData();
-  // TODO: замени entry.xxxxxx на реальные идентификаторы полей формы
-  body.append('entry.1111111111', formData.lastName);
-  body.append('entry.2222222222', formData.firstName);
-  body.append('entry.3333333333', formData.car);
-  body.append('entry.4444444444', formData.experience);
-  body.append('entry.5555555555', formData.reason);
-
-  try {
-    await fetch(url, {
-      method: 'POST',
-      mode: 'no-cors',
-      body,
-    });
-    return true;
-  } catch (e) {
-    console.warn('Ошибка отправки заявки', e);
-    return false;
+  if (!Array.isArray(state.applications)) {
+    state.applications = [];
   }
+
+  state.applications.unshift(application);
+  saveState();
+
+  console.log('Новая локальная заявка:', application);
+  return true;
 }
+
+
+function renderApplicationsList() {
+  const listEl = document.getElementById('apply-list');
+  if (!listEl) return;
+
+  const apps = Array.isArray(state.applications) ? state.applications : [];
+  listEl.innerHTML = '';
+
+  if (!apps.length) {
+    const empty = document.createElement('div');
+    empty.className = 'muted small';
+    empty.textContent = 'Пока нет сохранённых заявок на этом устройстве.';
+    listEl.appendChild(empty);
+    return;
+  }
+
+  apps.forEach((app) => {
+    const div = document.createElement('div');
+    div.className = 'apply-item';
+    div.textContent = `${app.lastName} ${app.firstName}, ${app.car}, стаж ${app.experience} лет — ${app.reason}`;
+    listEl.appendChild(div);
+  });
+}
+
 
 function initApplyPage() {
   const sendBtn = document.getElementById('apply-send-btn');
   const statusEl = document.getElementById('apply-status');
+  renderApplicationsList();
   if (!sendBtn) return;
 
   sendBtn.addEventListener('click', async () => {
@@ -234,7 +253,7 @@ function initApplyPage() {
     }
 
     if (statusEl) {
-      statusEl.textContent = 'Отправляем заявку...';
+      statusEl.textContent = 'Сохраняем заявку...';
     }
 
     const ok = await sendApplicationToGoogle({
@@ -246,9 +265,10 @@ function initApplyPage() {
     });
 
     if (ok && statusEl) {
-      statusEl.textContent = 'Заявка отправлена. Спасибо! Мы свяжемся с вами при необходимости.';
+      statusEl.textContent = 'Заявка сохранена локально на этом устройстве.';
+      renderApplicationsList();
     } else if (statusEl) {
-      statusEl.textContent = 'Не удалось подтвердить отправку, но данные могли быть доставлены. Проверьте позже.';
+      statusEl.textContent = 'Не удалось сохранить заявку локально.';
     }
   });
 }
