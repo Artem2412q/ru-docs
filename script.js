@@ -319,6 +319,14 @@ function generateParticipants(count = 6) {
 let participantsCache = [];
 let selectedParticipantId = null;
 
+function renderEarnCards() {
+  // генерируем новых участников и перерисовываем список
+  participantsCache = generateParticipants(6);
+  selectedParticipantId = null;
+  renderEarnList();
+  renderEarnMain(null);
+}
+
 function renderEarnList() {
   if (!earnList) return;
   earnList.innerHTML = '';
