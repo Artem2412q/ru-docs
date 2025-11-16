@@ -1181,3 +1181,52 @@ body {
 .bet-history-name {
   font-weight: 500;
 }
+
+/* лидирующий участник по ставкам */
+.earn-mini-card.earn-mini-popular {
+  border-color: #f97316;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+}
+
+.earn-mini-popular-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: linear-gradient(90deg, #ef4444, #f97316);
+  color: #fef2f2;
+}
+
+/* анимация прогресса кошелька организации */
+.org-wallet-progress-fill.bump {
+  animation: wallet-bump 0.45s ease;
+}
+
+@keyframes wallet-bump {
+  0% { transform: scaleX(1); }
+  50% { transform: scaleX(1.03); }
+  100% { transform: scaleX(1); }
+}
+
+.earn-season {
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+.bet-history-line {
+  font-size: 11px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.bet-history-user,
+.bet-history-name,
+.bet-history-amount {
+  font-weight: 500;
+}
+.bet-history-text {
+  opacity: 0.8;
+}

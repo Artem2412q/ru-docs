@@ -9,7 +9,9 @@ const defaultState = {
   wallet: 50000,      // виртуальный баланс в кредитах
   bets: [],           // история условных ставок
   orgOffset: 0,       // накопленный прогресс кошелька организации
+  season: 1,          // текущий игровой сезон (для пула участников)
 };
+
 
 let state = loadState();
 
@@ -234,6 +236,7 @@ const themeToggleBtn = document.getElementById('theme-toggle');
 const themeToggleIcon = document.getElementById('theme-toggle-icon');
 const walletAmountSpan = document.getElementById('wallet-amount');
 const walletResetBtn = document.getElementById('wallet-reset-btn');
+const seasonLabelSpan = document.getElementById('season-label');
 const orgWalletAmountSpan = document.getElementById('org-wallet-amount');
 const orgWalletDeltaSpan = document.getElementById('org-wallet-delta');
 const orgWalletProgressFill = document.getElementById('org-wallet-progress-fill');
@@ -250,6 +253,12 @@ function updateWalletUi() {
   if (!walletAmountSpan) return;
   const amount = Number(state.wallet || 0);
   walletAmountSpan.textContent = amount.toLocaleString('ru-RU');
+}
+
+function updateSeasonUi() {
+  if (!seasonLabelSpan) return;
+  const season = Number(state.season || 1);
+  seasonLabelSpan.textContent = season;
 }
 
 function updateOrgWalletUi() {
@@ -282,19 +291,32 @@ function updateOrgWalletUi() {
   }
 }
 
+
+function playOrgProgressBump() {
+  if (!orgWalletProgressFill) return;
+  orgWalletProgressFill.classList.remove('bump');
+  // принудительно перезапускаем анимацию
+  void orgWalletProgressFill.offsetWidth;
+  orgWalletProgressFill.classList.add('bump');
+}
+
+
 if (walletResetBtn) {
   walletResetBtn.addEventListener('click', () => {
     state.wallet = 50000;
     state.bets = [];
     state.orgOffset = 0;
+    state.season = (Number(state.season || 1) + 1);
     saveState();
     updateWalletUi();
     updateOrgWalletUi();
+    playOrgProgressBump();
     renderBetHistory();
+    renderEarnCards();
+    updateSeasonUi();
   });
 }
-
-function applyTheme() {
+e() {
   const theme = state.theme === 'light' ? 'light' : 'dark';
   document.body.classList.toggle('theme-dark', theme === 'dark');
   document.body.classList.toggle('theme-light', theme === 'light');
@@ -396,20 +418,56 @@ let participantsCache = [];
 let selectedParticipantId = null;
 
 function renderEarnCards() {
-  // генерируем новых участников и перерисовываем список
+  // генерируем пул участников, привязанный к номеру сезона
+  const season = Number(state.season || 1);
+  earnSeed = 123456 + season * 1000;
   participantsCache = generateParticipants(6);
   selectedParticipantId = null;
   renderEarnList();
   renderEarnMain(null);
 }
 
+
+
+function getPopularParticipantId() {
+  if (!Array.isArray(state.bets) || !state.bets.length) return null;
+  const counts = {};
+  state.bets.forEach(bet => {
+    const id = bet.participantId;
+    if (!id) return;
+    counts[id] = (counts[id] || 0) + 1;
+  });
+  let bestId = null;
+  let bestCount = 0;
+  Object.entries(counts).forEach(([id, count]) => {
+    if (count > bestCount) {
+      bestCount = count;
+      bestId = id;
+    }
+  });
+  return bestId;
+}
+
+
 function renderEarnList() {
   if (!earnList) return;
   earnList.innerHTML = '';
+  const popularId = getPopularParticipantId();
+
   participantsCache.forEach((p, index) => {
     const mini = document.createElement('div');
     mini.className = 'earn-mini-card';
     mini.dataset.id = p.id;
+
+    let extraHtml = '';
+    if (popularId && p.id === popularId) {
+      extraHtml = `
+        <div class="earn-mini-row earn-mini-extra">
+          <span class="earn-mini-popular-label">лидер ставок</span>
+        </div>
+      `;
+      mini.classList.add('earn-mini-popular');
+    }
 
     mini.innerHTML = `
       <div class="earn-mini-top">
@@ -424,6 +482,7 @@ function renderEarnList() {
         <div class="earn-mini-label">Коэфф.</div>
         <div class="earn-mini-value earn-mini-odds">×${p.odds.toFixed(2)}</div>
       </div>
+      ${extraHtml}
     `;
 
     mini.addEventListener('click', () => {
@@ -555,6 +614,7 @@ function renderEarnMain(participant) {
     const betRecord = {
       id: Date.now(),
       user: state.currentUser || 'Аноним',
+      participantId: participant.id,
       name: participant.name,
       car: participant.car,
       amount,
@@ -572,7 +632,9 @@ function renderEarnMain(participant) {
     saveState();
     updateWalletUi();
     updateOrgWalletUi();
+    playOrgProgressBump();
     renderBetHistory();
+    renderEarnList();
 
     const message =
       `Вы условно поставили ${amount.toLocaleString('ru-RU')} кредитов на участника "${participant.name}".` +
@@ -645,6 +707,7 @@ function init() {
   updateSecretNav();
   updateWalletUi();
   updateOrgWalletUi();
+  updateSeasonUi();
   showPage('cars');
   renderEarnCards();
   renderBetHistory();
