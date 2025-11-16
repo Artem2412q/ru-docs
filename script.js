@@ -1,5 +1,5 @@
 // Простое локальное состояние
-const STORAGE_KEY = 'drive3_ru_state_v2';
+const STORAGE_KEY = 'drive3_ru_state_v3';
 
 const defaultState = {
   users: [],          // {login, password}
@@ -388,18 +388,24 @@ function renderEarnCards() {
 
     const betBtn = card.querySelector('.earn-bet-btn');
     const select = card.querySelector('.earn-select');
-    betBtn.addEventListener('click', () => {
+
+    // Ставка — только расчёт, без переключения анимации
+    betBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
       const amount = Number(select.value || 0);
       const potentialWin = amount * p.odds;
 
-      expandEarnCard(p.id);
       const message =
         `Вы условно поставили ${amount.toLocaleString('ru-RU')} кредитов на участника "${p.name}".` +
         `\n\nТеоретический выигрыш (игровой): ${potentialWin.toLocaleString('ru-RU', {maximumFractionDigits: 0})} кредитов.` +
         `\n\nВсе расчёты остаются частью сеттинга проекта, реальные деньги не используются.`;
 
-      // Небольшая задержка, чтобы не перебивать анимацию
-      setTimeout(() => alert(message), 320);
+      alert(message);
+    });
+
+    // Выбор кандидата — плавная анимация и раскрытие статистики
+    card.addEventListener('click', () => {
+      expandEarnCard(p.id);
     });
 
     earnGrid.appendChild(card);
