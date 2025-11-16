@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const orgLink = document.getElementById('side-org-link');
   const sideNav = document.getElementById('side-nav');
-  const viewFeed = document.getElementById('view-feed');
+  const viewCars = document.getElementById('view-cars');
   const viewOrg = document.getElementById('view-org');
 
   const keyBackdrop = document.getElementById('key-backdrop');
@@ -42,30 +42,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function switchView(view) {
-    if (!viewFeed || !viewOrg) return;
+    if (!viewCars || !viewOrg) return;
     if (view === 'org' && !isUnlocked()) {
-      // если почему‑то кликнули до активации
       openKeyModal();
       return;
     }
     if (view === 'org') {
       viewOrg.classList.remove('hidden');
-      viewFeed.classList.add('hidden');
+      viewCars.classList.add('hidden');
     } else {
-      viewFeed.classList.remove('hidden');
+      viewCars.classList.remove('hidden');
       viewOrg.classList.add('hidden');
     }
   }
 
-  // Навигация по левой колонке
+  // Навигация
   if (sideNav) {
     sideNav.addEventListener('click', (e) => {
       const link = e.target.closest('.side-link');
       if (!link) return;
       e.preventDefault();
-      const view = link.dataset.view || 'feed';
+      const view = link.dataset.view || 'cars';
 
-      // активный класс
       sideNav.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
       link.classList.add('active');
 
@@ -73,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Модалка с вводом ключа
+  // Модалка: открытие / закрытие
   function openKeyModal() {
     if (!keyBackdrop) return;
     keyBackdrop.classList.remove('hidden');
@@ -115,14 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
         keyMessage.classList.add('ok');
         setTimeout(() => {
           closeKeyModal();
-          // сразу переключаемся на скрытый раздел
           const orgNavLink = document.getElementById('side-org-link');
           if (orgNavLink) {
+            sideNav.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
             orgNavLink.classList.add('active');
-            // снять active с остальных
-            sideNav.querySelectorAll('.side-link').forEach(l => {
-              if (l !== orgNavLink) l.classList.remove('active');
-            });
           }
           switchView('org');
         }, 700);
@@ -151,5 +145,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Инициализация
   updateOrgVisibility();
-  switchView('feed');
+  switchView('cars');
 });
