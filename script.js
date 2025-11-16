@@ -8,14 +8,18 @@ const defaultState = {
   communityUnlocked: false,
   applications: [],   // локальный список заявок с этой машины
 };
-   if (raw) {
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
       const parsed = JSON.parse(raw);
       return Object.assign({}, defaultState, parsed);
     }
   } catch (e) {
     console.warn('Не удалось загрузить состояние', e);
   }
-  return structuredClone(defaultState);
+  return { ...defaultState };
 }
 
 function saveState() {
@@ -26,6 +30,9 @@ function saveState() {
   }
 }
 
+let state = loadState();
+
+// Навигация по страницам
 // Навигация по страницам
 const pages = document.querySelectorAll('.page');
 const navItems = document.querySelectorAll('.nav-item');
