@@ -1,5 +1,5 @@
 // Простое локальное состояние
-const STORAGE_KEY = 'drive3_ru_state_v1';
+const STORAGE_KEY = 'drive3_ru_state_v2';
 
 const defaultState = {
   users: [],          // {login, password}
@@ -266,7 +266,7 @@ const CARS = [
   'BMW M3 F80', 'BMW M4 G82', 'Mercedes-Benz C63 AMG',
   'Mercedes-Benz E63 S', 'Nissan GT-R R35', 'Toyota Supra A90',
   'Subaru Impreza WRX STI', 'Mitsubishi Lancer Evolution X',
-  'Audi RS3', 'Audi RS6 Avant', 'Alfa Romeo Giulia Quadrifoglio',
+  'Audi RS3', 'Audi RS6', 'Alfa Romeo Giulia Quadrifoglio',
   'Lexus IS 350', 'Kia Stinger GT', 'Porsche 911 Carrera S',
   'Chevrolet Camaro SS'
 ];
@@ -290,47 +290,94 @@ function generateParticipants(count = 6) {
     } while (usedNames.has(fullName) && attempts < 10);
     usedNames.add(fullName);
 
+    const races = 5 + Math.floor(Math.random() * 26); // 5-30
+    const wins = Math.floor(races * (0.25 + Math.random() * 0.45));
+    const power = 350 + Math.floor(Math.random() * 300);
+    const reaction = (0.15 + Math.random() * 0.25).toFixed(2);
+    const reliability = 60 + Math.floor(Math.random() * 40);
+    const aggression = 40 + Math.floor(Math.random() * 50);
+
     participants.push({
+      id: 'p' + i + '_' + Date.now(),
       name: fullName,
       car: getRandomItem(CARS),
-      odds: getRandomItem(ODDS)
+      odds: getRandomItem(ODDS),
+      stats: {
+        races,
+        wins,
+        power,
+        reaction,
+        reliability,
+        aggression
+      }
     });
   }
   return participants;
 }
 
+let participantsCache = [];
+
 function renderEarnCards() {
   if (!earnGrid) return;
   earnGrid.innerHTML = '';
-  const participants = generateParticipants(6);
+  participantsCache = generateParticipants(6);
 
-  participants.forEach((p, index) => {
+  participantsCache.forEach((p, index) => {
     const card = document.createElement('div');
     card.className = 'earn-card';
+    card.dataset.id = p.id;
 
     card.innerHTML = `
-      <div class="earn-row earn-header-row">
-        <div class="earn-name">${p.name}</div>
-        <div class="earn-tag">Участник #${index + 1}</div>
+      <div class="earn-main">
+        <div class="earn-row earn-header-row">
+          <div class="earn-name">${p.name}</div>
+          <div class="earn-tag">Участник #${index + 1}</div>
+        </div>
+        <div class="earn-row">
+          <div class="earn-label">Автомобиль</div>
+          <div class="earn-value">${p.car}</div>
+        </div>
+        <div class="earn-row">
+          <div class="earn-label">Коэффициент на победу</div>
+          <div class="earn-value odds">×${p.odds.toFixed(2)}</div>
+        </div>
+        <div class="earn-row earn-bet-row">
+          <div class="earn-label">Условная ставка</div>
+          <div class="earn-bet-controls">
+            <select class="earn-select">
+              <option value="500">500 кредитов</option>
+              <option value="1000">1 000 кредитов</option>
+              <option value="2000">2 000 кредитов</option>
+              <option value="5000">5 000 кредитов</option>
+            </select>
+            <button type="button" class="btn btn-primary btn-xs earn-bet-btn">Поставить</button>
+          </div>
+        </div>
       </div>
-      <div class="earn-row">
-        <div class="earn-label">Автомобиль</div>
-        <div class="earn-value">${p.car}</div>
-      </div>
-      <div class="earn-row">
-        <div class="earn-label">Коэффициент на победу</div>
-        <div class="earn-value odds">×${p.odds.toFixed(2)}</div>
-      </div>
-      <div class="earn-row earn-bet-row">
-        <div class="earn-label">Условная ставка</div>
-        <div class="earn-bet-controls">
-          <select class="earn-select">
-            <option value="500">500 кредитов</option>
-            <option value="1000">1 000 кредитов</option>
-            <option value="2000">2 000 кредитов</option>
-            <option value="5000">5 000 кредитов</option>
-          </select>
-          <button type="button" class="btn btn-primary btn-xs earn-bet-btn">Поставить</button>
+      <div class="earn-orbit">
+        <div class="earn-orbit-ring"></div>
+        <div class="earn-orbit-center">
+          <div class="earn-orbit-name">${p.name}</div>
+          <div class="earn-orbit-car">${p.car}</div>
+          <div class="earn-orbit-odds">Коэф. ×${p.odds.toFixed(2)}</div>
+        </div>
+        <div class="earn-orbit-item pos-top">
+          Заездов<br><strong>${p.stats.races}</strong>
+        </div>
+        <div class="earn-orbit-item pos-right">
+          Побед<br><strong>${p.stats.wins}</strong>
+        </div>
+        <div class="earn-orbit-item pos-bottom">
+          Мощность<br><strong>${p.stats.power} л.с.</strong>
+        </div>
+        <div class="earn-orbit-item pos-left">
+          Реакция<br><strong>${p.stats.reaction} с</strong>
+        </div>
+        <div class="earn-orbit-item pos-diag-left">
+          Надёжность<br><strong>${p.stats.reliability}%</strong>
+        </div>
+        <div class="earn-orbit-item pos-diag-right">
+          Агрессия<br><strong>${p.stats.aggression}%</strong>
         </div>
       </div>
       <p class="earn-note muted small">
@@ -344,16 +391,38 @@ function renderEarnCards() {
     betBtn.addEventListener('click', () => {
       const amount = Number(select.value || 0);
       const potentialWin = amount * p.odds;
-      alert(
+
+      expandEarnCard(p.id);
+      const message =
         `Вы условно поставили ${amount.toLocaleString('ru-RU')} кредитов на участника "${p.name}".` +
-        `\n\nЕсли он выиграет, ваш теоретический выигрыш составит ` +
-        `${potentialWin.toLocaleString('ru-RU', {maximumFractionDigits: 0})} кредитов.` +
-        `\n\nЭто внутриигровая механика проекта, реальные деньги не используются.`
-      );
+        `\n\nТеоретический выигрыш (игровой): ${potentialWin.toLocaleString('ru-RU', {maximumFractionDigits: 0})} кредитов.` +
+        `\n\nВсе расчёты остаются частью сеттинга проекта, реальные деньги не используются.`;
+
+      // Небольшая задержка, чтобы не перебивать анимацию
+      setTimeout(() => alert(message), 320);
     });
 
     earnGrid.appendChild(card);
   });
+}
+
+function expandEarnCard(id) {
+  if (!earnGrid) return;
+
+  const cards = Array.from(earnGrid.querySelectorAll('.earn-card'));
+  let target = null;
+
+  cards.forEach(card => {
+    const isTarget = card.dataset.id === id;
+    if (isTarget) target = card;
+    card.classList.toggle('earn-card-expanded', isTarget);
+    card.classList.toggle('earn-card-collapsed', !isTarget);
+  });
+
+  if (target) {
+    earnGrid.classList.add('earn-expanded-mode');
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 /* =========================
