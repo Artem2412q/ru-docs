@@ -316,7 +316,8 @@ if (walletResetBtn) {
     updateSeasonUi();
   });
 }
-e() {
+
+function applyTheme() {
   const theme = state.theme === 'light' ? 'light' : 'dark';
   document.body.classList.toggle('theme-dark', theme === 'dark');
   document.body.classList.toggle('theme-light', theme === 'light');
