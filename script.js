@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const backdrop = document.getElementById('dossier-backdrop');
-  const closeBtn = document.getElementById('dossier-close');
-  const closeBottomBtn = document.getElementById('dossier-close-bottom');
-  const openButtons = document.querySelectorAll('[data-open-dossier]');
-  const scrollButtons = document.querySelectorAll('[data-scroll-target]');
+  const closeTop = document.getElementById('dossier-close');
+  const closeBottom = document.getElementById('dossier-close-bottom');
+  const openBtns = document.querySelectorAll('[data-open-dossier]');
 
   function openDossier() {
     if (!backdrop) return;
@@ -17,35 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
     backdrop.setAttribute('aria-hidden', 'true');
   }
 
-  openButtons.forEach(btn => {
-    btn.addEventListener('click', openDossier);
-  });
-
-  if (closeBtn) closeBtn.addEventListener('click', closeDossier);
-  if (closeBottomBtn) closeBottomBtn.addEventListener('click', closeDossier);
+  openBtns.forEach(btn => btn.addEventListener('click', openDossier));
+  if (closeTop) closeTop.addEventListener('click', closeDossier);
+  if (closeBottom) closeBottom.addEventListener('click', closeDossier);
 
   if (backdrop) {
     backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) {
-        closeDossier();
-      }
+      if (e.target === backdrop) closeDossier();
     });
   }
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeDossier();
-    }
-  });
-
-  scrollButtons.forEach(btn => {
-    const targetSelector = btn.getAttribute('data-scroll-target');
-    if (!targetSelector) return;
-    const target = document.querySelector(targetSelector);
-    if (!target) return;
-
-    btn.addEventListener('click', () => {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    if (e.key === 'Escape') closeDossier();
   });
 });
