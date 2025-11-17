@@ -23,14 +23,6 @@
         <span id="theme-toggle-icon">🌙</span>
       </button>
       <button id="access-code-btn" class="btn btn-ghost btn-xs">Код доступа</button>
-      <div id="auth-anon" class="auth-block">
-        <button id="login-open" class="btn btn-ghost btn-xs">Войти</button>
-        <button id="register-open" class="btn btn-primary btn-xs">Регистрация</button>
-      </div>
-      <div id="auth-user" class="auth-block hidden">
-        <span id="auth-username" class="auth-username"></span>
-        <button id="logout-btn" class="btn btn-ghost btn-xs">Выйти</button>
-      </div>
     </div>
   </header>
 
@@ -164,7 +156,8 @@
 
       <!-- Сообщество -->
       <section id="page-community" class="page hidden">
-        <div class="card">
+        <div class="community-page-grid">
+<div class="card">
           <header class="card-header">
             <div>
               <h2>Сообщество</h2>
@@ -177,28 +170,27 @@
           <article class="community-post">
             <header class="community-post-header">
               <div class="community-date">01.12.2025</div>
-              <div class="community-label">Анонс уличных гонок</div>
+              <div class="community-label">Анонс драг-заезда</div>
             </header>
 
             <h3 class="community-title">
-              Ночные гонки: ТРЦ «ГРАДЪ» → район ТЭЦ, Невский
+              Ночной драг-заезд: ТРЦ «ГРАДЪ» → район ТЭЦ, Невский
             </h3>
 
                         <div class="community-body">
               <p>
-                1 декабря 2025 года в рамках сюжетного сезона планируется ночной стритрейсинг
+                1 декабря 2025 года в рамках сюжетного сезона планируется ночной драг-заезд
                 в пригороде пгт. Волчанск. Точка сбора по легенде — парковка у ТРЦ «ГРАДЪ»,
                 далее колонна растягивается вдоль старой дороги в сторону промышленной зоны
                 и ТЭЦ города Невский.
               </p>
 
               <p>
-                <strong>Что такое Уличные гонки (или стритрейсинг)</strong><br>
-                В классическом понимании это  это нелегальные и неофициальные
-                соревнования на скорость, проводимые на общественных дорогах, а не на
-                специально оборудованных трассах. Они могут быть как спонтанными, так и хорошо
-                спланированными, и включают в себя различные виды состязаний, такие как
-                «шашки» (состязание в плотном потоке) или «полет пушечного ядра» 
+                <strong>Что такое драг-заезд?</strong><br>
+                В классическом понимании это короткая прямая гонка «лоб в лоб» между двумя
+                автомобилями. Важны реакция на старт, сцепление с покрытием и умение держать
+                машину по прямой. В нормальной спортивной практике драг всегда проводится на
+                закрытых трассах, с хронометрией, техкомиссией и медиками.
               </p>
 
               <p>
@@ -237,6 +229,39 @@
                    alt="Карта заезда — игровой маршрут">
             </div>
           </div>
+
+        </div>
+
+        <div class="card community-register-card">
+          <header class="card-header">
+            <div>
+              <h2>Регистрация на заезд</h2>
+              <div class="card-subtitle">
+                Заполни форму, чтобы подать заявку на участие в игровом драг-заезде.
+              </div>
+            </div>
+          </header>
+          <div class="card-body">
+            <ul class="community-register-fields muted small">
+              <li><strong>Имя Фамилия</strong></li>
+              <li><strong>ID в сообществе</strong></li>
+              <li><strong>Автомобиль</strong></li>
+              <li><strong>Стаж вождения</strong></li>
+            </ul>
+
+            <div class="community-register-frame">
+              <iframe
+                src="https://docs.google.com/forms/d/e/1FAIpQLScEljv5EJW0ZsIt1MoVryKUbWOSfqZEFztWDlyr4snZstD97A/viewform?embedded=true"
+                frameborder="0"
+                marginheight="0"
+                marginwidth="0"
+                loading="lazy"
+              >
+                Загрузка…
+              </iframe>
+            </div>
+          </div>
+        </div>
 
         </div>
       </section>
@@ -314,7 +339,7 @@
             <div>
               <h2>Заработок на ставках (игровой режим)</h2>
               <div class="card-subtitle">
-                Виртуальные коэффициенты и участники ближайших гонок.
+                Виртуальные коэффициенты и участники ближайшего драг-заезда.
               </div>
             </div>
           </header>
@@ -353,10 +378,6 @@
               </div>
             </div>
 
-            <div class="earn-season muted small">
-              Текущий сезон: <span id="season-label">1</span>
-            </div>
-
             <div class="earn-layout">
               <div id="earn-main" class="earn-main-slot">
                 <div class="earn-main-placeholder muted small">
@@ -370,33 +391,6 @@
       </section>
 
     </main>
-  </div>
-</div>
-
-<!-- Модалка входа/регистрации -->
-<div id="auth-modal" class="modal-backdrop hidden">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="auth-modal-title">Вход</h2>
-      <button id="auth-modal-close" class="icon-btn">&times;</button>
-    </div>
-    <form id="auth-form" class="modal-body">
-      <div class="form-group">
-        <label for="auth-login">Никнейм</label>
-        <input id="auth-login" class="input-text" type="text" required autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label for="auth-password">Пароль</label>
-        <input id="auth-password" class="input-text" type="password" required>
-      </div>
-      <p class="muted small">
-        Данные хранятся локально в вашем браузере. Для безопасности не используйте реальные пароли.
-      </p>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" id="auth-submit-btn">Войти</button>
-        <button type="button" class="btn btn-secondary" id="auth-switch-mode">Создать аккаунт</button>
-      </div>
-    </form>
   </div>
 </div>
 

@@ -2,14 +2,11 @@
 const STORAGE_KEY = 'drive3_ru_state_v3';
 
 const defaultState = {
-  users: [],          // {login, password}
-  currentUser: null,  // login
   secretUnlocked: false,
   theme: 'dark',      // 'dark' | 'light'
   wallet: 50000,      // виртуальный баланс в кредитах
   bets: [],           // история условных ставок
-  orgOffset: 0,       // накопленный прогресс кошелька организации
-  season: 1,          // текущий игровой сезон (для пула участников)
+  orgOffset: 0        // накопленный прогресс кошелька организации
 };
 
 
@@ -65,108 +62,6 @@ navItems.forEach(btn => {
     showPage(page);
   });
 });
-
-/* =========================
-   Авторизация
-   ========================= */
-
-const authAnon = document.getElementById('auth-anon');
-const authUser = document.getElementById('auth-user');
-const authUsernameSpan = document.getElementById('auth-username');
-
-const loginOpenBtn = document.getElementById('login-open');
-const registerOpenBtn = document.getElementById('register-open');
-const logoutBtn = document.getElementById('logout-btn');
-
-const authModal = document.getElementById('auth-modal');
-const authModalTitle = document.getElementById('auth-modal-title');
-const authForm = document.getElementById('auth-form');
-const authLoginInput = document.getElementById('auth-login');
-const authPasswordInput = document.getElementById('auth-password');
-const authSubmitBtn = document.getElementById('auth-submit-btn');
-const authSwitchModeBtn = document.getElementById('auth-switch-mode');
-const authCloseBtn = document.getElementById('auth-modal-close');
-
-let authMode = 'login'; // or 'register'
-
-function openAuth(mode) {
-  authMode = mode;
-  if (mode === 'login') {
-    authModalTitle.textContent = 'Вход';
-    authSubmitBtn.textContent = 'Войти';
-    authSwitchModeBtn.textContent = 'Создать аккаунт';
-  } else {
-    authModalTitle.textContent = 'Регистрация';
-    authSubmitBtn.textContent = 'Зарегистрироваться';
-    authSwitchModeBtn.textContent = 'У меня уже есть аккаунт';
-  }
-  authLoginInput.value = '';
-  authPasswordInput.value = '';
-  authModal.classList.remove('hidden');
-  authLoginInput.focus();
-}
-
-function closeAuth() {
-  authModal.classList.add('hidden');
-}
-
-loginOpenBtn.addEventListener('click', () => openAuth('login'));
-registerOpenBtn.addEventListener('click', () => openAuth('register'));
-authCloseBtn.addEventListener('click', closeAuth);
-
-authSwitchModeBtn.addEventListener('click', () => {
-  openAuth(authMode === 'login' ? 'register' : 'login');
-});
-
-authForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const login = authLoginInput.value.trim();
-  const password = authPasswordInput.value;
-  if (!login || !password) {
-    alert('Заполните логин и пароль.');
-    return;
-  }
-
-  if (authMode === 'register') {
-    if (state.users.some(u => u.login === login)) {
-      alert('Такой логин уже существует.');
-      return;
-    }
-    state.users.push({ login, password });
-    state.currentUser = login;
-    saveState();
-    updateAuthUi();
-    closeAuth();
-  } else {
-    const user = state.users.find(u => u.login === login && u.password === password);
-    if (!user) {
-      alert('Неверный логин или пароль.');
-      return;
-    }
-    state.currentUser = login;
-    saveState();
-    updateAuthUi();
-    closeAuth();
-  }
-});
-
-logoutBtn.addEventListener('click', () => {
-  state.currentUser = null;
-  saveState();
-  updateAuthUi();
-});
-
-function updateAuthUi() {
-  if (state.currentUser) {
-    authAnon.classList.add('hidden');
-    authUser.classList.remove('hidden');
-    authUsernameSpan.textContent = state.currentUser;
-  } else {
-    authAnon.classList.remove('hidden');
-    authUser.classList.add('hidden');
-    authUsernameSpan.textContent = '';
-  }
-}
 
 /* =========================
    Код доступа
@@ -236,7 +131,6 @@ const themeToggleBtn = document.getElementById('theme-toggle');
 const themeToggleIcon = document.getElementById('theme-toggle-icon');
 const walletAmountSpan = document.getElementById('wallet-amount');
 const walletResetBtn = document.getElementById('wallet-reset-btn');
-const seasonLabelSpan = document.getElementById('season-label');
 const orgWalletAmountSpan = document.getElementById('org-wallet-amount');
 const orgWalletDeltaSpan = document.getElementById('org-wallet-delta');
 const orgWalletProgressFill = document.getElementById('org-wallet-progress-fill');
@@ -253,12 +147,6 @@ function updateWalletUi() {
   if (!walletAmountSpan) return;
   const amount = Number(state.wallet || 0);
   walletAmountSpan.textContent = amount.toLocaleString('ru-RU');
-}
-
-function updateSeasonUi() {
-  if (!seasonLabelSpan) return;
-  const season = Number(state.season || 1);
-  seasonLabelSpan.textContent = season;
 }
 
 function updateOrgWalletUi() {
@@ -306,14 +194,12 @@ if (walletResetBtn) {
     state.wallet = 50000;
     state.bets = [];
     state.orgOffset = 0;
-    state.season = (Number(state.season || 1) + 1);
     saveState();
     updateWalletUi();
     updateOrgWalletUi();
     playOrgProgressBump();
     renderBetHistory();
     renderEarnCards();
-    updateSeasonUi();
   });
 }
 
@@ -335,97 +221,38 @@ themeToggleBtn.addEventListener('click', () => {
 setInterval(updateOrgWalletUi, 7000);
 
 /* =========================
-   Раздел «Заработок» — генерация карточек
+   Раздел «Заработок» — участники
    ========================= */
 
 const earnMain = document.getElementById('earn-main');
 const earnList = document.getElementById('earn-list');
 
-const FIRST_NAMES = [
-  'Алексей', 'Дмитрий', 'Иван', 'Максим', 'Сергей',
-  'Егор', 'Кирилл', 'Никита', 'Павел', 'Роман',
-  'Андрей', 'Владимир', 'Виталий', 'Олег', 'Степан'
-];
-
-const LAST_NAMES = [
-  'Иванов', 'Петров', 'Сидоров', 'Смирнов', 'Кузнецов',
-  'Новиков', 'Федоров', 'Алексеев', 'Крылов', 'Ершов',
-  'Соколов', 'Кудрявцев', 'Морозов', 'Громов', 'Воронин'
-];
-
-const CARS = [
-  'BMW M3 F80', 'BMW M4 G82', 'Mercedes-Benz C63 AMG',
-  'Mercedes-Benz E63 S', 'Nissan GT-R R35', 'Toyota Supra A90',
-  'Subaru Impreza WRX STI', 'Mitsubishi Lancer Evolution X',
-  'Audi RS3', 'Audi RS6', 'Alfa Romeo Giulia Quadrifoglio',
-  'Lexus IS 350', 'Kia Stinger GT', 'Porsche 911 Carrera S',
-  'Chevrolet Camaro SS'
-];
-
-const ODDS = [1.7, 1.9, 2.1, 2.4, 2.8, 3.2, 3.6];
-
-// детерминированный генератор, чтобы у всех пользователей были одни и те же участники
-let earnSeed = 123456;
-function seededRandom() {
-  earnSeed = (earnSeed * 1664525 + 1013904223) % 4294967296;
-  return earnSeed / 4294967296;
-}
-function seededChoice(arr) {
-  const idx = Math.floor(seededRandom() * arr.length);
-  return arr[idx];
-}
-
-function generateParticipants(count = 6) {
-  const participants = [];
-  const usedNames = new Set();
-
-  for (let i = 0; i < count; i++) {
-    let fullName;
-    let attempts = 0;
-    do {
-      const first = seededChoice(FIRST_NAMES);
-      const last = seededChoice(LAST_NAMES);
-      fullName = first + ' ' + last;
-      attempts++;
-    } while (usedNames.has(fullName) && attempts < 20);
-    usedNames.add(fullName);
-
-    const races = 5 + Math.floor(seededRandom() * 26); // 5-30
-    const wins = Math.floor(races * (0.25 + seededRandom() * 0.45));
-    const power = 350 + Math.floor(seededRandom() * 300);
-    const reaction = (0.15 + seededRandom() * 0.25).toFixed(2);
-    const reliability = 60 + Math.floor(seededRandom() * 40);
-    const aggression = 40 + Math.floor(seededRandom() * 50);
-
-    participants.push({
-      id: 'p' + i,
-      name: fullName,
-      car: seededChoice(CARS),
-      odds: seededChoice(ODDS),
-      stats: {
-        races,
-        wins,
-        power,
-        reaction,
-        reliability,
-        aggression
-      }
-    });
+// Базовый пул участников, который можно редактировать вручную
+const BASE_PARTICIPANTS = [
+  {
+    id: 'roman_grekov',
+    name: 'Роман Греков',
+    car: 'BMW M4',
+    odds: 1.81, // 56 / 31 ≈ 1.81
+    stats: {
+      races: 56,           // заездов
+      wins: 31,            // побед
+      power: 561,          // мощность (л.с.), примерная
+      reaction: '0.39',    // сек
+      reliability: 82,     // %
+      aggression: 80       // %
+    }
   }
-  return participants;
-}
+];
 
 let participantsCache = [];
 let selectedParticipantId = null;
 
 function renderEarnCards() {
-  // генерируем пул участников, привязанный к номеру сезона
-  const season = Number(state.season || 1);
-  earnSeed = 123456 + season * 1000;
-  participantsCache = generateParticipants(6);
-  selectedParticipantId = null;
+  participantsCache = BASE_PARTICIPANTS.slice();
+  selectedParticipantId = participantsCache[0]?.id || null;
   renderEarnList();
-  renderEarnMain(null);
+  renderEarnMain(participantsCache[0] || null);
 }
 
 
@@ -614,7 +441,7 @@ function renderEarnMain(participant) {
     // сохраняем ставку в историю до пересчёта интерфейса
     const betRecord = {
       id: Date.now(),
-      user: state.currentUser || 'Аноним',
+      user: 'Участник сообщества',
       participantId: participant.id,
       name: participant.name,
       car: participant.car,
@@ -704,11 +531,9 @@ function selectParticipant(id) {
 
 function init() {
   applyTheme();
-  updateAuthUi();
   updateSecretNav();
   updateWalletUi();
   updateOrgWalletUi();
-  updateSeasonUi();
   showPage('cars');
   renderEarnCards();
   renderBetHistory();

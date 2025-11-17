@@ -435,6 +435,51 @@ body {
   margin: 0 0 6px;
 }
 
+.community-page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.community-register-card .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.community-register-fields {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.community-register-fields li {
+  margin-bottom: 2px;
+}
+
+.community-register-frame {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+  overflow: hidden;
+  background: var(--bg-card-soft);
+  max-height: 640px;
+}
+
+.community-register-frame iframe {
+  display: block;
+  width: 100%;
+  height: 640px;
+}
+
+/* адаптив под мобильные */
+@media (max-width: 960px) {
+  .community-page-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 /* Org */
 
 .org-body h3 {
