@@ -435,51 +435,6 @@ body {
   margin: 0 0 6px;
 }
 
-.community-page-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
-  gap: 14px;
-  align-items: flex-start;
-}
-
-.community-register-card .card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 13px;
-}
-
-.community-register-fields {
-  margin: 0;
-  padding-left: 18px;
-}
-
-.community-register-fields li {
-  margin-bottom: 2px;
-}
-
-.community-register-frame {
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-soft);
-  overflow: hidden;
-  background: var(--bg-card-soft);
-  max-height: 640px;
-}
-
-.community-register-frame iframe {
-  display: block;
-  width: 100%;
-  height: 640px;
-}
-
-/* адаптив под мобильные */
-@media (max-width: 960px) {
-  .community-page-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
 /* Org */
 
 .org-body h3 {
@@ -496,6 +451,94 @@ body {
   margin-top: 0;
   margin-bottom: 6px;
   padding-left: 18px;
+}
+
+
+
+/* Сообщество: две колонки (анонс + регистрация) */
+.community-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.community-cta {
+  background: var(--bg-card-soft);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+  padding: 10px 12px 12px;
+  box-shadow: var(--shadow-soft);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.community-cta-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.community-cta-badge {
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(248, 113, 113, 0.16);
+  color: #b91c1c;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.community-cta-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.community-cta-text {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.community-cta-fields {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.community-cta-fields li {
+  margin-bottom: 2px;
+}
+
+.community-cta-frame {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+  overflow: hidden;
+  background: var(--bg-card-soft);
+  max-height: 640px;
+}
+
+.community-cta-frame iframe {
+  display: block;
+  width: 100%;
+  height: 640px;
+}
+
+.community-cta-footnote {
+  margin: 4px 0 0;
+}
+
+/* Мобильная версия: колонки друг под другом и отступ сверху */
+@media (max-width: 900px) {
+  .community-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .community-cta {
+    margin-top: 12px;
+  }
 }
 
 
