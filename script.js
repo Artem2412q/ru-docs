@@ -6,7 +6,12 @@ const defaultState = {
   currentUser: null,  // login
   secretUnlocked: false,
   theme: 'dark',      // 'dark' | 'light'
-  bountyCompleted: false
+  bounties: {
+    green: false,
+    mccarthy: false,
+    kelly: false,
+    nolan: false
+  }
 };
 
 let state = loadState();
@@ -313,32 +318,43 @@ function startBtcUpdates() {
    Статус охоты
    ========================= */
 
-const bountyStatusEl = document.getElementById('bounty-status');
-const bountyToggleBtn = document.getElementById('bounty-toggle');
-
 function updateBountyUi() {
-  if (!bountyStatusEl || !bountyToggleBtn) return;
-  if (state.bountyCompleted) {
-    bountyStatusEl.textContent = 'Статус: цель поймана (локально)';
-    bountyStatusEl.classList.remove('bounty-status-open');
-    bountyStatusEl.classList.add('bounty-status-closed');
-    bountyToggleBtn.textContent = 'Сбросить статус';
-  } else {
-    bountyStatusEl.textContent = 'Статус: цель на свободе';
-    bountyStatusEl.classList.add('bounty-status-open');
-    bountyStatusEl.classList.remove('bounty-status-closed');
-    bountyToggleBtn.textContent = 'Отметить как пойман';
+  if (!state.bounties) {
+    state.bounties = { green: false, mccarthy: false, kelly: false, nolan: false };
   }
-}
 
-if (bountyToggleBtn) {
-  bountyToggleBtn.addEventListener('click', () => {
-    state.bountyCompleted = !state.bountyCompleted;
-    saveState();
-    updateBountyUi();
+  const rows = document.querySelectorAll('.bounty-status-row');
+  rows.forEach(row => {
+    const target = row.dataset.target;
+    if (!target) return;
+
+    const statusEl = row.querySelector('.bounty-status');
+    const btn = row.querySelector('.bounty-toggle');
+    if (!statusEl || !btn) return;
+
+    const isCaught = !!state.bounties[target];
+
+    if (isCaught) {
+      statusEl.textContent = 'Статус: цель поймана';
+      statusEl.classList.remove('bounty-status-open');
+      statusEl.classList.add('bounty-status-closed');
+      btn.textContent = 'Пометить как свободную';
+    } else {
+      statusEl.textContent = 'Статус: цель на свободе';
+      statusEl.classList.add('bounty-status-open');
+      statusEl.classList.remove('bounty-status-closed');
+      btn.textContent = 'Отметить как пойман';
+    }
+
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const current = !!state.bounties[target];
+      state.bounties = Object.assign({}, state.bounties, { [target]: !current });
+      saveState();
+      updateBountyUi();
+    };
   });
 }
-
 /* =========================
    Маркет / фильтрация
    ========================= */
