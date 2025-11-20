@@ -15,7 +15,7 @@
       <div class="logo-badge">BHB</div>
       <div class="topbar-title">
         <div class="brand-name">Bounty Hunter Watts Bloods</div>
-        <div class="brand-tagline">RP-организация в GTA V / FiveM</div>
+        <div class="brand-tagline">Watts • Los Santos • Blood keeps moving</div>
       </div>
     </div>
     <div class="topbar-right">
@@ -54,8 +54,13 @@
           <span class="nav-dot"></span>
         </button>
 
-        <button class="nav-item nav-secret hidden" data-page="earn" id="nav-earn">
-          Сезон &amp; активность
+        <button class="nav-item nav-secret hidden" data-page="bounty" id="nav-bounty">
+          Охота за головами
+          <span class="nav-dot"></span>
+        </button>
+
+        <button class="nav-item nav-secret hidden" data-page="market" id="nav-market">
+          Продажи
           <span class="nav-dot"></span>
         </button>
       </div>
@@ -71,8 +76,7 @@
             <div>
               <h2>BHB: вторая кровь</h2>
               <div class="card-subtitle">
-                Художественная легенда уличной банды Bounty Hunter Watts Bloods в сеттинге GTA V / FiveM.
-                Всё, что здесь описано, относится только к ролевой игре.
+                Легенда уличной банды Bounty Hunter Watts Bloods в сеттинге GTA V / FiveM.
               </div>
             </div>
           </header>
@@ -114,9 +118,8 @@
                   уже чья-то кровь пролилась или вот-вот прольётся.
                 </p>
                 <p class="muted small">
-                  Важно: логотипы, названия и визуальные элементы используются только в
-                  художественных целях в рамках ролевого сервера. Любые ассоциации с
-                  реальными группировками случайны.
+                  Логотипы, названия и визуальные элементы используются только в
+                  художественных целях в рамках ролевого сервера.
                 </p>
               </div>
               <div class="org-logo-block">
@@ -147,11 +150,6 @@
                 <li>легальных прикрытиях и социальных активностях;</li>
                 <li>наборе нового поколения под красный флаг.</li>
               </ul>
-              <p class="muted small">
-                Всё описанное является элементом ролевой легенды FiveM и не предназначено для
-                копирования в реальную жизнь. Мы описываем художественный мир, а не реальную
-                преступную деятельность.
-              </p>
             </section>
 
             <section class="cars-block cars-block-highlight">
@@ -171,10 +169,6 @@
                 <li>Ford F-150 XL («3150XL») — грубая сила и перевозка железа;</li>
                 <li>Chevrolet Suburban — машина для вывозов всей командой.</li>
               </ul>
-              <p class="muted small">
-                Любые сходства с реальными лицами, организациями и событиями случайны. Сайт и
-                описания созданы для атмосферного RP.
-              </p>
             </section>
           </div>
         </div>
@@ -244,11 +238,6 @@
                 Во главе Blood Crown — <strong>Kayden Jackson</strong>, тот, кто перезапустил
                 BHB после провала старшего поколения.
               </p>
-
-              <p class="muted small">
-                Все звания и названия — внутриигровая легенда. Они не имеют юридической силы и
-                не связаны с реальными группировками.
-              </p>
             </div>
           </article>
         </div>
@@ -268,8 +257,8 @@
 
           <div class="card-body org-body">
             <p class="muted">
-              Важно: описанные ниже адреса и точки существуют в рамках RP-сеттинга GTA V / FiveM.
-              Они нужны для отыгрыша и атмосферы — не для реальных встреч или действий.
+              Описанные ниже адреса и точки существуют в рамках RP-сеттинга GTA V / FiveM.
+              Они нужны для отыгрыша и атмосферы.
             </p>
 
             <h3>Ключевые объекты</h3>
@@ -324,11 +313,6 @@
               </div>
             </div>
 
-            <p class="muted small">
-              Рекомендуется использовать прозрачный фон (PNG) или белый фон для тэгов, чтобы они
-              органично смотрелись и на сайте, и в оформлении сервера (баннеры, превью и т.п.).
-            </p>
-
             <h3>Правила поведения</h3>
             <ul>
               <li>Не палить внутренние дела и дискорды посторонним.</li>
@@ -340,67 +324,310 @@
         </div>
       </section>
 
-      <!-- Сезон и активность / условный заработок -->
-      <section id="page-earn" class="page hidden">
+      <!-- Охота за головами -->
+      <section id="page-bounty" class="page hidden">
         <div class="card">
           <header class="card-header">
             <div>
-              <h2>Сезон BHB — активность и ставки (RP)</h2>
+              <h2>Охота за головами BHB</h2>
               <div class="card-subtitle">
-                Виртуальные кредиты, условные ставки и мониторинг «кошелька организации».
+                Цель сезона и кошелёк BHB, привязанный к курсу биткоина.
               </div>
             </div>
           </header>
 
-          <div class="card-body earn-body">
-            <p class="muted small">
-              Всё, что вы видите в этом разделе, — внутриигровая механика. Кредиты и ставки
-              не имеют отношения к реальным деньгам и используются только для ролевого отыгрыша
-              и визуализации влияния BHB.
-            </p>
+          <div class="card-body bounty-body">
+            <div class="bounty-layout">
+              <section class="bounty-main">
+                <div class="bounty-target-card">
+                  <header class="bounty-target-header">
+                    <div>
+                      <div class="bounty-badge">Цель сезона</div>
+                      <h3>Sergeant Tyler Green <span class="bounty-id">#78613</span></h3>
+                      <div class="bounty-meta">
+                        PN: 5307307551 · LSPD Sergeant
+                      </div>
+                    </div>
+                    <div class="bounty-reward">
+                      Награда<br>
+                      <span class="bounty-reward-value">$300 000</span>
+                    </div>
+                  </header>
 
-            <div class="earn-wallet-row">
-              <div class="org-wallet">
-                <div class="org-wallet-label">Кошелёк BHB (легенда)</div>
-                <div class="org-wallet-main">
-                  <span id="org-wallet-amount">0</span> ₽
-                </div>
-                <div class="org-wallet-sub">
-                  <span id="org-wallet-delta">Обновление…</span>
-                </div>
-                <div class="org-wallet-progress">
-                  <div class="org-wallet-progress-bar">
-                    <div class="org-wallet-progress-fill" id="org-wallet-progress-fill"></div>
+                  <div class="bounty-target-body">
+                    <p>
+                      Постоянная цель охоты BHB. Серый мундир, слишком много лишних вопросов
+                      к району Уоттса и пара незакрытых дел, где кровь ушла в архив. BHB не
+                      забывает тех, кто давил на улицу, когда старая гвардия падала под рейдами.
+                    </p>
+                    <p>
+                      Информация о передвижениях, привычках и связях Tyler Green — ценнейший
+                      товар в банде. Любой, кто приносит новые данные, поднимается в глазах
+                      Blood Crown.
+                    </p>
+
+                    <div class="bounty-status-row">
+                      <div id="bounty-status" class="bounty-status bounty-status-open">
+                        Статус: цель на свободе
+                      </div>
+                      <button id="bounty-toggle" class="btn btn-secondary btn-xs">
+                        Отметить как пойман
+                      </button>
+                    </div>
+                    <p class="muted small">
+                      Статус сохраняется локально в вашем браузере и помогает отыгрывать
+                      прогресс охоты. На реальных данных не основан.
+                    </p>
                   </div>
-                  <div class="org-wallet-progress-label" id="org-wallet-progress-label">
-                    Прогресс сезона: 0%
+                </div>
+              </section>
+
+              <aside class="bounty-side">
+                <div class="org-wallet">
+                  <div class="org-wallet-label">Кошелёк BHB</div>
+                  <div class="org-wallet-main">
+                    <span id="org-wallet-amount">$0</span>
+                  </div>
+                  <div class="org-wallet-sub" id="org-wallet-delta">
+                    Загрузка курса BTC…
+                  </div>
+                  <div class="org-wallet-progress">
+                    <div class="org-wallet-progress-bar">
+                      <div class="org-wallet-progress-fill" id="org-wallet-progress-fill"></div>
+                    </div>
+                    <div class="org-wallet-progress-label" id="org-wallet-progress-label">
+                      Цель: $3 000 000
+                    </div>
                   </div>
                 </div>
+
+                <div class="bounty-note">
+                  <div class="bounty-note-title">Эквивалент 10 BTC</div>
+                  <p>
+                    Кошелёк BHB привязан к текущему курсу биткоина. Сумма пересчитывается
+                    в режиме реального времени и показывает, сколько стоят 10 BTC в долларах.
+                  </p>
+                  <p class="muted small">
+                    Курс тянется из публичного API и используется только для визуала
+                    и атмосферы. Никаких реальных выплат или транзакций.
+                  </p>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Продажи -->
+      <section id="page-market" class="page hidden">
+        <div class="card">
+          <header class="card-header">
+            <div>
+              <h2>Продажи BHB</h2>
+              <div class="card-subtitle">
+                Внутриигровой «чёрный рынок» — от машин до веществ. Только для RP.
               </div>
-              <div class="earn-wallet">
-                <div>
-                  <div class="earn-wallet-label">Личный игровой баланс</div>
-                  <div class="earn-wallet-value">
-                    <span id="wallet-amount">0</span> кредитов
-                  </div>
-                </div>
-                <button type="button" class="btn btn-secondary btn-xs" id="wallet-reset-btn">
-                  Новый сезон / сброс баланса
-                </button>
+            </div>
+          </header>
+
+          <div class="card-body market-body">
+            <div class="market-filters">
+              <div class="market-search-wrap">
+                <input id="market-search" class="input-text" type="text" placeholder="Поиск по названию или тэгам…">
+              </div>
+              <div class="market-chips" id="market-chips">
+                <button class="market-chip market-chip-active" data-filter="all">Все</button>
+                <button class="market-chip" data-filter="cars">Транспорт</button>
+                <button class="market-chip" data-filter="weapons">Железо</button>
+                <button class="market-chip" data-filter="drugs">Вещества</button>
+                <button class="market-chip" data-filter="gear">Снаряжение</button>
               </div>
             </div>
 
-            <div class="earn-season muted small">
-              Текущий сезон: <span id="season-label">1</span>
-            </div>
-
-            <div class="earn-layout">
-              <div id="earn-main" class="earn-main-slot">
-                <div class="earn-main-placeholder muted small">
-                  Выберите участника справа, чтобы увидеть легенду персонажа и условную статистику.
+            <div id="market-grid" class="market-grid">
+              <!-- Транспорт -->
+              <article class="market-card" data-category="cars" data-tags="ford explorer suv patrol">
+                <div class="market-img-wrap">
+                  <img src="market_ford_explorer.png" alt="Ford Explorer 2020" class="market-img">
                 </div>
-              </div>
-              <div id="earn-list" class="earn-list-slot"></div>
+                <div class="market-info">
+                  <h3>Ford Explorer 2020</h3>
+                  <p class="market-desc">
+                    Чёрный кроссовер под лидеров и старших. Тонировка, красные детали, место под железо в багажнике.
+                  </p>
+                  <div class="market-meta">
+                    <span class="market-pill">Класс: SUV</span>
+                    <span class="market-pill">Тег: BHB-LEAD</span>
+                  </div>
+                  <div class="market-bottom">
+                    <div class="market-price">$120 000</div>
+                    <button class="btn btn-primary btn-xs">В корзину RP</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="market-card" data-category="cars" data-tags="chevrolet silverado pickup work">
+                <div class="market-img-wrap">
+                  <img src="market_silverado.png" alt="Chevrolet Silverado" class="market-img">
+                </div>
+                <div class="market-info">
+                  <h3>Chevrolet Silverado</h3>
+                  <p class="market-desc">
+                    Рабочий пикап для дел, вывоза железа и быстрых переездов. Тянет прицеп и не задаёт вопросов.
+                  </p>
+                  <div class="market-meta">
+                    <span class="market-pill">Класс: Pickup</span>
+                    <span class="market-pill">Тег: WORKHORSE</span>
+                  </div>
+                  <div class="market-bottom">
+                    <div class="market-price">$95 000</div>
+                    <button class="btn btn-primary btn-xs">В корзину RP</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="market-card" data-category="cars" data-tags="impala sedan classic street">
+                <div class="market-img-wrap">
+                  <img src="market_impala.png" alt="Chevrolet Impala" class="market-img">
+                </div>
+                <div class="market-info">
+                  <h3>Chevrolet Impala</h3>
+                  <p class="market-desc">
+                    Классика улиц, низкая посадка, красные диски. Для мягких подъездов и показательного стайла.
+                  </p>
+                  <div class="market-meta">
+                    <span class="market-pill">Класс: Sedan</span>
+                    <span class="market-pill">Тег: STREET-OG</span>
+                  </div>
+                  <div class="market-bottom">
+                    <div class="market-price">$80 000</div>
+                    <button class="btn btn-primary btn-xs">В корзину RP</button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Железо -->
+              <article class="market-card" data-category="weapons" data-tags="pistol handgun sidearm">
+                <div class="market-img-wrap">
+                  <img src="market_9mm.png" alt="9mm Sidearm" class="market-img">
+                </div>
+                <div class="market-info">
+                  <h3>9mm Sidearm</h3>
+                  <p class="market-desc">
+                    Стандартный ствол для уличных дел. Лёгкий, надёжный, прячется под худи.
+                  </p>
+                  <div class="market-meta">
+                    <span class="market-pill">Класс: Пистолет</span>
+                    <span class="market-pill">Тег: RED-LINE</span>
+                  </div>
+                  <div class="market-bottom">
+                    <div class="market-price">$6 500</div>
+                    <button class="btn btn-primary btn-xs">В корзину RP</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="market-card" data-category="weapons" data-tags="smg compact spray">
+                <div class="market-img-wrap">
+                  <img src="market_smg.png" alt="Compact SMG" class="market-img">
+                </div>
+                <div class="market-info">
+                  <h3>Compact SMG</h3>
+                  <p class="market-desc">
+                    Для плотных выездов: высокий DPS, компактный размер, легко уходит в багажник.
+                  </p>
+                  <div class="market-meta">
+                    <span class="market-pill">Класс: SMG</span>
+                    <span class="market-pill">Тег: STREET-RIDER</span>
+                  </div>
+                  <div class="market-bottom">
+                    <div class="market-price">$32 000</div>
+                    <button class="btn btn-primary btn-xs">В корзину RP</button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Вещества -->
+              <article class="market-card" data-category="drugs" data-tags="weed og kush pack">
+                <div class="market-img-wrap">
+                  <img src="market_ogkush.png" alt="OG Kush Pack" class="market-img">
+                </div>
+                <div class="market-info">
+                  <h3>OG Kush Pack</h3>
+                  <p class="market-desc">
+                    Плотные зелёные пакеты для тихого разлива по району. Маркировка BHB на пломбе.
+                  </p>
+                  <div class="market-meta">
+                    <span class="market-pill">Тип: зелёное</span>
+                    <span class="market-pill">Тег: BLOCK-SALE</span>
+                  </div>
+                  <div class="market-bottom">
+                    <div class="market-price">$18 000</div>
+                    <button class="btn btn-primary btn-xs">В корзину RP</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="market-card" data-category="drugs" data-tags="lab chems powder">
+                <div class="market-img-wrap">
+                  <img src="market_labpack.png" alt="Lab Pack" class="market-img">
+                </div>
+                <div class="market-info">
+                  <h3>Lab Pack</h3>
+                  <p class="market-desc">
+                    Чистые лабораторные пакеты. Идут ограниченными партиями для проверенных связей.
+                  </p>
+                  <div class="market-meta">
+                    <span class="market-pill">Тип: концентрат</span>
+                    <span class="market-pill">Тег: CRIMSON-LINE</span>
+                  </div>
+                  <div class="market-bottom">
+                    <div class="market-price">$42 000</div>
+                    <button class="btn btn-primary btn-xs">В корзину RP</button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Снаряжение -->
+              <article class="market-card" data-category="gear" data-tags="clothes hoodie red shoes outfit">
+                <div class="market-img-wrap">
+                  <img src="market_outfit_red.png" alt="Red Set Outfit" class="market-img">
+                </div>
+                <div class="market-info">
+                  <h3>Red Set Outfit</h3>
+                  <p class="market-desc">
+                    Фирменный сет: чёрный худи, светлые джинсы и алые кроссовки. Пропуск в круг BHB.
+                  </p>
+                  <div class="market-meta">
+                    <span class="market-pill">Категория: одежда</span>
+                    <span class="market-pill">Тег: BHB-GEAR</span>
+                  </div>
+                  <div class="market-bottom">
+                    <div class="market-price">$9 500</div>
+                    <button class="btn btn-primary btn-xs">В корзину RP</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="market-card" data-category="gear" data-tags="tech radio secure comms">
+                <div class="market-img-wrap">
+                  <img src="market_radio.png" alt="Secure Radio Set" class="market-img">
+                </div>
+                <div class="market-info">
+                  <h3>Secure Radio Set</h3>
+                  <p class="market-desc">
+                    Закрытые каналы связи, отдельная сетка под BHB. Без этой штуки в рейды не выходят.
+                  </p>
+                  <div class="market-meta">
+                    <span class="market-pill">Категория: техника</span>
+                    <span class="market-pill">Тег: OPS-LINE</span>
+                  </div>
+                  <div class="market-bottom">
+                    <div class="market-price">$15 000</div>
+                    <button class="btn btn-primary btn-xs">В корзину RP</button>
+                  </div>
+                </div>
+              </article>
             </div>
           </div>
         </div>
@@ -451,7 +678,7 @@
         <input id="access-code-input" class="input-text" type="text" autocomplete="off" placeholder="например, BHB_Watts_187">
       </div>
       <p class="muted small">
-        Код выдаётся лидером/админом и открывает разделы со структурой, территорией и сезонной активностью.
+        Код выдаётся лидером/админом и открывает разделы со структурой, территорией, охотой и продажами.
       </p>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Подтвердить</button>
