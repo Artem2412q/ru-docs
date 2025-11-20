@@ -391,16 +391,89 @@ if (marketChips) {
 
 
 /* =========================
-   Выбор товара в продажах
+   Выбор цели охоты и выбор товара
    ========================= */
 
-function initMarketSelection() {
+function setupBountySelection() {
+  const cards = document.querySelectorAll('.bounty-target-card');
+  if (!cards.length) return;
+
+  cards.forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('bounty-selected'));
+      card.classList.add('bounty-selected');
+    });
+  });
+}
+
+function setupMarketSelection() {
   if (!marketGrid) return;
-  marketGrid.addEventListener('click', (e) => {
-    const card = e.target.closest('.market-card');
-    if (!card) return;
-    const all = marketGrid.querySelectorAll('.market-card');
-    all.forEach(c => c.classList.toggle('market-card-selected', c === card));
+  const cards = marketGrid.querySelectorAll('.market-card');
+  if (!cards.length) return;
+
+  cards.forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('market-card-selected'));
+      card.classList.add('market-card-selected');
+    });
+  });
+}
+
+/* =========================
+   Кровавые капли и атмосфера на странице павших
+   ========================= */
+
+function spawnBloodDrops() {
+  const layer = document.getElementById('blood-drip-layer');
+  if (!layer) return;
+
+  setInterval(() => {
+    const drop = document.createElement('div');
+    drop.classList.add('blood-drop');
+
+    drop.style.left = Math.random() * 100 + 'vw';
+    const speed = 3 + Math.random() * 3;
+    drop.style.animationDuration = speed + 's';
+
+    layer.appendChild(drop);
+
+    setTimeout(() => {
+      drop.remove();
+    }, speed * 1000 + 250);
+  }, 260);
+}
+
+function setupFallenAtmosphere() {
+  const audio = document.getElementById('fallen-audio');
+  const btn = document.getElementById('fallen-atmo-btn');
+  const fallenSection = document.getElementById('page-fallen');
+
+  if (!fallenSection) return;
+
+  // запустить капли
+  spawnBloodDrops();
+
+  if (!audio || !btn) return;
+
+  let playing = false;
+
+  btn.addEventListener('click', () => {
+    if (!playing) {
+      audio.volume = 0.35;
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
+      btn.textContent = 'Выключить атмосферу';
+      playing = true;
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+      btn.textContent = 'Включить атмосферу';
+      playing = false;
+    }
   });
 }
 /* =========================
@@ -415,7 +488,9 @@ function init() {
   updateOrgWalletUi();
   startBtcUpdates();
   applyMarketFilter();
-  initMarketSelection();
+  setupBountySelection();
+  setupMarketSelection();
+  setupFallenAtmosphere();
   showPage('cars');
 }
 
