@@ -1,5 +1,5 @@
 // Простое локальное состояние
-const STORAGE_KEY = 'drive3_ru_state_v3';
+const STORAGE_KEY = 'bhb_site_state_v1';
 
 const defaultState = {
   users: [],          // {login, password}
@@ -9,7 +9,7 @@ const defaultState = {
   wallet: 50000,      // виртуальный баланс в кредитах
   bets: [],           // история условных ставок
   orgOffset: 0,       // накопленный прогресс кошелька организации
-  season: 1,          // текущий игровой сезон (для пула участников)
+  season: 1,          // текущий игровой сезон
 };
 
 
@@ -59,7 +59,7 @@ navItems.forEach(btn => {
     const page = btn.dataset.page;
     if (!page) return;
     if ((page === 'org' || page === 'community' || page === 'earn') && !state.secretUnlocked) {
-      alert('Доступ к этому разделу открыт только после ввода кода доступа.');
+      alert('Эти разделы открываются только после ввода кода кровавой клятвы.');
       return;
     }
     showPage(page);
@@ -129,7 +129,7 @@ authForm.addEventListener('submit', (e) => {
 
   if (authMode === 'register') {
     if (state.users.some(u => u.login === login)) {
-      alert('Такой логин уже существует.');
+      alert('Такой ник уже занят.');
       return;
     }
     state.users.push({ login, password });
@@ -198,7 +198,7 @@ function updateSecretNav() {
     accessCodeBtn.textContent = 'Код активен';
   } else {
     accessCodeBtn.classList.remove('btn-success');
-    accessCodeBtn.textContent = 'Код доступа';
+    accessCodeBtn.textContent = 'Код кровавой клятвы';
   }
 }
 
@@ -217,14 +217,15 @@ accessForm.addEventListener('submit', (e) => {
   const code = accessInput.value.trim();
   if (!code) return;
 
-  if (code === 'code6.ru_drive3') {
+  // вы можете поменять код на свой — здесь только проверка строки
+  if (code === 'BHB_Watts_187') {
     state.secretUnlocked = true;
     saveState();
     updateSecretNav();
     accessModal.classList.add('hidden');
-    alert('Код подтверждён. Появились разделы «Сообщество», «Организация» и «Заработок».');
+    alert('Код подтверждён. Открыты разделы со структурой, территорией и сезонной активностью.');
   } else {
-    alert('Неверный код. Если вы уверены, что он правильный — свяжитесь с администрацией.');
+    alert('Неверный код. Свяжитесь с лидером / админом, если не уверены.');
   }
 });
 
@@ -242,11 +243,10 @@ const orgWalletDeltaSpan = document.getElementById('org-wallet-delta');
 const orgWalletProgressFill = document.getElementById('org-wallet-progress-fill');
 const orgWalletProgressLabel = document.getElementById('org-wallet-progress-label');
 
-// базовый «скрытый» баланс организации: 3 единицы условного актива, сконвертированные в ₽
+// Базовый «скрытый» баланс организации в легенде
 const ORG_WALLET_BASE_UNITS = 3;
-const ORG_UNIT_TO_RUB = 6000000; // условный курс на момент сборки
+const ORG_UNIT_TO_RUB = 6000000;
 const ORG_WALLET_BASE_RUB = ORG_WALLET_BASE_UNITS * ORG_UNIT_TO_RUB;
-// целевое значение сезона для прогресс-бара (например, +50% к базовому балансу)
 const ORG_WALLET_GOAL_RUB = Math.round(ORG_WALLET_BASE_RUB * 1.5);
 
 function updateWalletUi() {
@@ -264,9 +264,8 @@ function updateSeasonUi() {
 function updateOrgWalletUi() {
   if (!orgWalletAmountSpan || !orgWalletDeltaSpan) return;
   const now = Date.now();
-  // небольшие колебания вокруг базового значения, чтобы выглядело как мониторинг
-  const phase = now / 60000; // минуты
-  const offsetFactor = Math.sin(phase) * 0.015; // ±1.5%
+  const phase = now / 60000;
+  const offsetFactor = Math.sin(phase) * 0.015;
   const extra = Number(state.orgOffset || 0);
   const baseWithExtra = ORG_WALLET_BASE_RUB + extra;
   const currentRub = Math.round(baseWithExtra * (1 + offsetFactor));
@@ -281,7 +280,6 @@ function updateOrgWalletUi() {
     orgWalletDeltaSpan.textContent = `${sign}${Math.abs(diff).toLocaleString('ru-RU')} ₽ за минуту`;
   }
 
-  // прогресс сезона: от базового значения до целевого
   if (orgWalletProgressFill && orgWalletProgressLabel) {
     const progressRaw = (baseWithExtra - ORG_WALLET_BASE_RUB) / (ORG_WALLET_GOAL_RUB - ORG_WALLET_BASE_RUB);
     const progress = Math.max(0, Math.min(1, progressRaw));
@@ -291,15 +289,12 @@ function updateOrgWalletUi() {
   }
 }
 
-
 function playOrgProgressBump() {
   if (!orgWalletProgressFill) return;
   orgWalletProgressFill.classList.remove('bump');
-  // принудительно перезапускаем анимацию
   void orgWalletProgressFill.offsetWidth;
   orgWalletProgressFill.classList.add('bump');
 }
-
 
 if (walletResetBtn) {
   walletResetBtn.addEventListener('click', () => {
@@ -331,41 +326,36 @@ themeToggleBtn.addEventListener('click', () => {
   applyTheme();
 });
 
-// периодически обновляем мониторинг кошелька организации
 setInterval(updateOrgWalletUi, 7000);
 
 /* =========================
-   Раздел «Заработок» — генерация карточек
+   Раздел «Сезон / ставки»
    ========================= */
 
 const earnMain = document.getElementById('earn-main');
 const earnList = document.getElementById('earn-list');
 
 const FIRST_NAMES = [
-  'Алексей', 'Дмитрий', 'Иван', 'Максим', 'Сергей',
-  'Егор', 'Кирилл', 'Никита', 'Павел', 'Роман',
-  'Андрей', 'Владимир', 'Виталий', 'Олег', 'Степан'
+  'Kayden', 'Dre', 'Malik', 'Tyrell', 'Jamal',
+  'Kenny', 'Rome', 'Deon', 'Lil Red', 'Trigger',
+  'Ghost', 'Reese', 'Stacks', 'Blaze', 'Knox'
 ];
 
 const LAST_NAMES = [
-  'Иванов', 'Петров', 'Сидоров', 'Смирнов', 'Кузнецов',
-  'Новиков', 'Федоров', 'Алексеев', 'Крылов', 'Ершов',
-  'Соколов', 'Кудрявцев', 'Морозов', 'Громов', 'Воронин'
+  'Jackson', 'Watts', 'Bloods', 'Hunter', 'Price',
+  'Miller', 'Stone', 'Cole', 'Brown', 'Hill',
+  'Young', 'Turner', 'West', 'King', 'Carter'
 ];
 
 const CARS = [
-  'BMW M3 F80', 'BMW M4 G82', 'Mercedes-Benz C63 AMG',
-  'Mercedes-Benz E63 S', 'Nissan GT-R R35', 'Toyota Supra A90',
-  'Subaru Impreza WRX STI', 'Mitsubishi Lancer Evolution X',
-  'Audi RS3', 'Audi RS6', 'Alfa Romeo Giulia Quadrifoglio',
-  'Lexus IS 350', 'Kia Stinger GT', 'Porsche 911 Carrera S',
-  'Chevrolet Camaro SS'
+  'Ford Explorer 2020', 'Chevrolet Silverado', 'Chevrolet Impala',
+  'Ford F-150 XL', 'Chevrolet Suburban', 'Bravado Gauntlet',
+  'Declasse Vigero', 'Albany Primo', 'Vapid Chino'
 ];
 
-const ODDS = [1.7, 1.9, 2.1, 2.4, 2.8, 3.2, 3.6];
+const ODDS = [1.4, 1.6, 1.9, 2.2, 2.6, 3.0, 3.4];
 
-// детерминированный генератор, чтобы у всех пользователей были одни и те же участники
-let earnSeed = 123456;
+let earnSeed = 987654;
 function seededRandom() {
   earnSeed = (earnSeed * 1664525 + 1013904223) % 4294967296;
   return earnSeed / 4294967296;
@@ -390,12 +380,12 @@ function generateParticipants(count = 6) {
     } while (usedNames.has(fullName) && attempts < 20);
     usedNames.add(fullName);
 
-    const races = 5 + Math.floor(seededRandom() * 26); // 5-30
-    const wins = Math.floor(races * (0.25 + seededRandom() * 0.45));
-    const power = 350 + Math.floor(seededRandom() * 300);
-    const reaction = (0.15 + seededRandom() * 0.25).toFixed(2);
-    const reliability = 60 + Math.floor(seededRandom() * 40);
-    const aggression = 40 + Math.floor(seededRandom() * 50);
+    const missions = 5 + Math.floor(seededRandom() * 26);
+    const success = Math.floor(missions * (0.35 + seededRandom() * 0.4));
+    const respect = 40 + Math.floor(seededRandom() * 55);
+    const aggression = 30 + Math.floor(seededRandom() * 60);
+    const stealth = 30 + Math.floor(seededRandom() * 60);
+    const loyalty = 60 + Math.floor(seededRandom() * 35);
 
     participants.push({
       id: 'p' + i,
@@ -403,12 +393,12 @@ function generateParticipants(count = 6) {
       car: seededChoice(CARS),
       odds: seededChoice(ODDS),
       stats: {
-        races,
-        wins,
-        power,
-        reaction,
-        reliability,
-        aggression
+        missions,
+        success,
+        respect,
+        aggression,
+        stealth,
+        loyalty
       }
     });
   }
@@ -419,16 +409,13 @@ let participantsCache = [];
 let selectedParticipantId = null;
 
 function renderEarnCards() {
-  // генерируем пул участников, привязанный к номеру сезона
   const season = Number(state.season || 1);
-  earnSeed = 123456 + season * 1000;
+  earnSeed = 987654 + season * 777;
   participantsCache = generateParticipants(6);
   selectedParticipantId = null;
   renderEarnList();
   renderEarnMain(null);
 }
-
-
 
 function getPopularParticipantId() {
   if (!Array.isArray(state.bets) || !state.bets.length) return null;
@@ -449,7 +436,6 @@ function getPopularParticipantId() {
   return bestId;
 }
 
-
 function renderEarnList() {
   if (!earnList) return;
   earnList.innerHTML = '';
@@ -464,7 +450,7 @@ function renderEarnList() {
     if (popularId && p.id === popularId) {
       extraHtml = `
         <div class="earn-mini-row earn-mini-extra">
-          <span class="earn-mini-popular-label">лидер ставок</span>
+          <span class="earn-mini-popular-label">лидер по ставкам</span>
         </div>
       `;
       mini.classList.add('earn-mini-popular');
@@ -476,7 +462,7 @@ function renderEarnList() {
         <div class="earn-mini-tag">#${index + 1}</div>
       </div>
       <div class="earn-mini-row">
-        <div class="earn-mini-label">Автомобиль</div>
+        <div class="earn-mini-label">Транспорт</div>
         <div class="earn-mini-value">${p.car}</div>
       </div>
       <div class="earn-mini-row">
@@ -493,7 +479,6 @@ function renderEarnList() {
     earnList.appendChild(mini);
   });
 
-  // если уже кто-то выбран — подсветим
   highlightSelectedInList();
 }
 
@@ -511,7 +496,7 @@ function renderEarnMain(participant) {
   if (!participant) {
     earnMain.innerHTML = `
       <div class="earn-main-placeholder muted small">
-        Выберите участника справа, чтобы увидеть детальную статистику по нему и автомобилю.
+        Выберите участника справа, чтобы увидеть легенду персонажа и условную статистику по его активности.
       </div>
     `;
     return;
@@ -525,18 +510,18 @@ function renderEarnMain(participant) {
           <div class="earn-main-car">${participant.car}</div>
         </div>
         <div class="earn-main-odds">
-          Коэффициент<br>
+          Коэффициент влияния<br>
           <strong>×${participant.odds.toFixed(2)}</strong>
         </div>
       </div>
 
       <div class="earn-main-meta">
-        <span class="earn-pill">Заездов: ${participant.stats.races}</span>
-        <span class="earn-pill">Побед: ${participant.stats.wins}</span>
-        <span class="earn-pill">Мощность: ${participant.stats.power} л.с.</span>
-        <span class="earn-pill">Реакция: ${participant.stats.reaction} с</span>
-        <span class="earn-pill">Надёжность: ${participant.stats.reliability}%</span>
+        <span class="earn-pill">Операций: ${participant.stats.missions}</span>
+        <span class="earn-pill">Удачных: ${participant.stats.success}</span>
+        <span class="earn-pill">Респект: ${participant.stats.respect}</span>
         <span class="earn-pill">Агрессия: ${participant.stats.aggression}%</span>
+        <span class="earn-pill">Стелс: ${participant.stats.stealth}%</span>
+        <span class="earn-pill">Лояльность: ${participant.stats.loyalty}%</span>
       </div>
 
       <div class="earn-orbit">
@@ -547,22 +532,22 @@ function renderEarnMain(participant) {
           <div class="earn-orbit-odds">Коэф. ×${participant.odds.toFixed(2)}</div>
         </div>
         <div class="earn-orbit-item pos-top">
-          Заездов<br><strong>${participant.stats.races}</strong>
+          Операций<br><strong>${participant.stats.missions}</strong>
         </div>
         <div class="earn-orbit-item pos-right">
-          Побед<br><strong>${participant.stats.wins}</strong>
+          Удачных<br><strong>${participant.stats.success}</strong>
         </div>
         <div class="earn-orbit-item pos-bottom">
-          Мощность<br><strong>${participant.stats.power} л.с.</strong>
+          Респект<br><strong>${participant.stats.respect}</strong>
         </div>
         <div class="earn-orbit-item pos-left">
-          Реакция<br><strong>${participant.stats.reaction} с</strong>
+          Стелс<br><strong>${participant.stats.stealth}%</strong>
         </div>
         <div class="earn-orbit-item pos-diag-left">
-          Надёжность<br><strong>${participant.stats.reliability}%</strong>
+          Агрессия<br><strong>${participant.stats.aggression}%</strong>
         </div>
         <div class="earn-orbit-item pos-diag-right">
-          Агрессия<br><strong>${participant.stats.aggression}%</strong>
+          Лояльность<br><strong>${participant.stats.loyalty}%</strong>
         </div>
       </div>
 
@@ -578,8 +563,8 @@ function renderEarnMain(participant) {
         </button>
       </div>
       <p class="earn-note muted small">
-        Потенциальный выигрыш считается по формуле: ставка × коэффициент.
-        Все кредиты внутриигровые, реальные деньги не используются.
+        Потенциальный «выигрыш» считается по формуле: ставка × коэффициент. Все кредиты —
+        внутриигровые и не связаны с реальными деньгами.
       </p>
       <div class="bet-history" id="bet-history">
         <div class="bet-history-header">
@@ -600,18 +585,16 @@ function renderEarnMain(participant) {
 
     const current = Number(state.wallet || 0);
     if (current < amount) {
-      alert('Недостаточно средств на игровом балансе для такой ставки. Уменьшите сумму или обновите раунд.');
+      alert('Недостаточно кредитов. Уменьшите сумму или начните новый сезон.');
       return;
     }
 
     const potentialWin = amount * participant.odds;
     state.wallet = current - amount;
 
-    // небольшая доля ставки уходит в прогресс кошелька организации
     const houseCut = Math.round(amount * 0.02);
     state.orgOffset = (Number(state.orgOffset || 0) + houseCut);
 
-    // сохраняем ставку в историю до пересчёта интерфейса
     const betRecord = {
       id: Date.now(),
       user: state.currentUser || 'Аноним',
@@ -627,7 +610,6 @@ function renderEarnMain(participant) {
       state.bets = [];
     }
     state.bets.unshift(betRecord);
-    // ограничим историю, чтобы не разрасталась бесконечно
     state.bets = state.bets.slice(0, 20);
 
     saveState();
@@ -638,10 +620,10 @@ function renderEarnMain(participant) {
     renderEarnList();
 
     const message =
-      `Вы условно поставили ${amount.toLocaleString('ru-RU')} кредитов на участника "${participant.name}".` +
+      `Вы условно поставили ${amount.toLocaleString('ru-RU')} кредитов на "${participant.name}".` +
       `\nТекущий игровой баланс: ${state.wallet.toLocaleString('ru-RU')} кредитов.` +
       `\n\nТеоретический выигрыш (игровой): ${potentialWin.toLocaleString('ru-RU', {maximumFractionDigits: 0})} кредитов.` +
-      `\n\nВсе расчёты остаются частью сеттинга проекта, реальные деньги не используются.`;
+      `\n\nВсе расчёты остаются частью RP-сеттинга. Реальные деньги не используются.`;
 
     alert(message);
   });
@@ -658,7 +640,7 @@ function renderBetHistory() {
   if (!bets.length) {
     const empty = document.createElement('div');
     empty.className = 'bet-history-empty muted small';
-    empty.textContent = 'Ставок пока нет. Сделайте первую условную ставку, чтобы увидеть историю.';
+    empty.textContent = 'Пока ставок нет. Сделайте первую, чтобы увидеть историю.';
     listEl.appendChild(empty);
   } else {
     bets.forEach((bet) => {
@@ -667,15 +649,11 @@ function renderBetHistory() {
       row.innerHTML = `
         <div class="bet-history-line">
           <span class="bet-history-user">${bet.user || 'Аноним'}</span>
-          <span class="bet-history-text">поставил(а)</span>
+          <span class="bet-history-name">→ ${bet.name}</span>
+          <span class="bet-history-car">(${bet.car})</span>
           <span class="bet-history-amount">${bet.amount.toLocaleString('ru-RU')} кр.</span>
-          <span class="bet-history-text">на</span>
-          <span class="bet-history-name">${bet.name}</span>
-          <span class="bet-history-car muted small">(${bet.car})</span>
-          <span class="bet-history-odds muted small">коэф. ×${Number(bet.odds).toFixed(2)}</span>
-          <span class="bet-history-win muted small">
-            / потенц. выигрыш: ${Math.round(bet.potentialWin).toLocaleString('ru-RU')} кр.
-          </span>
+          <span class="bet-history-odds">×${bet.odds.toFixed(2)}</span>
+          <span class="bet-history-win">потенц. ${bet.potentialWin.toLocaleString('ru-RU', {maximumFractionDigits: 0})} кр.</span>
         </div>
       `;
       listEl.appendChild(row);
@@ -687,31 +665,32 @@ function renderBetHistory() {
       state.bets = [];
       saveState();
       renderBetHistory();
+      renderEarnList();
     };
   }
-}
-
-function selectParticipant(id) {
-  selectedParticipantId = id;
-  const participant = participantsCache.find(p => p.id === id) || null;
-  highlightSelectedInList();
-  renderEarnMain(participant);
 }
 
 /* =========================
    Инициализация
    ========================= */
 
+function selectParticipant(id) {
+  selectedParticipantId = id;
+  const participant = participantsCache.find(p => p.id === id) || null;
+  renderEarnMain(participant);
+  highlightSelectedInList();
+}
+
 function init() {
   applyTheme();
   updateAuthUi();
   updateSecretNav();
   updateWalletUi();
-  updateOrgWalletUi();
   updateSeasonUi();
-  showPage('cars');
+  updateOrgWalletUi();
   renderEarnCards();
   renderBetHistory();
+  showPage('cars');
 }
 
 document.addEventListener('DOMContentLoaded', init);
