@@ -173,6 +173,7 @@ const navOrg = document.getElementById('nav-org');
 const navCommunity = document.getElementById('nav-community');
 const navBounty = document.getElementById('nav-bounty');
 const navMarket = document.getElementById('nav-market');
+const navFallen = document.getElementById('nav-fallen');
 
 const accessModal = document.getElementById('access-modal');
 const accessModalClose = document.getElementById('access-modal-close');
@@ -181,7 +182,7 @@ const accessInput = document.getElementById('access-code-input');
 
 function updateSecretNav() {
   const enabled = !!state.secretUnlocked;
-  [navOrg, navCommunity, navBounty, navMarket].forEach(el => {
+  [navOrg, navCommunity, navBounty, navMarket, navFallen].forEach(el => {
     if (!el) return;
     if (enabled) {
       el.classList.remove('hidden');
