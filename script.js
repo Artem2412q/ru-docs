@@ -389,6 +389,20 @@ if (marketChips) {
   });
 }
 
+
+/* =========================
+   Выбор товара в продажах
+   ========================= */
+
+function initMarketSelection() {
+  if (!marketGrid) return;
+  marketGrid.addEventListener('click', (e) => {
+    const card = e.target.closest('.market-card');
+    if (!card) return;
+    const all = marketGrid.querySelectorAll('.market-card');
+    all.forEach(c => c.classList.toggle('market-card-selected', c === card));
+  });
+}
 /* =========================
    Инициализация
    ========================= */
@@ -401,6 +415,7 @@ function init() {
   updateOrgWalletUi();
   startBtcUpdates();
   applyMarketFilter();
+  initMarketSelection();
   showPage('cars');
 }
 
