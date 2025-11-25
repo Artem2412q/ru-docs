@@ -511,3 +511,15 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+
+// Авторазмьют саундтрека BHB после первого клика по странице
+window.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('click', () => {
+    const iframe = document.querySelector('.cars-music-player iframe');
+    if (!iframe) return;
+    const src = iframe.getAttribute('src') || '';
+    if (src.includes('unmuted')) return;
+    iframe.src = 'https://www.youtube.com/embed/QPvciPNCID4?autoplay=1&loop=1&playlist=QPvciPNCID4&unmuted';
+  }, { once: true });
+});

@@ -1325,3 +1325,71 @@ body.theme-light .fallen-atmo-btn {
   100% { transform: translateY(120vh); opacity: 0.15; }
 }
 
+
+
+/* Музыка на легенде BHB */
+.cars-block-music {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.cars-music-player {
+  max-width: 420px;
+  margin-left: auto;
+}
+
+.music-iframe-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(55, 65, 81, 0.95);
+}
+
+.music-iframe-wrap iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .cars-block-music {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cars-music-player {
+    max-width: 100%;
+    margin-top: 4px;
+  }
+}
+
+
+.cars-music-yt-btn {
+  grid-column: span 2;
+  margin-top: 8px;
+}
+
+.music-yt-link {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(248, 113, 113, 0.7);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(248, 113, 113, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.music-yt-link:hover {
+  border-color: rgba(248, 113, 113, 1);
+  background: rgba(248, 113, 113, 0.2);
+}
